@@ -11,3 +11,7 @@ body, div {
 #map {
     height: 100%;
 }
+
+.field-group input, .field-group textarea {
+    font-family: 'Fira Sans', sans-serif !important;   
+}

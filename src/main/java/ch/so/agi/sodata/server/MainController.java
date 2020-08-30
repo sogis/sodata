@@ -61,7 +61,7 @@ public class MainController {
 
     }
     
-    @GetMapping("/")
+    @GetMapping("/ping")
     public ResponseEntity<String> ping() throws ParseException, IOException {
         
         

@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 
 import org.dominokit.domino.ui.button.Button;
 import org.dominokit.domino.ui.button.ButtonSize;
+import org.dominokit.domino.ui.dropdown.DropDownMenu;
+import org.dominokit.domino.ui.forms.SuggestBox.DropDownPositionDown;
+import org.dominokit.domino.ui.forms.SuggestBox;
 import org.dominokit.domino.ui.icons.Icons;
 import org.dominokit.domino.ui.style.Color;
 import org.dominokit.domino.ui.style.ColorScheme;
@@ -75,10 +78,24 @@ public class AppEntryPoint implements EntryPoint {
 
     @SuppressWarnings("unchecked")
     private void init() {         
-        Theme theme = new Theme(ColorScheme.WHITE);
+        Theme theme = new Theme(ColorScheme.RED);
         theme.apply();
 
-        body().add(div().textContent("Hello World."));        
+        body().add(div().textContent("Hello World."));
+        
+        SuggestBox suggestBox = SuggestBox.create("Suchebegriff", null);
+        suggestBox.addLeftAddOn(Icons.ALL.search());
+        suggestBox.setAutoSelect(false);
+        suggestBox.setFocusColor(Color.RED);
+        suggestBox.getInputElement().setAttribute("autocomplete", "off");
+        suggestBox.getInputElement().setAttribute("spellcheck", "false");
+        DropDownMenu suggestionsMenu = suggestBox.getSuggestionsMenu();
+        suggestionsMenu.setPosition(new DropDownPositionDown());
+
+        body().add(suggestBox.element());
+        
+        
+        
     }
 
    private static native void updateURLWithoutReloading(String newUrl) /*-{
