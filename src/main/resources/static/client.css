@@ -5,7 +5,9 @@ body {
 }
 
 body, div {
-    font-family: 'Fira Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /*font-family: 'Fira Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+    font-family: 'Noto Sans JP', 'Barlow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300;
 }
 
 #map {
@@ -13,7 +15,15 @@ body, div {
 }
 
 .field-group input, .field-group textarea {
-    font-family: 'Fira Sans', sans-serif !important;   
+    /*font-family: 'Fira Sans', sans-serif !important;*/   
+    font-family: 'Noto Sans JP', 'Barlow', 'Fira Sans', sans-serif !important;   
+    font-size: 16px;   
+    font-weight: 300;     
+}
+
+.field-group .field-label {
+	font-size: 12px;
+    font-weight: 300;	
 }
 
 #logo {
@@ -28,7 +38,7 @@ body, div {
 }
 
 #title {
-    margin-top: 160px;
+    margin-top: 140px;
     margin-left: auto;
     margin-right: auto;
     width: 1000px;
