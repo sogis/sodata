@@ -80,10 +80,16 @@ public class AppEntryPoint implements EntryPoint {
     private void init() {         
         Theme theme = new Theme(ColorScheme.RED);
         theme.apply();
-
-        body().add(div().textContent("Hello World."));
         
-        SuggestBox suggestBox = SuggestBox.create("Suchebegriff", null);
+        HTMLElement logoDiv = div().id("logo").element();
+        HTMLElement logoCanton = div().add(img().attr("src", GWT.getHostPageBaseURL() + "Logo.png")
+                .attr("alt", "Logo Kanton")).element();
+        logoDiv.appendChild(logoCanton);
+        body().add(logoDiv);
+
+        body().add(div().id("title").textContent("Geodaten Kanton Solothurn"));
+        
+        SuggestBox suggestBox = SuggestBox.create("Suchbegriff", null);
         suggestBox.addLeftAddOn(Icons.ALL.search());
         suggestBox.setAutoSelect(false);
         suggestBox.setFocusColor(Color.RED);
@@ -92,9 +98,10 @@ public class AppEntryPoint implements EntryPoint {
         DropDownMenu suggestionsMenu = suggestBox.getSuggestionsMenu();
         suggestionsMenu.setPosition(new DropDownPositionDown());
 
-        body().add(suggestBox.element());
         
-        
+        HTMLElement suggestBoxDiv = div().id("suggestBoxDiv").add(suggestBox).element();
+        body().add(div().id("searchPanel").add(div().id("suggestBoxDiv").add(suggestBox)));
+
         
     }
 

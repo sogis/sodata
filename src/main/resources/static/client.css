@@ -1,11 +1,11 @@
 body {
     margin: 0px;
     padding: 0px;
-    background: #fafafa; 
+    background: #FFFFFF; 
 }
 
 body, div {
-    font-family: 'Fira Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;   
+    font-family: 'Fira Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 #map {
@@ -14,4 +14,34 @@ body, div {
 
 .field-group input, .field-group textarea {
     font-family: 'Fira Sans', sans-serif !important;   
+}
+
+#logo {
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 1000px;
+    max-width: 95%;
+    background-color: #FFFFFF;
+    font-size: 40px;
+    text-align: right;
+}
+
+#title {
+    margin-top: 160px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 1000px;
+    max-width: 95%;
+    background-color: #FFFFFF;
+    font-size: 40px;
+}
+
+#searchPanel {
+    margin-top: 40px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 1000px;
+    max-width: 95%;
+    background-color: #FFFFFF;
 }
