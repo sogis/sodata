@@ -1,30 +1,11 @@
 package ch.so.agi.sodata.shared;
 
-import java.util.List;
-
 import jsinterop.annotations.JsType;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 
 @JsType(isNative=true, namespace=JsPackage.GLOBAL, name="Object")
 public class Dataset {
-//    public String id;
-//    public String version;
-//    public String owner;
-//    public String epsgCode;
-//    public String resolutionScope;
-//    public String publishingDate;
-//    public String lastEditingDate;
-//    public String title;
-//    public String shortDescription;
-//    public String keywords;
-//    public String servicer;
-//    public String technicalContact;
-//    public String furtherInformation;
-//    public String furtherMetadata;
-//    public String knownWMS;
-//    public List<String> files;
-    
     private String id;
     private String version;
     private String owner;

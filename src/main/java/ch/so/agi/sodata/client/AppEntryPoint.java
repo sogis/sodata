@@ -76,9 +76,8 @@ public class AppEntryPoint implements EntryPoint {
             @Override
             public void onSuccess(SettingsResponse result) {
                 myVar = (String) result.getSettings().get("MY_VAR");
-                console.log("myVar="+myVar);
-//                init();
                 
+                // Alle vorhandenen Datensätze anfordern.
                 RequestInit requestInit = RequestInit.create();
                 Headers headers = new Headers();
                 headers.append("Content-Type", "application/x-www-form-urlencoded"); 
@@ -93,10 +92,6 @@ public class AppEntryPoint implements EntryPoint {
                 })
                 .then(json -> {                    
                     datasets = (Dataset[]) Global.JSON.parse(json);
-                    Dataset ds = datasets[0];
-                    console.log(ds.getId());
-                    console.log(ds.getFiles()[0]);
-                    
                     List<Dataset> datasetList = Arrays.asList(datasets);
                     
                     Collections.sort(datasetList, new Comparator<Dataset>() {
@@ -105,22 +100,14 @@ public class AppEntryPoint implements EntryPoint {
                             return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
                         }
                     });
-
-//                    console.log(datasetList.get(0));
-//                    console.log(datasetList.get(1));
-//                    console.log(datasetList.get(2));
-//                    console.log(datasetList.get(3));
                     
-                    
-//                    init();
+                    // GUI initialisieren.
+                    init();
                     return null;
                 }).catch_(error -> {
                     console.log(error);
                     return null;
-                });                
-
-                
-                
+                });
             }
         });
     }
