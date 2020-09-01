@@ -7,6 +7,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import ch.so.agi.sodata.shared.Dataset;
+
 @Component
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "app")
@@ -22,7 +24,18 @@ public class AppConfig {
         this.datasets = datasets;
     }
     
-    public static class Dataset {
+    
+//    private List<CfgDataset> datasets = new ArrayList<CfgDataset>();
+//
+//    public List<CfgDataset> getDatasets() {
+//        return datasets;
+//    }
+//
+//    public void setDatasets(List<CfgDataset> datasets) {
+//        this.datasets = datasets;
+//    }
+    
+    public static class CfgDataset {
         private String id;
         private String version;
         private String owner;
@@ -38,7 +51,7 @@ public class AppConfig {
         private String furtherInformation;
         private String furtherMetadata;
         private String knownWMS;
-        private List<String> files;
+        private String[] files;
         
         public String getId() {
             return id;
@@ -130,10 +143,16 @@ public class AppConfig {
         public void setKnownWMS(String knownWMS) {
             this.knownWMS = knownWMS;
         }
-        public List<String> getFiles() {
+//        public List<String> getFiles() {
+//            return files;
+//        }
+//        public void setFiles(List<String> files) {
+//            this.files = files;
+//        }
+        public String[] getFiles() {
             return files;
         }
-        public void setFiles(List<String> files) {
+        public void setFiles(String[] files) {
             this.files = files;
         }
     }

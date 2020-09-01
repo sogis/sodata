@@ -30,10 +30,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import ch.so.agi.sodata.server.AppConfig.Dataset;
+import ch.so.agi.sodata.server.AppConfig.CfgDataset;
+import ch.so.agi.sodata.shared.Dataset;
 
-@Controller
+
+@RestController
 public class MainController {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -63,8 +66,6 @@ public class MainController {
     
     @GetMapping("/ping")
     public ResponseEntity<String> ping() throws ParseException, IOException {
-        
-        
         for (Dataset dataset : config.getDatasets()) {
             log.info(dataset.getId());
         }
@@ -84,4 +85,48 @@ public class MainController {
         log.info("sodata");
         return new ResponseEntity<String>("sodata", HttpStatus.OK);
     }
+    
+    @GetMapping("/cfgdatasets")
+    public List<Dataset> cfgDatasets() {
+        return config.getDatasets();
+    }
+    
+    @GetMapping("/datasets")
+    public List<Dataset> datasets() {
+        return config.getDatasets();
+    }
+    
+    
+//    @GetMapping("/datasets")
+//    public List<Dataset> datasets() {
+//        List<Dataset> datasets = new ArrayList<Dataset>();
+//        for (CfgDataset cfgDataset : config.getDatasets()) {
+//            Dataset dataset = new Dataset();
+////            dataset.id = cfgDataset.getId();
+//            dataset.setId(cfgDataset.getId());
+////            dataset.version = cfgDataset.getVersion();
+////            dataset.owner = cfgDataset.getOwner();
+////            dataset.epsgCode = cfgDataset.getEpsgCode();
+////            dataset.resolutionScope = cfgDataset.getResolutionScope();
+////            dataset.publishingDate = cfgDataset.getPublishingDate();
+////            dataset.lastEditingDate = cfgDataset.getLastEditingDate();
+////            dataset.title = cfgDataset.getTitle();
+////            dataset.shortDescription = cfgDataset.getShortDescription();
+////            dataset.keywords = cfgDataset.getKeywords();
+////            dataset.servicer = cfgDataset.getServicer();
+////            dataset.technicalContact = cfgDataset.getTechnicalContact();
+////            dataset.furtherInformation = cfgDataset.getFurtherInformation();
+////            dataset.furtherMetadata = cfgDataset.getFurtherMetadata();
+////            dataset.knownWMS = cfgDataset.getKnownWMS();
+//            
+//            ArrayList<String> foo = new ArrayList<String>();
+//            foo.add("xtf");
+//            foo.add("shp");
+//            dataset.setFiles(foo.toArray(new String[0])); 
+//            
+//            datasets.add(dataset);
+//        }
+//        return datasets;
+//    }
+    
 }
