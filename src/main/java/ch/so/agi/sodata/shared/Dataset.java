@@ -1,11 +1,12 @@
 package ch.so.agi.sodata.shared;
 
 import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 
 @JsType(isNative=true, namespace=JsPackage.GLOBAL, name="Object")
-public class Dataset {
+public final class Dataset {
     private String id;
     private String version;
     private String owner;
@@ -23,115 +24,131 @@ public class Dataset {
     private String knownWMS;
     private String[] files;
     
-    @JsProperty
+    @JsOverlay
     public String getId() {
         return id;
     }
+    @JsOverlay
     public void setId(String id) {
         this.id = id;
     }
-    @JsProperty    
+    @JsOverlay
     public String getVersion() {
         return version;
     }
+    @JsOverlay
     public void setVersion(String version) {
         this.version = version;
     }
-    @JsProperty    
+    @JsOverlay    
     public String getOwner() {
         return owner;
     }
+    @JsOverlay
     public void setOwner(String owner) {
         this.owner = owner;
     }
-    @JsProperty    
+    @JsOverlay    
     public String getEpsgCode() {
         return epsgCode;
     }
+    @JsOverlay
     public void setEpsgCode(String epsgCode) {
         this.epsgCode = epsgCode;
     }
-    @JsProperty    
+    @JsOverlay    
     public String getResolutionScope() {
         return resolutionScope;
     }
+    @JsOverlay
     public void setResolutionScope(String resolutionScope) {
         this.resolutionScope = resolutionScope;
     }
-    @JsProperty    
+    @JsOverlay
     public String getPublishingDate() {
         return publishingDate;
     }
+    @JsOverlay
     public void setPublishingDate(String publishingDate) {
         this.publishingDate = publishingDate;
     }
-    @JsProperty
+    @JsOverlay
     public String getLastEditingDate() {
         return lastEditingDate;
     }
+    @JsOverlay
     public void setLastEditingDate(String lastEditingDate) {
         this.lastEditingDate = lastEditingDate;
     }
-    @JsProperty
+    @JsOverlay
     public String getTitle() {
         return title;
     }
+    @JsOverlay
     public void setTitle(String title) {
         this.title = title;
     }
-    @JsProperty
+    @JsOverlay
     public String getShortDescription() {
         return shortDescription;
     }
+    @JsOverlay
     public void setShortDescription(String shortDescription) {
         this.shortDescription = shortDescription;
     }
-    @JsProperty
+    @JsOverlay
     public String getKeywords() {
         return keywords;
     }
+    @JsOverlay
     public void setKeywords(String keywords) {
         this.keywords = keywords;
     }
-    @JsProperty
+    @JsOverlay
     public String getServicer() {
         return servicer;
     }
+    @JsOverlay
     public void setServicer(String servicer) {
         this.servicer = servicer;
     }
-    @JsProperty
+    @JsOverlay
     public String getTechnicalContact() {
         return technicalContact;
     }
+    @JsOverlay
     public void setTechnicalContact(String technicalContact) {
         this.technicalContact = technicalContact;
     }
-    @JsProperty
+    @JsOverlay
     public String getFurtherInformation() {
         return furtherInformation;
     }
+    @JsOverlay
     public void setFurtherInformation(String furtherInformation) {
         this.furtherInformation = furtherInformation;
     }
-    @JsProperty
+    @JsOverlay
     public String getFurtherMetadata() {
         return furtherMetadata;
     }
+    @JsOverlay
     public void setFurtherMetadata(String furtherMetadata) {
         this.furtherMetadata = furtherMetadata;
     }
-    @JsProperty
+    @JsOverlay
     public String getKnownWMS() {
         return knownWMS;
     }
+    @JsOverlay
     public void setKnownWMS(String knownWMS) {
         this.knownWMS = knownWMS;
     }
-    @JsProperty
+    @JsOverlay
     public String[] getFiles() {
         return files;
     }
+    @JsOverlay    
     public void setFiles(String[] files) {
         this.files = files;
     } 

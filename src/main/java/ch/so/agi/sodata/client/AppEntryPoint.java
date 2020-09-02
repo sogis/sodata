@@ -17,9 +17,12 @@ import org.dominokit.domino.ui.dropdown.DropDownMenu;
 import org.dominokit.domino.ui.forms.SuggestBox.DropDownPositionDown;
 import org.dominokit.domino.ui.forms.SuggestBox;
 import org.dominokit.domino.ui.icons.Icons;
+import org.dominokit.domino.ui.lists.ListGroup;
 import org.dominokit.domino.ui.style.Color;
 import org.dominokit.domino.ui.style.ColorScheme;
+import org.dominokit.domino.ui.style.Styles;
 import org.dominokit.domino.ui.themes.Theme;
+import org.dominokit.domino.ui.utils.TextNode;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.HtmlContentBuilder;
 
@@ -64,6 +67,7 @@ public class AppEntryPoint implements EntryPoint {
     private NumberFormat fmtPercent = NumberFormat.getFormat("#0.0");
         
     Dataset[] datasets;
+    List<Dataset> datasetList;
 
     public void onModuleLoad() {
         settingsService.settingsServer(new AsyncCallback<SettingsResponse>() {
@@ -92,7 +96,9 @@ public class AppEntryPoint implements EntryPoint {
                 })
                 .then(json -> {                    
                     datasets = (Dataset[]) Global.JSON.parse(json);
-                    List<Dataset> datasetList = Arrays.asList(datasets);
+                    datasetList = Arrays.asList(datasets);
+                    
+                    console.log(datasetList.get(0).getEpsgCode());
                     
                     Collections.sort(datasetList, new Comparator<Dataset>() {
                         @Override
@@ -116,14 +122,20 @@ public class AppEntryPoint implements EntryPoint {
     private void init() {         
         Theme theme = new Theme(ColorScheme.RED);
         theme.apply();
+        
+        HTMLElement container = div().id("container").element();
           
         HTMLElement logoDiv = div().id("logo").element();
         HTMLElement logoCanton = div().add(img().attr("src", GWT.getHostPageBaseURL() + "Logo.png")
                 .attr("alt", "Logo Kanton")).element();
         logoDiv.appendChild(logoCanton);
-        body().add(logoDiv);
+        container.appendChild(logoDiv);
 
-        body().add(div().id("title").textContent("Geodaten Kanton Solothurn"));
+        container.appendChild(div().id("title").textContent("Geodaten Kanton Solothurn").element());
+        
+        String infoString = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy <a href='https://geoweb.so.ch/geodaten/index.php'>https://geoweb.so.ch/geodaten/index.php</a> eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+        container.appendChild(div().id("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
+        
         
         SuggestBox suggestBox = SuggestBox.create("Suchbegriff", null);
         suggestBox.addLeftAddOn(Icons.ALL.search());
@@ -134,11 +146,31 @@ public class AppEntryPoint implements EntryPoint {
         DropDownMenu suggestionsMenu = suggestBox.getSuggestionsMenu();
         suggestionsMenu.setPosition(new DropDownPositionDown());
 
-        
         HTMLElement suggestBoxDiv = div().id("suggestBoxDiv").add(suggestBox).element();
-        body().add(div().id("searchPanel").add(div().id("suggestBoxDiv").add(suggestBox)));
-
+        container.appendChild(div().id("searchPanel").add(div().id("suggestBoxDiv").add(suggestBox)).element());
         
+
+        ListGroup<Dataset> listGroup = ListGroup.<Dataset>create()
+                .setBordered(false)
+                .setItemRenderer((listGroup1, listItem) -> {
+                    
+                    HTMLElement datasetLink = a().attr("class", "datasetLink")
+                            .attr("href", listItem.getValue().getId())
+                            .attr("target", "_blank")
+                            .add(TextNode.of(listItem.getValue().getTitle())).element();
+
+                    
+                    listItem.appendChild(div()
+                            .css("datasetList")
+                            //.add(span().textContent(listItem.getValue().getTitle())));                        
+                            .add(datasetLink));                        
+                })
+                .setItems(datasetList);
+        
+        container.appendChild(listGroup.element());
+        
+        
+        body().add(container);
     }
 
    private static native void updateURLWithoutReloading(String newUrl) /*-{

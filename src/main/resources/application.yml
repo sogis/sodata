@@ -34,7 +34,7 @@ app:
           resolutionScope: 500
           publishingDate: 2020-08-29
           lastEditingDate: 2020-08-29
-          title: Administrative Einteilungen der amtlichen Vermessung und des Grundbuchs.
+          title: Administrative Einteilungen der amtlichen Vermessung und des Grundbuchs
           shortDescription: Administrative Einteilungen der amtlichen Vermessung (Nummerierungsbereiche, Adressen der Nachführungsgeometer, ...) und des Grundbuchs (Grundbuchkreise, Adressen der Grundbuchämter, ...).
           keywords: Amtliche Vermessung,Grundbuch,Grundbuchamt,Nachführungsgeometer,Geometer,AGI,AS
           servicer: https://agi.so.ch
@@ -46,6 +46,7 @@ app:
             - xtf
             - gpkg
             - shp
+            - dxf
         - id: ch.so.arp.naturreservate
           version: current
           owner: mailto:agi@bd.so.ch
@@ -54,7 +55,8 @@ app:
           resolutionScope: 500
           publishingDate: 2020-08-29
           lastEditingDate: 2020-08-29
-          title: Kantonale Naturreservate sind durch den Regierungsrat oder einen Gemeinderat unter Schutz gestellte Gebiete.
+          #title: Kantonale Naturreservate sind durch den Regierungsrat oder einen Gemeinderat unter Schutz gestellte Gebiete.
+          title: Kantonale Naturreservate
           shortDescription: Kantonale Naturreservate sind durch den Regierungsrat oder einen Gemeinderat unter Schutz gestellte Gebiete. (Schutzverfügung oder Nutzungsplan). Sie haben die Erhaltung und Aufwertung von Lebensräumen (Biotopen) für Lebensgemeinschaften besonders schützenswerter Tiere, Pflanzen und Pilze und die Bewahrung bedeutender Landschaftsformen, zum Beispiel Schluchten, zum Ziel.
           keywords: Naturreservat,Schutzverfügung,Nutzungsplan,Biotop,schützenswert,ARP
           servicer: https://agi.so.ch
@@ -66,6 +68,7 @@ app:
             - xtf
             - gpkg
             - shp
+            - dxf
         - id: ch.so.awjf.forstreviere
           version: current
           owner: mailto:agi@bd.so.ch
@@ -74,7 +77,7 @@ app:
           resolutionScope: 500
           publishingDate: 2020-08-29
           lastEditingDate: 2020-08-29
-          title: Kantonale Forstreviere und Forstkreise.
+          title: Kantonale Forstreviere und Forstkreise
           shortDescription: Die Forstreviere bestehen aus Waldungen einer oder mehrerer politischen Gemeinden. Die Frostkreise bilden den kantonalen Forstdienst ab.
           keywords: Forst,Forstrevier,Forstkreis,AWJF
           servicer: https://agi.so.ch
@@ -85,7 +88,8 @@ app:
           files:
             - xtf
             - gpkg
-            - shp           
+            - shp  
+            - dxf         
         - id: ch.so.alw.infoflora
           version: current
           owner: mailto:agi@bd.so.ch
@@ -94,7 +98,7 @@ app:
           resolutionScope: 500
           publishingDate: 2020-08-29
           lastEditingDate: 2020-08-29
-          title: Invasive Neophyten.
+          title: Invasive Neophyten
           shortDescription: In Infoflora (www.infoflora.ch) erfassten Bestände von invasiven Neophyten, welche prioritär zu bekämpfen sind. Und weitere Arten.
           keywords: Neophyten,invasiv,Infoflora,ALW
           servicer: https://agi.so.ch

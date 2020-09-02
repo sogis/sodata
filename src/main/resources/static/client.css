@@ -26,32 +26,67 @@ body, div {
     font-weight: 300;	
 }
 
-#logo {
-    margin-top: 10px;
+#container {
     margin-left: auto;
     margin-right: auto;
-    width: 1000px;
+    width: 1200px;
     max-width: 95%;
-    background-color: #FFFFFF;
+    background-color: #FFFFFF;    
+}
+
+#logo {
+    margin-top: 10px;
     font-size: 40px;
     text-align: right;
 }
 
 #title {
     margin-top: 140px;
-    margin-left: auto;
-    margin-right: auto;
-    width: 1000px;
-    max-width: 95%;
-    background-color: #FFFFFF;
     font-size: 40px;
+}
+
+#info {
+    margin-top: 30px;
+    font-size: 15px;
+    font-style: normal;
 }
 
 #searchPanel {
     margin-top: 40px;
-    margin-left: auto;
-    margin-right: auto;
-    width: 1000px;
-    max-width: 95%;
-    background-color: #FFFFFF;
+    margin-bottom: 30px;
 }
+
+a {
+    color: #ef5350;  
+}
+
+a:hover {
+    color: #ef5350;
+    text-decoration: underline !important;
+    text-decoration-thickness: 2px !important;   
+}  
+
+a:visited {
+    color: #ef5350; 
+    text-decoration: underline !important;
+} 
+
+.datasetList {
+    font-size: 17px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    /*margin: -1px -1px 0px -1px;*/    
+}
+
+.datasetLink {
+    color: #333333;  
+}
+
+a.datasetLink:hover {
+    color: #ef5350;
+}  
+
+a.datasetLink:visited {
+    color: #333333; 
+} 
