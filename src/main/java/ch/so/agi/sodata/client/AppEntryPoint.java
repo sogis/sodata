@@ -15,9 +15,14 @@ import org.dominokit.domino.ui.button.Button;
 import org.dominokit.domino.ui.button.ButtonSize;
 import org.dominokit.domino.ui.dropdown.DropDownMenu;
 import org.dominokit.domino.ui.forms.SuggestBox.DropDownPositionDown;
+import org.dominokit.domino.ui.grid.Column;
+import org.dominokit.domino.ui.grid.Row;
 import org.dominokit.domino.ui.forms.SuggestBox;
+import org.dominokit.domino.ui.icons.Icon;
 import org.dominokit.domino.ui.icons.Icons;
+import org.dominokit.domino.ui.icons.MdiIcon;
 import org.dominokit.domino.ui.lists.ListGroup;
+import org.dominokit.domino.ui.modals.ModalDialog;
 import org.dominokit.domino.ui.style.Color;
 import org.dominokit.domino.ui.style.ColorScheme;
 import org.dominokit.domino.ui.style.Styles;
@@ -154,16 +159,36 @@ public class AppEntryPoint implements EntryPoint {
                 .setBordered(false)
                 .setItemRenderer((listGroup1, listItem) -> {
                     
+//                    HTMLElement datasetRow = div().id("datasetRow").element();
+                    
                     HTMLElement datasetLink = a().attr("class", "datasetLink")
-                            .attr("href", listItem.getValue().getId())
-                            .attr("target", "_blank")
+                            //.attr("href", listItem.getValue().getId())
+                            //.attr("target", "_blank")
                             .add(TextNode.of(listItem.getValue().getTitle())).element();
+                    datasetLink.addEventListener("click", event -> {
+                        console.log("fubar");
+                        openDatasetDialog(listItem.getValue());
+                        ModalDialog datasetDialog = createDatasetDialog().large();
+                        datasetDialog.open();
+                    });
+                    
+                    
 
+                    Row datasetRow = Row.create();
+                    datasetRow.appendChild(Column.span11().setContent(datasetLink));
+                    MdiIcon arrow = Icons.ALL.arrow_right_mdi().css("datasetArrow").style().setColor("#ef5350").get();
+                    arrow.addClickListener(event -> {
+                        Window.open("https://geo.so.ch", "_blank", null);
+                    });
+                    datasetRow.appendChild(Column.span1().style().setTextAlign("right").get().setContent(arrow));
+
+                    
                     
                     listItem.appendChild(div()
                             .css("datasetList")
                             //.add(span().textContent(listItem.getValue().getTitle())));                        
-                            .add(datasetLink));                        
+                            //.add(datasetLink));                        
+                            .add(datasetRow));                        
                 })
                 .setItems(datasetList);
         
@@ -172,8 +197,26 @@ public class AppEntryPoint implements EntryPoint {
         
         body().add(container);
     }
+    
+    private void openDatasetDialog(Dataset dataset) {
+        
+    }
+    
+    private ModalDialog createDatasetDialog() {
+        ModalDialog modal = ModalDialog.create("Modal title").setAutoClose(true);
+            modal.appendChild(TextNode.of("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."));
+            Button closeButton = Button.create("CLOSE").linkify();
+            Button saveButton = Button.create("SAVE CHANGES").linkify();
+            EventListener closeModalListener = (evt) -> modal.close();
+            closeButton.addClickListener(closeModalListener);
+            saveButton.addClickListener(closeModalListener);
+//            modal.appendFooterChild(saveButton);
+            modal.appendFooterChild(closeButton);
+            return modal;
+    }
 
-   private static native void updateURLWithoutReloading(String newUrl) /*-{
+
+    private static native void updateURLWithoutReloading(String newUrl) /*-{
         $wnd.history.pushState(newUrl, "", newUrl);
     }-*/;
 }

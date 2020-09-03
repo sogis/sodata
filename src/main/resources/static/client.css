@@ -90,3 +90,17 @@ a.datasetLink:hover {
 a.datasetLink:visited {
     color: #333333; 
 } 
+
+.datasetArrow {
+    cursor: pointer;
+}
+
+.model-header {
+	font-size: 17px !important;
+    color: #333333 !important;	
+}
+
+.modal .modal-content .modal-body {
+	font-size: 15px !important;
+	color: #333333 !important;
+}
