@@ -1,5 +1,8 @@
 # sodata
 
+## TODO
+- Modal via URL (z.B localhost:8080/ch.so.awjf.forstkreise)
+
 ## Development
 
 First Terminal:

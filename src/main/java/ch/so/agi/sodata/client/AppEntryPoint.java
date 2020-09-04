@@ -203,7 +203,9 @@ public class AppEntryPoint implements EntryPoint {
     
     private void openDatasetDialog(Dataset dataset) {
         ModalDialog modal = ModalDialog.create(dataset.getTitle()).setAutoClose(true);
-        
+        modal.style().setMaxHeight("calc(100% - 120px)");
+        modal.style().setOverFlowY("auto");
+
         // Short description
         HTMLElement shortDescription = div().css("modal-body-paragraph").add(TextNode.of(dataset.getShortDescription())).element();
         modal.appendChild(shortDescription);
@@ -259,8 +261,6 @@ public class AppEntryPoint implements EntryPoint {
         String embeddedMap = "<iframe src='https://geo-t.so.ch/api/v1/embed/embed.html?bgLayer=ch.so.agi.hintergrundkarte_sw&layers="+layers+"&layers_opacity="+layersOpacity+"&E=2618000&N=1237800&zoom=5' height='500' style='width: 100%; border:0px solid white;'></iframe>";
         modal.appendChild(div().id("map").css("modal-body-paragraph").innerHtml(SafeHtmlUtils.fromTrustedString(embeddedMap)).element());
         
-        modal.style().setMaxHeight("calc(100% - 120px)");
-        modal.style().setOverFlowY("auto");
         
         // TODO service
         
