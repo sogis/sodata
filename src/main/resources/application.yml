@@ -37,6 +37,7 @@ app:
           title: Administrative Einteilungen der amtlichen Vermessung und des Grundbuchs
           shortDescription: Administrative Einteilungen der amtlichen Vermessung (Nummerierungsbereiche, Adressen der Nachführungsgeometer, ...) und des Grundbuchs (Grundbuchkreise, Adressen der Grundbuchämter, ...).
           keywords: Amtliche Vermessung,Grundbuch,Grundbuchamt,Nachführungsgeometer,Geometer,AGI,AS
+          provider: Amt für Geoinformation (AGI)
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
@@ -47,6 +48,28 @@ app:
             - gpkg
             - shp
             - dxf
+        - id: ch.so.agi.dummy
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822
+          epsgCode: 2056
+          resolutionScope: 500
+          publishingDate: 2020-08-29
+          lastEditingDate: 2020-08-29
+          title: Dummy Dataset
+          shortDescription: Administrative Einteilungen der amtlichen Vermessung (Nummerierungsbereiche, Adressen der Nachführungsgeometer, ...) und des Grundbuchs (Grundbuchkreise, Adressen der Grundbuchämter, ...).
+          keywords: Amtliche Vermessung,Grundbuch,Grundbuchamt,Nachführungsgeometer,Geometer,AGI,AS
+          provider: Amt für Geoinformation (AGI)
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          files:
+            - xtf
+            - gpkg
+            - shp
+            - dxf            
         - id: ch.so.arp.naturreservate
           version: current
           owner: mailto:agi@bd.so.ch
@@ -59,6 +82,7 @@ app:
           title: Kantonale Naturreservate
           shortDescription: Kantonale Naturreservate sind durch den Regierungsrat oder einen Gemeinderat unter Schutz gestellte Gebiete. (Schutzverfügung oder Nutzungsplan). Sie haben die Erhaltung und Aufwertung von Lebensräumen (Biotopen) für Lebensgemeinschaften besonders schützenswerter Tiere, Pflanzen und Pilze und die Bewahrung bedeutender Landschaftsformen, zum Beispiel Schluchten, zum Ziel.
           keywords: Naturreservat,Schutzverfügung,Nutzungsplan,Biotop,schützenswert,ARP
+          provider: Amt für Raumplanung (ARP)          
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: http://geo.so.ch/models/ARP/SO_ARP_Naturreservate_Publikation_20200609.uml
@@ -80,6 +104,7 @@ app:
           title: Kantonale Forstreviere und Forstkreise
           shortDescription: Die Forstreviere bestehen aus Waldungen einer oder mehrerer politischen Gemeinden. Die Frostkreise bilden den kantonalen Forstdienst ab.
           keywords: Forst,Forstrevier,Forstkreis,AWJF
+          provider: Amt für Wald, Jagd und Fischerei (AWJF)          
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: http://geo.so.ch/models/AWJF/SO_Forstreviere_Publikation_20170428.uml
@@ -101,6 +126,7 @@ app:
           title: Invasive Neophyten
           shortDescription: In Infoflora (www.infoflora.ch) erfassten Bestände von invasiven Neophyten, welche prioritär zu bekämpfen sind. Und weitere Arten.
           keywords: Neophyten,invasiv,Infoflora,ALW
+          provider: Amt für Landwirtschaft (ALW)             
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: http://geo.so.ch/models/ALW/SO_ALW_Infoflora_Publikation_20191028.uml

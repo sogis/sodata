@@ -17,6 +17,7 @@ public final class Dataset {
     private String title;
     private String shortDescription;
     private String keywords;
+    private String provider;
     private String servicer;
     private String technicalContact;
     private String furtherInformation;
@@ -103,6 +104,14 @@ public final class Dataset {
     @JsOverlay
     public void setKeywords(String keywords) {
         this.keywords = keywords;
+    }
+    @JsOverlay    
+    public String getProvider() {
+        return provider;
+    }
+    @JsOverlay    
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
     @JsOverlay
     public String getServicer() {

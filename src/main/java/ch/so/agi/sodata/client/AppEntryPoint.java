@@ -146,7 +146,11 @@ public class AppEntryPoint implements EntryPoint {
 
         container.appendChild(div().id("title").textContent("Geodaten Kanton Solothurn").element());
         
-        String infoString = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy <a href='https://geoweb.so.ch/geodaten/index.php'>https://geoweb.so.ch/geodaten/index.php</a> eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+        String infoString = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
+                + "<a href='https://geoweb.so.ch/geodaten/index.php' target='_blank'>https://geoweb.so.ch/geodaten/index.php</a> eirmod "
+                + "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et "
+                + "justo <a href='https://geo.so.ch/geodata' target='_blank'>https://geo.so.ch/geodata</a> "
+                + "duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
         container.appendChild(div().id("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
         
         
@@ -166,12 +170,7 @@ public class AppEntryPoint implements EntryPoint {
         ListGroup<Dataset> listGroup = ListGroup.<Dataset>create()
                 .setBordered(false)
                 .setItemRenderer((listGroup1, listItem) -> {
-                    
-//                    HTMLElement datasetRow = div().id("datasetRow").element();
-                    
                     HTMLElement datasetLink = a().attr("class", "datasetLink")
-                            //.attr("href", listItem.getValue().getId())
-                            //.attr("target", "_blank")
                             .add(TextNode.of(listItem.getValue().getTitle())).element();
                     datasetLink.addEventListener("click", event -> {
                         openDatasetDialog(listItem.getValue());
@@ -187,6 +186,10 @@ public class AppEntryPoint implements EntryPoint {
                             .setBackgroundColor("#ef5350")
                             .get();
                     
+                    button.addClickListener(even -> {
+                        openDatasetDialog(listItem.getValue());
+                    });
+                    
                     datasetRow.appendChild(Column.span1().style().setTextAlign("right").get().setContent(button));
 
                     listItem.appendChild(div()
@@ -197,6 +200,16 @@ public class AppEntryPoint implements EntryPoint {
         
         container.appendChild(listGroup.element());
         
+//        HashMap<String, List<Dataset>> datasetsMap = new HashMap<String, List<Dataset>>();
+//        for (Dataset dataset : datasets) {
+//            if (!datasetsMap.containsKey(dataset.getId())) {
+//                List<Dataset> list = new ArrayList<Dataset>();
+//                list.add(dataset);
+//                datasetsMap.put(dataset.getId(), list);
+//            } else {
+//                datasetsMap.get(dataset.getId()).add(dataset);
+//            }
+//        }
         
         body().add(container);
     }
@@ -218,35 +231,52 @@ public class AppEntryPoint implements EntryPoint {
         modal.appendChild(lastEditingDate);
 
         // Download data
-        Row downloadRow = Row.create();        
-        Column downloadStringColumn = Column.span3();
+        Row selectRow = Row.create();        
         Column downloadSelectColumn = Column.span4();
-       
-        HTMLElement downloadString = div().css("modal-body-paragraph").add(TextNode.of("Datenbezug:")).element();
-        downloadStringColumn.setContent(downloadString); 
-//        downloadRow.addColumn(downloadStringColumn);
-        
+        Column serviceSelectColumn = Column.span4();
+        Column metaSelectColumn = Column.span4();
+               
         Select downloadSelect = Select.create("Download")
             .appendChild(SelectOption.create("-", "Datenformat wählen"))
-            .appendChild(SelectOption.create("value10", "INTERLIS"))
-            .appendChild(SelectOption.create("value20", "GeoPackage"))
-            .appendChild(SelectOption.create("value30", "Shapefile"))
-            .appendChild(SelectOption.create("value40", "DXF"))
+            .appendChild(SelectOption.create("xtf", "INTERLIS"))
+            .appendChild(SelectOption.create("gpkg", "GeoPackage"))
+            .appendChild(SelectOption.create("shp", "Shapefile"))
+            .appendChild(SelectOption.create("dxf", "DXF"))
             .setSearchable(false)
             .selectAt(0);
         downloadSelect.setFocusColor(Color.RED);
         downloadSelectColumn.setContent(downloadSelect);
-        downloadRow.addColumn(downloadSelectColumn);
-//        downloadSelect.blur();
-            
-//        .addSelectionHandler(
-//            (option) -> {
-//              Notification.create("Item selected [ " + option.getValue() + " ]")
-//                  .show();
-//            }))));
-
+        selectRow.addColumn(downloadSelectColumn);
+       
+        downloadSelect.addSelectionHandler((option) -> {
+           console.log(option.getValue().toString()); 
+           String format = option.getValue().toString();
+           if (format.equalsIgnoreCase("-")) return;
+           Window.open("/dataset/"+dataset.getId()+"/format/"+format, "_blank", null);
+        });
         
-        modal.appendChild(downloadRow);
+        Select serviceSelect = Select.create("Services")
+                .appendChild(SelectOption.create("-", "Service wählen"))
+                .appendChild(SelectOption.create("value10", "WMS"))
+                .appendChild(SelectOption.create("value20", "WFS"))
+                .appendChild(SelectOption.create("value30", "Data Service"))
+                .setSearchable(false)
+                .selectAt(0);
+        serviceSelect.setFocusColor(Color.RED);
+        serviceSelectColumn.setContent(serviceSelect);
+        selectRow.addColumn(serviceSelectColumn);
+
+        Select metaSelect = Select.create("Dokumentation")
+                .appendChild(SelectOption.create("-", "Format wählen"))
+                .appendChild(SelectOption.create("value10", "Online (geocat.ch)"))
+                .appendChild(SelectOption.create("value20", "PDF"))
+                .setSearchable(false)
+                .selectAt(0);
+        metaSelect.setFocusColor(Color.RED);
+        metaSelectColumn.setContent(metaSelect);
+        selectRow.addColumn(metaSelectColumn);
+        
+        modal.appendChild(selectRow);
 
         // Show data in map
         String knownWMS = dataset.getKnownWMS();

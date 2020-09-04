@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -29,7 +31,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import ch.so.agi.sodata.shared.Dataset;
 
@@ -87,4 +92,21 @@ public class MainController {
     public List<Dataset> datasets() {
         return config.getDatasets();
     }    
+    
+//    @GetMapping("/datasets/grouped")
+//    public Map<String, List<Dataset>> groupedDatasets() {
+//            Map<String, List<Dataset>> datasetListGrouped = config.getDatasets().stream().collect(Collectors.groupingBy(w -> w.getProvider()));
+//            return datasetListGrouped;
+//    }    
+    
+    @GetMapping("/dataset/{id}/format/{format}") 
+    public RedirectView datset(@PathVariable String id, @PathVariable String format) {
+        log.info(id);
+        log.info(format);
+        
+        RedirectView redirectView = new RedirectView();
+        // TODO: Im wahren Leben steckt die URL im Konfig, da sie unterschiedlich sein kann.
+        redirectView.setUrl("https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata/"+id+"_"+format+".zip");
+        return redirectView;
+    }
 }

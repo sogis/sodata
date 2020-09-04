@@ -2,6 +2,9 @@
 
 ## TODO
 - Modal via URL (z.B localhost:8080/ch.so.awjf.forstkreise)
+- ilidata.xml
+- Lucene Suche
+- group by Amt
 
 ## Development
 
