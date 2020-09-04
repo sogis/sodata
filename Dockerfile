@@ -1,19 +1,21 @@
-FROM adoptopenjdk/openjdk11:latest
+FROM adoptopenjdk:8u262-b10-jre-hotspot as builder
+WORKDIR /home/application
+ARG JAR_FILE=target/sodata-*.jar
+COPY ${JAR_FILE} /home/application.jar
+RUN java -Djarmode=layertools -jar /home/application.jar extract
 
-RUN apt-get update && \
-    apt-get install -y curl
+FROM adoptopenjdk:8u262-b10-jre-hotspot
+WORKDIR /home/application
+COPY --from=builder /home/application/dependencies/ ./
+COPY --from=builder /home/application/spring-boot-loader/ ./
+COPY --from=builder /home/application/snapshot-dependencies/ ./
+COPY --from=builder /home/application/application ./
 
-EXPOSE 8080
-
-WORKDIR /home/wgc
-
-ARG JAR_FILE
-COPY ${JAR_FILE} /home/wgc/app.jar
-RUN chown -R 1001:0 /home/wgc && \
-    chmod -R g=u /home/wgc
+RUN chown -R 1001:0 /home/application && \
+    chmod -R g=u /home/application
 
 USER 1001
 
-ENTRYPOINT ["java","-XX:MaxRAMPercentage=80.0","-Djava.security.egd=file:/dev/./urandom","-jar","/home/wgc/app.jar"]
+ENTRYPOINT ["java" ,"-XX:MaxRAMPercentage=80.0", "-noverify", "-XX:TieredStopAtLevel=1", "org.springframework.boot.loader.JarLauncher"]
 
-HEALTHCHECK --interval=30s --timeout=30s --start-period=60s CMD curl http://localhost:8080/actuator/health
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD curl http://localhost:8080/actuator/health

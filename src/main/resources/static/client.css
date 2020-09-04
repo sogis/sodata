@@ -31,7 +31,7 @@ body, div {
     margin-right: auto;
     width: 1200px;
     max-width: 95%;
-    background-color: #FFFFFF;    
+    background-color: #FFFFFF;        
 }
 
 #logo {
@@ -81,6 +81,7 @@ a:visited {
 
 .datasetLink {
     color: #333333;  
+    vertical-align: middle;
 }
 
 a.datasetLink:hover {
@@ -103,4 +104,13 @@ a.datasetLink:visited {
 .modal .modal-content .modal-body {
 	font-size: 15px !important;
 	color: #333333 !important;
+}
+
+.modal-body-paragraph {
+	padding-bottom: 15px;
+}
+
+#modalContainer {
+	overflow-y: auto;
+	
 }

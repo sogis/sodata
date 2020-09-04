@@ -17,7 +17,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
-    <gwtVersion>2.8.2</gwtVersion>
+    <gwtVersion>2.9.0</gwtVersion>
     <serverPort>8080</serverPort>
   </properties>
   <dependencyManagement>
@@ -70,6 +70,8 @@
       <version>1.0-SNAPSHOT</version>
       <classifier>sources</classifier>
     </dependency>
+
+    
     <dependency>
       <groupId>com.github.tdesjardins</groupId>
       <artifactId>gwt-ol3</artifactId>
@@ -125,11 +127,18 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
           <jvmArguments>-Dserver.port=${serverPort}</jvmArguments>
+          <layers>
+            <enabled>true</enabled>
+          </layers>          
           <excludes>
             <exclude>
               <groupId>org.eclipse.jetty</groupId>
               <artifactId>jetty-server</artifactId>
             </exclude>
+            <exclude>
+              <groupId>org.mortbay.jasper</groupId>
+              <artifactId>apache-jsp</artifactId>
+            </exclude>            
           </excludes>
         </configuration>
       </plugin>

@@ -41,7 +41,7 @@ app:
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
           furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
-          knownWMS: https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
           files:
             - xtf
             - gpkg
@@ -63,7 +63,7 @@ app:
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: http://geo.so.ch/models/ARP/SO_ARP_Naturreservate_Publikation_20200609.uml
           furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
-          knownWMS: https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.arp.naturreservate.teilgebiete%2Cch.so.arp.naturreservate.reservate&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255%2C255&t=292&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.arp.naturreservate.teilgebiete%2Cch.so.arp.naturreservate.reservate&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255%2C255&t=292&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321'
           files:
             - xtf
             - gpkg
@@ -84,7 +84,7 @@ app:
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: http://geo.so.ch/models/AWJF/SO_Forstreviere_Publikation_20170428.uml
           furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
-          knownWMS: https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.arp.naturreservate.teilgebiete%2Cch.so.arp.naturreservate.reservate&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255%2C255&t=292&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.awjf.forstreviere.forstreviere%2Cch.so.awjf.forstreviere.forstkreis&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255%2C255&t=292&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C265832'
           files:
             - xtf
             - gpkg
@@ -105,7 +105,7 @@ app:
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: http://geo.so.ch/models/ALW/SO_ALW_Infoflora_Publikation_20191028.uml
           furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
-          knownWMS: SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.alw.neophyten_infoflora.weitere_wichtige_arten%2Cch.so.alw.neophyten_infoflora.prioritaere_arten&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255%2C255&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.alw.neophyten_infoflora.weitere_wichtige_arten%2Cch.so.alw.neophyten_infoflora.prioritaere_arten&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255%2C255&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
           files:
             - xtf
             - gpkg

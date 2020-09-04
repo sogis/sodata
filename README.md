@@ -19,5 +19,5 @@ mvn gwt:generate-module gwt:devmode
 
 Build fat jar and docker image:
 ```
-TRAVIS_BUILD_NUMBER=9999 mvn package
+BUILD_NUMBER=9999 mvn clean package
 ```
