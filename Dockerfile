@@ -5,6 +5,7 @@ COPY ${JAR_FILE} /home/application.jar
 RUN java -Djarmode=layertools -jar /home/application.jar extract
 
 FROM adoptopenjdk:8u262-b10-jre-hotspot
+EXPOSE 8080
 WORKDIR /home/application
 COPY --from=builder /home/application/dependencies/ ./
 COPY --from=builder /home/application/spring-boot-loader/ ./
