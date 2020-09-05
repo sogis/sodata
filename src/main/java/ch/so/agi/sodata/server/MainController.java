@@ -91,7 +91,7 @@ public class MainController {
         log.info(format);
         
         RedirectView redirectView = new RedirectView();
-        // TODO: Im wahren Leben steckt die URL im Konfig, da sie unterschiedlich sein kann.
+        // TODO: Im wahren Leben steckt die URL in der Konfig, da sie unterschiedlich sein kann.
         redirectView.setUrl("https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata/"+id+"_"+format+".zip");
         return redirectView;
     }
