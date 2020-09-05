@@ -28,6 +28,7 @@ import org.apache.lucene.document.Field.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +37,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
+import ch.so.agi.sodata.server.search.InvalidLuceneQueryException;
+import ch.so.agi.sodata.server.search.LuceneSearcher;
+import ch.so.agi.sodata.server.search.LuceneSearcherException;
+import ch.so.agi.sodata.server.search.Result;
 import ch.so.agi.sodata.shared.Dataset;
 
 
@@ -46,46 +51,27 @@ public class MainController {
     @Autowired
     private AppConfig config;
     
-    Directory memoryIndex;
-    StandardAnalyzer analyzer;
+    @Autowired
+    private LuceneSearcher indexSearcher;
     
-    @PostConstruct
-    public void init() throws IOException {
-        log.info("** execute once only");
-        
-        memoryIndex = new MMapDirectory(Paths.get(System.getProperty("java.io.tmpdir")));
-        analyzer = new StandardAnalyzer();
-        IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
-        IndexWriter writter = new IndexWriter(memoryIndex, indexWriterConfig);
-        Document document = new Document();
-         
-        document.add(new TextField("title", "Ich bin der Titel.", Store.YES));
-        document.add(new TextField("body", "Some hello world", Store.YES));
-         
-        writter.addDocument(document);
-        writter.close();
-    }
+    @Value("${lucene.query.default.records:10}")
+    private Integer QUERY_DEFAULT_RECORDS;
+
+    @Value("${lucene.query.max.records:50}")
+    private Integer QUERY_MAX_RECORDS;    
     
     @GetMapping("/ping")
-    public ResponseEntity<String> ping() throws ParseException, IOException {
-        for (Dataset dataset : config.getDatasets()) {
-            log.info(dataset.getId());
-        }
-        
-        Query query = new QueryParser("body", analyzer).parse("world");
-        
-        IndexReader indexReader = DirectoryReader.open(memoryIndex);
-        IndexSearcher searcher = new IndexSearcher(indexReader);
-        TopDocs topDocs = searcher.search(query, 10);
-        List<Document> documents = new ArrayList<>();
-        for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
-            documents.add(searcher.doc(scoreDoc.doc));
-        }
+    public ResponseEntity<String> ping() throws ParseException, IOException, LuceneSearcherException, InvalidLuceneQueryException {
+        String query = "ch.so.agi kant natur";
+        Result results = indexSearcher.searchIndex(query, QUERY_DEFAULT_RECORDS, false);
+        log.info("Search for '" + query +"' found " + results.getAvailable() + " and retrieved " + results.getRetrieved() + " records");
 
-        log.info("******"+documents.get(0).toString());
-        
-        log.info("sodata");
         return new ResponseEntity<String>("sodata", HttpStatus.OK);
+    }
+    
+    @GetMapping("/search")
+    public void search(@RequestParam(value="query", required=true) String queryString) {
+        log.info("queryString: " + queryString);
     }
    
     @GetMapping("/datasets")
