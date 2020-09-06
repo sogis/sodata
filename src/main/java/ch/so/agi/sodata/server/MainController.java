@@ -70,20 +70,36 @@ public class MainController {
     }
     
     @GetMapping("/search")
-    public void search(@RequestParam(value="query", required=true) String queryString) {
+    public List<Dataset> search(@RequestParam(value="query", required=true) String queryString) {
         log.info("queryString: " + queryString);
+        
+        Result results = null;
+        try {
+            results = indexSearcher.searchIndex(queryString, QUERY_DEFAULT_RECORDS, false);
+            log.info("Search for '" + queryString +"' found " + results.getAvailable() + " and retrieved " + results.getRetrieved() + " records");            
+        } catch (LuceneSearcherException | InvalidLuceneQueryException e) {
+            throw new IllegalStateException(e);
+        }
+
+        List<Map<String, String>> records = results.getRecords();
+        List<Dataset> resultList = records.stream()
+                .map(r -> {
+                    // TODO: Wenn die config eine Map wäre, könnte man das Dataset dort requesten.
+                    // Oder reicht es im Client?
+                    Dataset ds = new Dataset();
+                    ds.setId(r.get("id"));
+                    ds.setTitle(r.get("title"));
+                    return ds;
+                })
+                .collect(Collectors.toList());
+             
+        return resultList;
     }
    
     @GetMapping("/datasets")
     public List<Dataset> datasets() {
         return config.getDatasets();
     }    
-    
-//    @GetMapping("/datasets/grouped")
-//    public Map<String, List<Dataset>> groupedDatasets() {
-//            Map<String, List<Dataset>> datasetListGrouped = config.getDatasets().stream().collect(Collectors.groupingBy(w -> w.getProvider()));
-//            return datasetListGrouped;
-//    }    
     
     @GetMapping("/dataset/{id}/format/{format}") 
     public RedirectView datset(@PathVariable String id, @PathVariable String format) {

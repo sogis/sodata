@@ -6,7 +6,7 @@ body {
 
 body, div {
     /*font-family: 'Fira Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
-    font-family: 'Noto Sans JP', 'Barlow', 'Fira Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif
+    font-family: 'Noto Sans JP', 'Barlow', 'Fira Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: 300;
 }
 
@@ -25,6 +25,10 @@ body, div {
 	font-size: 12px;
     font-weight: 300;	
 }
+
+.dropdown-menu>li>a {
+	font-weight: 300;
+} 
 
 #container {
     margin-left: auto;

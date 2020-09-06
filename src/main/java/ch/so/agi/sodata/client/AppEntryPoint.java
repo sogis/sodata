@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.dominokit.domino.ui.button.Button;
@@ -18,6 +19,8 @@ import org.dominokit.domino.ui.button.ButtonSize;
 import org.dominokit.domino.ui.chips.Chip;
 import org.dominokit.domino.ui.dropdown.DropDownMenu;
 import org.dominokit.domino.ui.forms.SuggestBox.DropDownPositionDown;
+import org.dominokit.domino.ui.forms.SuggestBoxStore;
+import org.dominokit.domino.ui.forms.SuggestItem;
 import org.dominokit.domino.ui.grid.Column;
 import org.dominokit.domino.ui.grid.Row;
 import org.dominokit.domino.ui.forms.Select;
@@ -62,6 +65,8 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.Headers;
 import elemental2.dom.RequestInit;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import ol.Coordinate;
 import ol.Map;
 import ol.MapBrowserEvent;
@@ -154,7 +159,57 @@ public class AppEntryPoint implements EntryPoint {
         container.appendChild(div().id("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
         
         
-        SuggestBox suggestBox = SuggestBox.create("Suchbegriff", null);
+        SuggestBoxStore dynamicStore = new SuggestBoxStore() {
+
+            @Override
+            public void filter(String value, SuggestionsHandler suggestionsHandler) {
+                if (value.trim().length() == 0) {
+                    return;
+                }
+                
+                RequestInit requestInit = RequestInit.create();
+                Headers headers = new Headers();
+                // TODO: notwendig? Bin auf dem gleichen Server.
+                headers.append("Content-Type", "application/x-www-form-urlencoded"); 
+                requestInit.setHeaders(headers);
+
+                DomGlobal.fetch("/search?query=" + value.trim().toLowerCase(), requestInit)
+                .then(response -> {
+                    if (!response.ok) {
+                        return null;
+                    }
+                    return response.text();
+                })
+                .then(json -> {
+                    Dataset[] searchResults = (Dataset[]) Global.JSON.parse(json);
+                    List<Dataset> searchResultList = Arrays.asList(datasets);
+                    
+                    List<SuggestItem<Dataset>> suggestItems = new ArrayList<>();
+                    for (Dataset dataset : searchResults) {
+                      SuggestItem<Dataset> suggestItem = SuggestItem.create(dataset, dataset.getTitle(), null);
+                      suggestItems.add(suggestItem);
+                    }
+                    suggestionsHandler.onSuggestionsReady(suggestItems);
+                    return null;
+                }).catch_(error -> {
+                    console.log(error);
+                    return null;
+                });
+            }
+
+            @Override
+            public void find(Object searchValue, Consumer handler) {
+                if (searchValue == null) {
+                    return;
+                }
+                Dataset searchResult = (Dataset) searchValue;
+                SuggestItem<Dataset> suggestItem = SuggestItem.create(searchResult, null);
+                handler.accept(suggestItem);
+            }
+        };
+
+        
+        SuggestBox suggestBox = SuggestBox.create("Suchbegriff", dynamicStore);
         suggestBox.addLeftAddOn(Icons.ALL.search());
         suggestBox.setAutoSelect(false);
         suggestBox.setFocusColor(Color.RED);

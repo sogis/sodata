@@ -111,11 +111,13 @@ public class LuceneSearcher {
                 String token = splitedQuery[i];
                 // Das Feld, welches bestimmend sein soll (also in der Suche zuoberst gelistet), bekommt
                 // einen sehr hohen Boost.
-                luceneQueryString += "id:" + token + "*^100 OR title:" + token + "*";
+                luceneQueryString += "(id:" + token + "*^100 OR title:" + token + "*)";
                 if (i<splitedQuery.length-1) {
-                    luceneQueryString += " OR ";
+                    luceneQueryString += " AND ";
                 }
             }
+            
+            //luceneQueryString = "(id:kant*^100 OR title:kant*) AND (id:natur*^100 OR title:natur*)";
             
             query = queryParser.parse(luceneQueryString);
             log.info("'" + luceneQueryString + "' ==> '" + query.toString() + "'");
