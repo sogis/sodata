@@ -10,6 +10,7 @@ public final class Dataset {
     private String id;
     private String version;
     private String owner;
+    private String model;
     private String epsgCode;
     private String resolutionScope;
     private String publishingDate;
@@ -48,6 +49,14 @@ public final class Dataset {
     @JsOverlay
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+    @JsOverlay    
+    public String getModel() {
+        return model;
+    }
+    @JsOverlay
+    public void setModel(String model) {
+        this.model = model;
     }
     @JsOverlay    
     public String getEpsgCode() {

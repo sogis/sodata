@@ -36,6 +36,7 @@ import org.dominokit.domino.ui.style.ColorScheme;
 import org.dominokit.domino.ui.style.StyleType;
 import org.dominokit.domino.ui.style.Styles;
 import org.dominokit.domino.ui.themes.Theme;
+import org.dominokit.domino.ui.utils.HasSelectionHandler.SelectionHandler;
 import org.dominokit.domino.ui.utils.TextNode;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.HtmlContentBuilder;
@@ -115,9 +116,7 @@ public class AppEntryPoint implements EntryPoint {
                 .then(json -> {                    
                     datasets = (Dataset[]) Global.JSON.parse(json);
                     datasetList = Arrays.asList(datasets);
-                    
-                    console.log(datasetList.get(0).getEpsgCode());
-                    
+                   
                     Collections.sort(datasetList, new Comparator<Dataset>() {
                         @Override
                         public int compare(Dataset o1, Dataset o2) {
@@ -158,9 +157,7 @@ public class AppEntryPoint implements EntryPoint {
                 + "duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
         container.appendChild(div().id("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
         
-        
         SuggestBoxStore dynamicStore = new SuggestBoxStore() {
-
             @Override
             public void filter(String value, SuggestionsHandler suggestionsHandler) {
                 if (value.trim().length() == 0) {
@@ -218,10 +215,24 @@ public class AppEntryPoint implements EntryPoint {
         DropDownMenu suggestionsMenu = suggestBox.getSuggestionsMenu();
         suggestionsMenu.setPosition(new DropDownPositionDown());
 
+        suggestBox.addSelectionHandler(new SelectionHandler() {
+            @Override
+            public void onSelection(Object value) {
+                SuggestItem<Dataset> item = (SuggestItem<Dataset>) value;
+
+                // TODO: we need a Map...
+                for (Dataset ds : datasetList) {
+                    if (ds.getId().equalsIgnoreCase(item.getValue().getId())) {
+                        openDatasetDialog(ds);
+                        return;
+                    }
+                }
+            }
+        });
+        
         HTMLElement suggestBoxDiv = div().id("suggestBoxDiv").add(suggestBox).element();
         container.appendChild(div().id("searchPanel").add(div().id("suggestBoxDiv").add(suggestBox)).element());
         
-
         ListGroup<Dataset> listGroup = ListGroup.<Dataset>create()
                 .setBordered(false)
                 .setItemRenderer((listGroup1, listItem) -> {
@@ -254,17 +265,6 @@ public class AppEntryPoint implements EntryPoint {
                 .setItems(datasetList);
         
         container.appendChild(listGroup.element());
-        
-//        HashMap<String, List<Dataset>> datasetsMap = new HashMap<String, List<Dataset>>();
-//        for (Dataset dataset : datasets) {
-//            if (!datasetsMap.containsKey(dataset.getId())) {
-//                List<Dataset> list = new ArrayList<Dataset>();
-//                list.add(dataset);
-//                datasetsMap.put(dataset.getId(), list);
-//            } else {
-//                datasetsMap.get(dataset.getId()).add(dataset);
-//            }
-//        }
         
         body().add(container);
     }
@@ -345,10 +345,7 @@ public class AppEntryPoint implements EntryPoint {
         layersOpacity = layersOpacity.substring(0, layersOpacity.length() - 1);
         String embeddedMap = "<iframe src='https://geo-t.so.ch/api/v1/embed/embed.html?bgLayer=ch.so.agi.hintergrundkarte_sw&layers="+layers+"&layers_opacity="+layersOpacity+"&E=2618000&N=1237800&zoom=5' height='500' style='width: 100%; border:0px solid white;'></iframe>";
         modal.appendChild(div().id("map").css("modal-body-paragraph").innerHtml(SafeHtmlUtils.fromTrustedString(embeddedMap)).element());
-        
-        
-        // TODO service
-        
+
         Row chipRow = Row.create();
         Column chipColumn = Column.span12();
         String[] keywords = dataset.getKeywords().split(",");
