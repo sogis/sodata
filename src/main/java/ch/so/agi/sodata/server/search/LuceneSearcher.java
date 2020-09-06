@@ -111,7 +111,7 @@ public class LuceneSearcher {
                 String token = splitedQuery[i];
                 // Das Feld, welches bestimmend sein soll (also in der Suche zuoberst gelistet), bekommt
                 // einen sehr hohen Boost.
-                luceneQueryString += "(id:" + token + "*^100 OR title:" + token + "*)";
+                luceneQueryString += "(id:" + token + "*^100 OR title:" + token + "*^10 OR shortdescription:" + token + "*)";
                 if (i<splitedQuery.length-1) {
                     luceneQueryString += " AND ";
                 }
