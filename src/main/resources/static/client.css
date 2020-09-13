@@ -11,7 +11,12 @@ body, div {
 }
 
 #map {
+	/*margin-top: 30px;*/
     height: 100%;
+}
+
+#map-plus-row {
+    margin-top: 30px;
 }
 
 .field-group input, .field-group textarea {
@@ -38,24 +43,28 @@ body, div {
     background-color: #FFFFFF;        
 }
 
-#logo {
+.logo {
     margin-top: 10px;
     font-size: 40px;
     text-align: right;
 }
 
-#title {
-    margin-top: 140px;
+.breadcrumb {
+    padding: 0px !important;	
+}
+
+.sodata-title {
+    margin-top: 120px;
     font-size: 40px;
 }
 
-#info {
+.info {
     margin-top: 30px;
     font-size: 15px;
     font-style: normal;
 }
 
-#searchPanel {
+#search-panel {
     margin-top: 40px;
     margin-bottom: 30px;
 }
@@ -75,7 +84,7 @@ a:visited {
     text-decoration: underline !important;
 } 
 
-.datasetList {
+.dataset-list {
     font-size: 17px;
     border-bottom: 1px solid #e0e0e0;
     padding-top: 15px;
@@ -83,16 +92,16 @@ a:visited {
     /*margin: -1px -1px 0px -1px;*/    
 }
 
-.datasetLink {
+.dataset-link {
     color: #333333;  
     vertical-align: middle;
 }
 
-a.datasetLink:hover {
+a.dataset-link:hover {
     color: #ef5350;
 }  
 
-a.datasetLink:visited {
+a.dataset-link:visited {
     color: #333333; 
 } 
 
@@ -116,5 +125,8 @@ a.datasetLink:visited {
 
 #modalContainer {
 	overflow-y: auto;
-	
+}
+
+.theme-red .menu:not([class*="bg-"]) .list li.active > :first-child i {
+    color: rgb(116, 116, 116) !important;
 }

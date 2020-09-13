@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.dominokit.domino.ui.breadcrumbs.Breadcrumb;
 import org.dominokit.domino.ui.button.Button;
 import org.dominokit.domino.ui.button.ButtonSize;
 import org.dominokit.domino.ui.chips.Chip;
@@ -31,11 +32,16 @@ import org.dominokit.domino.ui.icons.Icons;
 import org.dominokit.domino.ui.icons.MdiIcon;
 import org.dominokit.domino.ui.lists.ListGroup;
 import org.dominokit.domino.ui.modals.ModalDialog;
+import org.dominokit.domino.ui.notifications.Notification;
 import org.dominokit.domino.ui.style.Color;
 import org.dominokit.domino.ui.style.ColorScheme;
 import org.dominokit.domino.ui.style.StyleType;
 import org.dominokit.domino.ui.style.Styles;
+import org.dominokit.domino.ui.style.WaveColor;
 import org.dominokit.domino.ui.themes.Theme;
+import org.dominokit.domino.ui.tree.ToggleTarget;
+import org.dominokit.domino.ui.tree.Tree;
+import org.dominokit.domino.ui.tree.TreeItem;
 import org.dominokit.domino.ui.utils.HasSelectionHandler.SelectionHandler;
 import org.dominokit.domino.ui.utils.TextNode;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
@@ -85,6 +91,9 @@ public class AppEntryPoint implements EntryPoint {
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
     private NumberFormat fmtPercent = NumberFormat.getFormat("#0.0");
         
+    HTMLElement container;
+    HTMLElement topLevelContent;
+    HTMLElement datasetContent;
     Dataset[] datasets;
     List<Dataset> datasetList;
 
@@ -140,22 +149,35 @@ public class AppEntryPoint implements EntryPoint {
         Theme theme = new Theme(ColorScheme.RED);
         theme.apply();
         
-        HTMLElement container = div().id("container").element();
+        container = div().id("container").element();
           
-        HTMLElement logoDiv = div().id("logo").element();
+        HTMLElement logoDiv = div().css("logo").element();
         HTMLElement logoCanton = div().add(img().attr("src", GWT.getHostPageBaseURL() + "Logo.png")
                 .attr("alt", "Logo Kanton")).element();
         logoDiv.appendChild(logoCanton);
         container.appendChild(logoDiv);
+        
+        topLevelContent = div().id("top-level-content").element();
 
-        container.appendChild(div().id("title").textContent("Geodaten Kanton Solothurn").element());
+        // Breadcrumb
+        Breadcrumb breadcrumb = Breadcrumb.create()
+        .appendChild(Icons.ALL.home()," Home ", (evt) -> {
+            Window.open("https://geo.so.ch/", "_blank", null);
+        })
+        .appendChild(" Geodaten ", (evt) -> {});
+        topLevelContent.appendChild(breadcrumb.element());
+
+        
+        topLevelContent.appendChild(div().css("sodata-title").textContent("Geodaten Kanton Solothurn").element());
+//        container.appendChild(div().css("sodata-title").textContent("Geodaten Kanton Solothurn").element());
         
         String infoString = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
                 + "<a href='https://geoweb.so.ch/geodaten/index.php' target='_blank'>https://geoweb.so.ch/geodaten/index.php</a> eirmod "
                 + "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et "
                 + "justo <a href='https://geo.so.ch/geodata' target='_blank'>https://geo.so.ch/geodata</a> "
                 + "duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
-        container.appendChild(div().id("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
+        topLevelContent.appendChild(div().css("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
+//        container.appendChild(div().id("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
         
         SuggestBoxStore dynamicStore = new SuggestBoxStore() {
             @Override
@@ -220,7 +242,7 @@ public class AppEntryPoint implements EntryPoint {
             public void onSelection(Object value) {
                 SuggestItem<Dataset> item = (SuggestItem<Dataset>) value;
 
-                // TODO: we need a Map...
+                // TODO: we need a Map instead of a List...
                 for (Dataset ds : datasetList) {
                     if (ds.getId().equalsIgnoreCase(item.getValue().getId())) {
                         openDatasetDialog(ds);
@@ -230,16 +252,18 @@ public class AppEntryPoint implements EntryPoint {
             }
         });
         
-        HTMLElement suggestBoxDiv = div().id("suggestBoxDiv").add(suggestBox).element();
-        container.appendChild(div().id("searchPanel").add(div().id("suggestBoxDiv").add(suggestBox)).element());
+        topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(suggestBox)).element());
+//        container.appendChild(div().id("searchPanel").add(div().id("suggestBoxDiv").add(suggestBox)).element());
         
         ListGroup<Dataset> listGroup = ListGroup.<Dataset>create()
                 .setBordered(false)
                 .setItemRenderer((listGroup1, listItem) -> {
-                    HTMLElement datasetLink = a().attr("class", "datasetLink")
+                    HTMLElement datasetLink = a().attr("class", "dataset-link")
                             .add(TextNode.of(listItem.getValue().getTitle())).element();
                     datasetLink.addEventListener("click", event -> {
-                        openDatasetDialog(listItem.getValue());
+                        //openDatasetDialog(listItem.getValue());
+                        
+                        showDatasetDetail(listItem.getValue());
                     });
                     
                     Row datasetRow = Row.create();
@@ -259,15 +283,136 @@ public class AppEntryPoint implements EntryPoint {
                     datasetRow.appendChild(Column.span1().style().setTextAlign("right").get().setContent(button));
 
                     listItem.appendChild(div()
-                            .css("datasetList")
+                            .css("dataset-list")
                             .add(datasetRow));                        
                 })
                 .setItems(datasetList);
         
-        container.appendChild(listGroup.element());
+        topLevelContent.appendChild(listGroup.element());
+//        container.appendChild(listGroup.element());
         
+        container.appendChild(topLevelContent);
         body().add(container);
     }
+    
+    private void showDatasetDetail(Dataset dataset) {
+        topLevelContent.hidden = true;
+        
+        datasetContent = div().id("dataset-content").element();
+        
+        // Breadcrumb
+        Breadcrumb breadcrumb = Breadcrumb.create()
+        .appendChild(Icons.ALL.home()," Home ", (evt) -> {
+            Window.open("https://geo.so.ch/", "_blank", null);
+        })
+        .appendChild(" Geodaten ", (evt) -> {
+            showHome();
+        })
+        .appendChild(" "+dataset.getTitle()+" ", (evt) -> {});
+        datasetContent.appendChild(breadcrumb.element());
+        
+        // Title of dataset
+        datasetContent.appendChild(div().css("sodata-title").textContent(dataset.getTitle()).element());
+        
+        // Short description
+        datasetContent.appendChild(div().css("info").textContent(dataset.getShortDescription()).element());
+
+        // Last editing date
+        Date date = DateTimeFormat.getFormat("yyyy-MM-dd").parse(dataset.getLastEditingDate());
+        HTMLElement lastEditingDate = div().css("info").add(TextNode.of(
+                "Stand der Daten: " + DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_LONG).format(date)))
+                .element();
+        datasetContent.appendChild(lastEditingDate);
+        
+        // The row which contains the map and the trees
+        Row mapPlusRow = Row.create();
+        mapPlusRow.setId("map-plus-row");
+        
+        // Show dataset in map
+        Column mapColumn = Column.span10();
+        
+        String knownWMS = dataset.getKnownWMS();
+        HashMap<String,String> queryParams = this.getUrlValues(knownWMS);
+        String layers = queryParams.get("LAYERS");
+        // TODO: make this optional in gwt-wgc-embed ?
+        String layersOpacity = "";
+        for (String layer : layers.split(",")) {
+            layersOpacity += "1,";
+        }
+        layersOpacity = layersOpacity.substring(0, layersOpacity.length() - 1);
+        String embeddedMap = "<iframe src='https://geo-t.so.ch/api/v1/embed/embed.html?bgLayer=ch.so.agi.hintergrundkarte_sw&layers="+layers+"&layers_opacity="+layersOpacity+"&E=2618000&N=1237800&zoom=5' height='600' style='width: 100%; border:2px solid purple;'></iframe>";
+//        <iframe src='https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-grau&layers=WMS%7C%7CNeophyten%7C%7Chttps:%2F%2Fgeo.so.ch%2Fapi%2Fwms%3F%7C%7Cch.so.alw.neophyten_infoflora%7C%7C1.3.0&E=2623864.23&N=1238040.08&zoom=3' width='800' height='600' frameborder='0' style='border:0'></iframe>
+        mapColumn.appendChild(div().id("map").css("modal-body-paragraph").innerHtml(SafeHtmlUtils.fromTrustedString(embeddedMap)).element());
+        mapPlusRow.appendChild(mapColumn);
+//        datasetContent.appendChild(div().id("map").css("modal-body-paragraph").innerHtml(SafeHtmlUtils.fromTrustedString(embeddedMap)).element());
+
+        // Data download and services
+        Row fileTreesRow = Row.create();
+        fileTreesRow.setId("file-trees-row");
+
+        Tree downloadTree =
+                Tree.create("Download")
+                    .setToggleTarget(ToggleTarget.ICON)
+                    .appendChild(
+                        TreeItem.create("INTERLIS/XTF", Icons.ALL.file_download_mdi()).removeWaves()
+                            .addClickListener((evt) -> Notification.create("INTERLIS").show()))
+                    .appendChild(
+                        TreeItem.create("GeoPackage", Icons.ALL.file_download_mdi()).removeWaves()
+                           .addClickListener((evt) -> Notification.create("GeoPackage").show()))
+                    .appendChild(
+                        TreeItem.create("Shapefile", Icons.ALL.file_download_mdi()).removeWaves()
+                           .addClickListener((evt) -> Notification.create("Shapefile").show()))
+                    .appendChild(
+                        TreeItem.create("DXF", Icons.ALL.file_download_mdi()).removeWaves()
+                            .addClickListener((evt) -> Notification.create("DXF").show()));
+        Column downloadColumn = Column.span12();
+        downloadColumn.appendChild(downloadTree.element());
+        fileTreesRow.appendChild(downloadColumn);
+        
+        Tree serviceTree =
+                Tree.create("Dienste")
+                    .setToggleTarget(ToggleTarget.ICON)
+                    .appendChild(
+                        TreeItem.create("WMS", Icons.ALL.map()).removeWaves()
+                           .addClickListener((evt) -> Notification.create("WMS").show()))
+                    .appendChild(
+                        TreeItem.create("WFS", Icons.ALL.file_download()).removeWaves()
+                           .addClickListener((evt) -> Notification.create("WFS").show()))
+                    .appendChild(
+                        TreeItem.create("Data service", Icons.ALL.file_download()).removeWaves()
+                            .addClickListener((evt) -> Notification.create("Cloud").show()));
+        Column serviceColumn = Column.span12();
+        serviceColumn.appendChild(serviceTree.element());
+        fileTreesRow.appendChild(serviceColumn);
+
+        Column fileTreesColumn = Column.span2();
+        fileTreesColumn.appendChild(fileTreesRow);
+        
+        mapPlusRow.appendChild(fileTreesColumn);
+        datasetContent.appendChild(mapPlusRow.element());
+        
+        // Keywords        
+        Row chipRow = Row.create();
+        Column chipColumn = Column.span12();
+        String[] keywords = dataset.getKeywords().split(",");
+        for (String keyword : keywords) {
+            chipColumn.appendChild(Chip.create()
+                    .setValue(keyword)
+                    .setColor(Color.GREY_LIGHTEN_1));
+            
+        }
+        chipRow.appendChild(chipColumn);
+        datasetContent.appendChild(div().css("info").add(chipRow.element()).element());
+
+        container.appendChild(datasetContent);
+    }
+    
+    private void showHome() {
+        datasetContent.innerHTML = "";
+        datasetContent.hidden = true;
+        topLevelContent.hidden = false;
+    }
+    
     
     private void openDatasetDialog(Dataset dataset) {
         ModalDialog modal = ModalDialog.create(dataset.getTitle()).setAutoClose(true);
