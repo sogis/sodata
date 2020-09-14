@@ -340,7 +340,7 @@ public class AppEntryPoint implements EntryPoint {
             layersOpacity += "1,";
         }
         layersOpacity = layersOpacity.substring(0, layersOpacity.length() - 1);
-        String embeddedMap = "<iframe src='https://geo-t.so.ch/api/v1/embed/embed.html?bgLayer=ch.so.agi.hintergrundkarte_sw&layers="+layers+"&layers_opacity="+layersOpacity+"&E=2618000&N=1237800&zoom=5' height='600' style='width: 100%; border:2px solid purple;'></iframe>";
+        String embeddedMap = "<iframe src='https://geo-t.so.ch/api/embed/v1/embed.html?bgLayer=ch.so.agi.hintergrundkarte_sw&layers="+layers+"&layers_opacity="+layersOpacity+"&E=2620000&N=1237800&zoom=5' height='600' style='width: 100%; border:0px solid white;'></iframe>";
 //        <iframe src='https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-grau&layers=WMS%7C%7CNeophyten%7C%7Chttps:%2F%2Fgeo.so.ch%2Fapi%2Fwms%3F%7C%7Cch.so.alw.neophyten_infoflora%7C%7C1.3.0&E=2623864.23&N=1238040.08&zoom=3' width='800' height='600' frameborder='0' style='border:0'></iframe>
         mapColumn.appendChild(div().id("map").css("modal-body-paragraph").innerHtml(SafeHtmlUtils.fromTrustedString(embeddedMap)).element());
         mapPlusRow.appendChild(mapColumn);
@@ -355,16 +355,16 @@ public class AppEntryPoint implements EntryPoint {
                     .setToggleTarget(ToggleTarget.ICON)
                     .appendChild(
                         TreeItem.create("INTERLIS/XTF", Icons.ALL.file_download_mdi()).removeWaves()
-                            .addClickListener((evt) -> Notification.create("INTERLIS").show()))
+                            .addClickListener((evt) -> Window.open("/dataset/"+dataset.getId()+"/format/xtf", "_blank", null)))
                     .appendChild(
                         TreeItem.create("GeoPackage", Icons.ALL.file_download_mdi()).removeWaves()
-                           .addClickListener((evt) -> Notification.create("GeoPackage").show()))
+                           .addClickListener((evt) -> Window.open("/dataset/"+dataset.getId()+"/format/gpkg", "_blank", null)))
                     .appendChild(
                         TreeItem.create("Shapefile", Icons.ALL.file_download_mdi()).removeWaves()
-                           .addClickListener((evt) -> Notification.create("Shapefile").show()))
+                           .addClickListener((evt) -> Window.open("/dataset/"+dataset.getId()+"/format/shp", "_blank", null)))
                     .appendChild(
                         TreeItem.create("DXF", Icons.ALL.file_download_mdi()).removeWaves()
-                            .addClickListener((evt) -> Notification.create("DXF").show()));
+                            .addClickListener((evt) -> Window.open("/dataset/"+dataset.getId()+"/format/dxf", "_blank", null)));
         Column downloadColumn = Column.span12();
         downloadColumn.appendChild(downloadTree.element());
         fileTreesRow.appendChild(downloadColumn);
@@ -488,7 +488,7 @@ public class AppEntryPoint implements EntryPoint {
             layersOpacity += "1,";
         }
         layersOpacity = layersOpacity.substring(0, layersOpacity.length() - 1);
-        String embeddedMap = "<iframe src='https://geo-t.so.ch/api/v1/embed/embed.html?bgLayer=ch.so.agi.hintergrundkarte_sw&layers="+layers+"&layers_opacity="+layersOpacity+"&E=2618000&N=1237800&zoom=5' height='500' style='width: 100%; border:0px solid white;'></iframe>";
+        String embeddedMap = "<iframe src='https://geo-t.so.ch/api/embed/v1/embed.html?bgLayer=ch.so.agi.hintergrundkarte_sw&layers="+layers+"&layers_opacity="+layersOpacity+"&E=2618000&N=1237800&zoom=5' height='500' style='width: 100%; border:0px solid white;'></iframe>";
         modal.appendChild(div().id("map").css("modal-body-paragraph").innerHtml(SafeHtmlUtils.fromTrustedString(embeddedMap)).element());
 
         Row chipRow = Row.create();
