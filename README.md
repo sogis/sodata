@@ -25,5 +25,5 @@ mvn gwt:generate-module gwt:devmode
 
 Build fat jar and docker image:
 ```
-BUILD_NUMBER=9999 mvn clean package
+GITHUB_RUN_NUMBER=9999 mvn clean package
 ```
