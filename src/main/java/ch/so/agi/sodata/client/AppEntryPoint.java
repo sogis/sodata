@@ -49,7 +49,10 @@ import org.jboss.elemento.HtmlContentBuilder;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.http.client.URL;
@@ -65,12 +68,15 @@ import ch.so.agi.sodata.shared.SettingsResponse;
 import ch.so.agi.sodata.shared.SettingsService;
 import ch.so.agi.sodata.shared.SettingsServiceAsync;
 import elemental2.core.Global;
+import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.EventListener;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLIFrameElement;
 import elemental2.dom.Headers;
+//import elemental2.dom.History;
 import elemental2.dom.RequestInit;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
@@ -79,6 +85,7 @@ import ol.Map;
 import ol.MapBrowserEvent;
 import ol.MapEvent;
 import ol.events.Event;
+
 
 public class AppEntryPoint implements EntryPoint {
     private MyMessages messages = GWT.create(MyMessages.class);
@@ -91,6 +98,7 @@ public class AppEntryPoint implements EntryPoint {
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
     private NumberFormat fmtPercent = NumberFormat.getFormat("#0.0");
         
+    String baseUrl;
     HTMLElement container;
     HTMLElement topLevelContent;
     HTMLElement datasetContent;
@@ -145,7 +153,10 @@ public class AppEntryPoint implements EntryPoint {
     }
 
     @SuppressWarnings("unchecked")
-    private void init() {         
+    private void init() {      
+        // TODO Überprüfen, ob es nicht im else vom redirect stehen muss.
+        baseUrl = Window.Location.getProtocol() + "//" + Window.Location.getHost() + Window.Location.getPath();
+        
         Theme theme = new Theme(ColorScheme.RED);
         theme.apply();
         
@@ -227,7 +238,6 @@ public class AppEntryPoint implements EntryPoint {
             }
         };
 
-        
         SuggestBox suggestBox = SuggestBox.create("Suchbegriff", dynamicStore);
         suggestBox.addLeftAddOn(Icons.ALL.search());
         suggestBox.setAutoSelect(false);
@@ -293,10 +303,32 @@ public class AppEntryPoint implements EntryPoint {
         
         container.appendChild(topLevelContent);
         body().add(container);
+        
+        History.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                console.log(event.getValue());
+            } 
+        });
+        
+        if (Window.Location.getParameter("dataset") != null) {
+            String param = Window.Location.getParameter("dataset").toString();
+            for (Dataset ds : datasetList) {
+                if (ds.getId().equalsIgnoreCase(param)) {
+                    showDatasetDetail(ds);
+                    return;
+                }
+            }
+        }
     }
     
     private void showDatasetDetail(Dataset dataset) {
         topLevelContent.hidden = true;
+        
+//        History.newItem("/dataset/" + dataset.getId() + "/html");
+        
+        String newUrl = baseUrl + "dataset/" + dataset.getId() + "/format/html";
+        updateURLWithoutReloading(newUrl);
         
         datasetContent = div().id("dataset-content").element();
         
@@ -340,10 +372,14 @@ public class AppEntryPoint implements EntryPoint {
             layersOpacity += "1,";
         }
         layersOpacity = layersOpacity.substring(0, layersOpacity.length() - 1);
-        String embeddedMap = "<iframe src='https://geo-t.so.ch/api/embed/v1/embed.html?bgLayer=ch.so.agi.hintergrundkarte_sw&layers="+layers+"&layers_opacity="+layersOpacity+"&E=2620000&N=1237800&zoom=5' height='600' style='width: 100%; border:0px solid white;'></iframe>";
-        mapColumn.appendChild(div().id("map").css("modal-body-paragraph").innerHtml(SafeHtmlUtils.fromTrustedString(embeddedMap)).element());
+        
+        HTMLElement iframe = iframe().id("map").element();
+        iframe.style.setProperty("width", "100%");
+        iframe.style.setProperty("border", "0px solid white");
+        iframe.style.setProperty("height", "600px");
+        iframe.setAttribute("src", "https://geo-t.so.ch/api/embed/v1/embed.html?bgLayer=ch.so.agi.hintergrundkarte_sw&layers="+layers+"&layers_opacity="+layersOpacity+"&E=2620000&N=1237800&zoom=5");
+        mapColumn.appendChild(iframe);
         mapPlusRow.appendChild(mapColumn);
-//        datasetContent.appendChild(div().id("map").css("modal-body-paragraph").innerHtml(SafeHtmlUtils.fromTrustedString(embeddedMap)).element());
 
         // Data download and services
         Row fileTreesRow = Row.create();
@@ -389,7 +425,7 @@ public class AppEntryPoint implements EntryPoint {
         
         mapPlusRow.appendChild(fileTreesColumn);
         datasetContent.appendChild(mapPlusRow.element());
-        
+       
         // Keywords        
         Row chipRow = Row.create();
         Column chipColumn = Column.span12();
@@ -403,16 +439,16 @@ public class AppEntryPoint implements EntryPoint {
         chipRow.appendChild(chipColumn);
         datasetContent.appendChild(div().css("info").add(chipRow.element()).element());
 
-        container.appendChild(datasetContent);
+        container.appendChild(datasetContent);        
     }
     
     private void showHome() {
+        updateURLWithoutReloading(baseUrl);
         datasetContent.innerHTML = "";
         datasetContent.hidden = true;
         topLevelContent.hidden = false;
     }
-    
-    
+        
     private void openDatasetDialog(Dataset dataset) {
         ModalDialog modal = ModalDialog.create(dataset.getTitle()).setAutoClose(true);
         modal.style().setMaxHeight("calc(100% - 120px)");
@@ -526,6 +562,7 @@ public class AppEntryPoint implements EntryPoint {
     }
     
     private static native void updateURLWithoutReloading(String newUrl) /*-{
-        $wnd.history.pushState(newUrl, "", newUrl);
+        console.log("fubar");
+        $wnd.history.replaceState(newUrl, "", newUrl);
     }-*/;
 }

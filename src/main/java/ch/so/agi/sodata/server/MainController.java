@@ -122,10 +122,20 @@ public class MainController {
         log.info(id);
         log.info(format);
         
-        RedirectView redirectView = new RedirectView();
-        // TODO: Im wahren Leben steckt die URL in der Konfig, da sie unterschiedlich sein kann.
-        redirectView.setUrl("https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata/"+id+"_"+format+".zip");
-        return redirectView;
+        // Nur falls dataset URL direkt aufgerufen wird.
+        if (format.equalsIgnoreCase("html")) {
+            RedirectView redirectView = new RedirectView();
+            String url = ServletUriComponentsBuilder.fromCurrentContextPath().queryParam("dataset", id).build().toUriString();
+            log.info(url);
+            redirectView.setUrl(url);
+            return redirectView;
+
+        } else {
+            RedirectView redirectView = new RedirectView();
+            // TODO: Im wahren Leben steckt die URL in der Konfig, da sie unterschiedlich sein kann.
+            redirectView.setUrl("https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata/"+id+"_"+format+".zip");
+            return redirectView;
+        }
     }
     
     // TODO: PostConstruct
