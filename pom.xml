@@ -200,7 +200,7 @@
                 <argument>build</argument>
                 <argument>.</argument>
                 <argument>-t</argument>
-                <argument>sogis/sodata:1.0.${BUILD_NUMBER}</argument>
+                <argument>sogis/sodata:1.0.${env.GITHUB_RUN_NUMBER}</argument>
                 <argument>-t</argument>
                 <argument>sogis/sodata:latest</argument>
                 <argument>--build-arg</argument>
