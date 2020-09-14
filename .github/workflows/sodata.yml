@@ -10,7 +10,7 @@ jobs:
       DOCKER_REPO: sodata
       DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}      
-      BUILD_NUMBER: ${{env.GITHUB_RUN_NUMBER}}      
+      BUILD_NUMBER: ${{GITHUB_RUN_NUMBER}}      
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
