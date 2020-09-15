@@ -125,7 +125,7 @@ public class MainController {
         // Nur falls dataset URL direkt aufgerufen wird.
         if (format.equalsIgnoreCase("html")) {
             RedirectView redirectView = new RedirectView();
-            String url = ServletUriComponentsBuilder.fromCurrentContextPath().queryParam("dataset", id).build().toUriString();
+            String url = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "#dataset="+id;
             log.info(url);
             redirectView.setUrl(url);
             return redirectView;

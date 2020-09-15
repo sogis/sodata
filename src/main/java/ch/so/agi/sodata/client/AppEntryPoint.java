@@ -263,16 +263,13 @@ public class AppEntryPoint implements EntryPoint {
         });
         
         topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(suggestBox)).element());
-//        container.appendChild(div().id("searchPanel").add(div().id("suggestBoxDiv").add(suggestBox)).element());
         
         ListGroup<Dataset> listGroup = ListGroup.<Dataset>create()
                 .setBordered(false)
                 .setItemRenderer((listGroup1, listItem) -> {
                     HTMLElement datasetLink = a().attr("class", "dataset-link")
                             .add(TextNode.of(listItem.getValue().getTitle())).element();
-                    datasetLink.addEventListener("click", event -> {
-                        //openDatasetDialog(listItem.getValue());
-                        
+                    datasetLink.addEventListener("click", event -> {                        
                         showDatasetDetail(listItem.getValue());
                     });
                     
@@ -299,7 +296,6 @@ public class AppEntryPoint implements EntryPoint {
                 .setItems(datasetList);
         
         topLevelContent.appendChild(listGroup.element());
-//        container.appendChild(listGroup.element());
         
         container.appendChild(topLevelContent);
         body().add(container);
@@ -308,13 +304,28 @@ public class AppEntryPoint implements EntryPoint {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 console.log(event.getValue());
+                
+                
+                // TODO fix content
+                
             } 
         });
         
-        if (Window.Location.getParameter("dataset") != null) {
+        console.log(Window.Location.getHash());
+
+        if (Window.Location.getHash().contains("dataset")) {
+            
+            // TODO get hash
+            
             String param = Window.Location.getParameter("dataset").toString();
             for (Dataset ds : datasetList) {
                 if (ds.getId().equalsIgnoreCase(param)) {
+                    
+                    // TODO fix url
+                    
+                    
+                    
+                    
                     showDatasetDetail(ds);
                     return;
                 }
@@ -325,10 +336,10 @@ public class AppEntryPoint implements EntryPoint {
     private void showDatasetDetail(Dataset dataset) {
         topLevelContent.hidden = true;
         
-//        History.newItem("/dataset/" + dataset.getId() + "/html");
+        History.newItem("dataset=" + dataset.getId());
         
-        String newUrl = baseUrl + "dataset/" + dataset.getId() + "/format/html";
-        updateURLWithoutReloading(newUrl);
+//        String newUrl = baseUrl + "dataset/" + dataset.getId() + "/format/html";
+//        updateURLWithoutReloading(newUrl);
         
         datasetContent = div().id("dataset-content").element();
         
@@ -443,6 +454,8 @@ public class AppEntryPoint implements EntryPoint {
     }
     
     private void showHome() {
+        // TODO fix me
+        // auch mit replaceState versuchen. Vielleicht funktioniert es wie gewünscht.
         updateURLWithoutReloading(baseUrl);
         datasetContent.innerHTML = "";
         datasetContent.hidden = true;
@@ -563,6 +576,6 @@ public class AppEntryPoint implements EntryPoint {
     
     private static native void updateURLWithoutReloading(String newUrl) /*-{
         console.log("fubar");
-        $wnd.history.replaceState(newUrl, "", newUrl);
+        $wnd.history.pushState(newUrl, "", newUrl);
     }-*/;
 }
