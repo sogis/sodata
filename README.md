@@ -1,6 +1,8 @@
 # sodata
 
 ## TODO
+- history
+- bookmarkable
 - Modal via URL (z.B localhost:8080/ch.so.awjf.forstkreise)
 - ilidata.xml
 - Lucene Suche
