@@ -438,7 +438,7 @@ public class AppEntryPoint implements EntryPoint {
         datasetContent.appendChild(mapPlusRow.element());
        
         // Keywords        
-        Row chipRow = Row.create();
+        Row chipRow = Row.create().style().setMarginBottom("40px").get();
         Column chipColumn = Column.span12();
         String[] keywords = dataset.getKeywords().split(",");
         for (String keyword : keywords) {
