@@ -136,3 +136,246 @@ app:
             - xtf
             - gpkg
             - shp  
+            - dxf            
+        - id: ch.so.afu.ekat2015
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AFU_Ekat_Publikation_20190222
+          epsgCode: 2056
+          resolutionScope: 500
+          publishingDate: 2020-09-23
+          lastEditingDate: 2020-09-23
+          title: Emissionskataster des Kanton Solothurn (2015)
+          shortDescription: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+          keywords: Ekat,Emissionskataster,AFU
+          provider: Amt für Umwelt (AFU)             
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          furtherInformation: https://geo.so.ch/models/AFU/SO_AFU_Ekat_Publikation_20190222.uml
+          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.afu.ekat2015&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
+          files:
+            - xtf
+            - gpkg
+            - shp 
+            - dxf            
+        - id: ch.so.afu.geotope
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AFU_Geotope_Publikation_20200623
+          epsgCode: 2056
+          resolutionScope: 500
+          publishingDate: 2020-09-23
+          lastEditingDate: 2020-09-23
+          title: Geotope / Ingeso (Inventar der geowissenschaftlich schützenswerten Objekte)
+          shortDescription: Der Kanton ist durch die Verordnung über den Natur- und Heimatschutz (BGS Nr. 435.141) dazu verpflichtet, neben vielen weiteren Objekten auch Landschaftsbilder und Naturdenkmäler zu schützen und diese in einem Inventar zu führen. Das kantonale Inventar über die geowissenschaftlich schützenswerten Objekte (Geotop-Inventar) beinhaltet derzeit rund 300 Objekte, die in den Teilinventaren Aufschlüsse, Landschaftsformen, Erratiker (Findlinge), Fundstellen / Grabungen (nicht öffentlich zugänglich), Höhlen und Quellen zusammengefasst sind. Diese Objekte sind mit Flächen- oder Punktsignaturen in der interaktiven Karte dargestellt. Durch Anklicken der Objekte in der Karte mit Hilfe des I-Buttons öffnet sich ein Informationsfenster, das den Namen und dessen Objektnummer anzeigt. Zudem kann über dieses Fenster das zum Objekt dazugehörige Objektblatt mit allen bekannten Informationen im pdf-Format aufgerufen werden.
+          keywords: Geotope,Ingeso,AFU
+          provider: Amt für Umwelt (AFU)             
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          furtherInformation: https://geo.so.ch/models/AFU/SO_AFU_Geotope_Publikation_20200623.uml
+          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.afu.geotope&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
+          files:
+            - xtf
+            - gpkg
+            - shp
+            - dxf              
+        - id: ch.so.afu.geotope
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AfU_Gewaesserschutz_Publikation_20200115
+          epsgCode: 2056
+          resolutionScope: 500
+          publishingDate: 2020-09-23
+          lastEditingDate: 2020-09-23
+          title: Gewässerschutz
+          shortDescription: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+          keywords: Gewässerschutz,Schutzzonen,Areal,Schutzareal,AFU
+          provider: Amt für Umwelt (AFU)             
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          furtherInformation: https://geo.so.ch/models/AFU/SO_AfU_Gewaesserschutz_Publikation_20200115.uml
+          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.afu.gewaesserschutz&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
+          files:
+            - xtf
+            - gpkg
+            - shp
+            - dxf                      
+        - id: ch.so.agi_hoheitsgrenzen
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_Hoheitsgrenzen_Publikation_20170626
+          epsgCode: 2056
+          resolutionScope: 500
+          publishingDate: 2020-09-23
+          lastEditingDate: 2020-09-23
+          title: Hoheitsgrenzen
+          shortDescription: Als Hoheitsgrenzen werden die Landesgrenzen, Kantonsgrenzen und die Grenzen der politischen Gemeinden bezeichnet. Die Hoheitsgrenzen liegen auf Grundstücksgrenzen. Sie sind Bestandteil der amtlichen Vermessung. Der Kanton führt für besondere Grenzzeichen an der Kantonsgrenze ein Inventar.
+          keywords: Hoheitsgrenzen,Landesgrenzen,Kantonsgrenze,Bezirksgrenze,Gemeindegrenze,AGI
+          provider: Amt für Geoinformation (AGI)             
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          furtherInformation: https://geo.so.ch/models/AGI/SO_Hoheitsgrenzen_Publikation_20170626.uml
+          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.hoheitsgrenzen&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
+          files:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.agi_mopublic
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AGI_MOpublic_20190424
+          epsgCode: 2056
+          resolutionScope: 500
+          publishingDate: 2020-09-23
+          lastEditingDate: 2020-09-23
+          title: Daten der amtlichen Vermessung (MOpublic)
+          shortDescription: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+          keywords: Amtliche Vermessung,AV,Bodenbedeckung,Gebäude,Grundstücke,Parzelle,Liegenschaften,Baurecht,Fixpunkt,AGI
+          provider: Amt für Geoinformation (AGI)             
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          furtherInformation: https://geo.so.ch/models/AGI/SO_AGI_MOpublic_20190424.uml
+          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.amtliche_vermessung&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
+          files:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.agi_plz_ortschaften
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AGI_PLZ_Ortschaften_Publikation_20180406
+          epsgCode: 2056
+          resolutionScope: 500
+          publishingDate: 2020-09-23
+          lastEditingDate: 2020-09-23
+          title: Postleitzahlen und Ortschaften
+          shortDescription: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+          keywords: PLZ,Ortschaften,Postleitzahlen,AGI
+          provider: Amt für Geoinformation (AGI)             
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          furtherInformation: https://geo.so.ch/models/AGI/SO_AGI_PLZ_Ortschaften_Publikation_20180406.uml
+          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.gebaeudeadressen.plz_ortschaften&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
+          files:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.agi_swissboundaries3d
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AGI_swissBOUNDARIES3D_Publikation_20171026
+          epsgCode: 2056
+          resolutionScope: 500
+          publishingDate: 2020-09-23
+          lastEditingDate: 2020-09-23
+          title: Hoheitsgrenzen der Schweiz
+          shortDescription: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+          keywords: Gemeindegrenzen,Bezirksgrenzen,Kantonsgrenzen,Schweiz,AGI
+          provider: Amt für Geoinformation (AGI)             
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          furtherInformation: https://geo.so.ch/models/AGI/SO_AGI_swissBOUNDARIES3D_Publikation_20171026.uml
+          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=FUBAR&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
+          files:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.amb_notfalltreffpunkte
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AMB_Notfalltreffpunkte_Publikation_20180822
+          epsgCode: 2056
+          resolutionScope: 500
+          publishingDate: 2020-09-23
+          lastEditingDate: 2020-09-23
+          title: Notfalltreffpunkte
+          shortDescription: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+          keywords: Notfalltreffpunkte,AMB
+          provider: Amt für Militär und Bevölkerungsschutz (AMB)             
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          furtherInformation: https://geo.so.ch/models/AMB/SO_AMB_Notfalltreffpunkte_Publikation_20180822.uml
+          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.amb.notfalltreffpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
+          files:
+            - xtf
+            - gpkg
+            - shp
+            - dxf      
+        - id: ch.so.arp.nutzungsplanung
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_Nutzungsplanung_Publikation_20190909
+          epsgCode: 2056
+          resolutionScope: 500
+          publishingDate: 2020-09-23
+          lastEditingDate: 2020-09-23
+          title: Nutzungsplanung 
+          shortDescription: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+          keywords: Nutzungsplanung,Baulinien,Sondernutzungspläne,Erschliessungsplanung,AMB
+          provider: Amt für Raumplanung (ARP)             
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          furtherInformation: https://geo.so.ch/models/ARP/SO_Nutzungsplanung_Publikation_20190909.uml
+          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.arp.nutzungsplanung&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
+          files:
+            - xtf
+        - id: ch.so.arp.richtplan
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_ARP_Richtplan_Publikation_20190301
+          epsgCode: 2056
+          resolutionScope: 500
+          publishingDate: 2020-09-23
+          lastEditingDate: 2020-09-23
+          title: Richtplan
+          shortDescription: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+          keywords: Richtplan,Richtplanung,ARP
+          provider: Amt für Raumplanung (ARP)             
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          furtherInformation: https://geo.so.ch/models/ARP/SO_Nutzungsplanung_Publikation_20190909.uml
+          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.arp.richtplan&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
+          files:
+            - xtf
+            - gpkg
+            - shp
+            - dxf  
+        - id: ch.so.arp.aggloprogramme
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_Agglomerationsprogramme_Publikation_20200813
+          epsgCode: 2056
+          resolutionScope: 500
+          publishingDate: 2020-09-23
+          lastEditingDate: 2020-09-23
+          title: Agglomerationsprogramme
+          shortDescription: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+          keywords: Aggloprogramm,Agglomerationsprogramme,ARP
+          provider: Amt für Raumplanung (ARP)             
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          furtherInformation: https://geo.so.ch/models/ARP/SO_Agglomerationsprogramme_Publikation_20200813.uml
+          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.arp.aggloprogramme&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
+          files:
+            - xtf
+            - gpkg
+            - shp
+            - dxf   
+             
+            
+                                          
