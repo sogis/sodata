@@ -38,7 +38,7 @@ body, div {
 #container {
     margin-left: auto;
     margin-right: auto;
-    width: 1200px;
+    width: 1600px;
     max-width: 95%;
     background-color: #FFFFFF;        
 }
@@ -69,6 +69,7 @@ body, div {
     margin-bottom: 30px;
 }
 
+/*
 a {
     color: #ef5350;  
 }
@@ -83,6 +84,40 @@ a:visited {
     color: #ef5350; 
     text-decoration: underline !important;
 } 
+*/
+
+a {
+    color: #333333; 
+    text-decoration: underline !important;
+}
+
+a:hover {
+    color: #333333;
+    text-decoration: underline !important;
+    text-decoration-thickness: 2px !important;   
+}  
+
+a:visited {
+    color: #333333; 
+    text-decoration: underline !important;
+}
+
+.bg-l-4-grey {
+    color: #999999 !important;
+    font-weight: 300 !important;
+}
+
+#dataset-table {
+	font-size: 15px;
+}
+
+tr {
+	height: 60px;
+}
+
+th div {
+    font-weight: 700;
+}
 
 .dataset-list {
     font-size: 17px;

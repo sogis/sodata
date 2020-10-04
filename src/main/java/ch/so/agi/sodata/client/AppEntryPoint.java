@@ -2,6 +2,7 @@ package ch.so.agi.sodata.client;
 
 import static elemental2.dom.DomGlobal.console;
 import static org.jboss.elemento.Elements.*;
+import static org.jboss.elemento.EventType.*;
 import static org.dominokit.domino.ui.style.Unit.px;
 
 import java.util.ArrayList;
@@ -14,10 +15,16 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.dominokit.domino.ui.badges.Badge;
 import org.dominokit.domino.ui.breadcrumbs.Breadcrumb;
 import org.dominokit.domino.ui.button.Button;
 import org.dominokit.domino.ui.button.ButtonSize;
 import org.dominokit.domino.ui.chips.Chip;
+import org.dominokit.domino.ui.datatable.ColumnConfig;
+import org.dominokit.domino.ui.datatable.DataTable;
+import org.dominokit.domino.ui.datatable.TableConfig;
+import org.dominokit.domino.ui.datatable.plugins.HeaderBarPlugin;
+import org.dominokit.domino.ui.datatable.store.LocalListDataStore;
 import org.dominokit.domino.ui.dropdown.DropDownMenu;
 import org.dominokit.domino.ui.forms.SuggestBox.DropDownPositionDown;
 import org.dominokit.domino.ui.forms.SuggestBoxStore;
@@ -104,7 +111,10 @@ public class AppEntryPoint implements EntryPoint {
     HTMLElement datasetContent;
     Dataset[] datasets;
     List<Dataset> datasetList;
-
+    
+    LocalListDataStore<Dataset> listStore;
+    DataTable<Dataset> datasetTable;
+    
     public void onModuleLoad() {
         settingsService.settingsServer(new AsyncCallback<SettingsResponse>() {
             @Override
@@ -220,6 +230,13 @@ public class AppEntryPoint implements EntryPoint {
                       suggestItems.add(suggestItem);
                     }
                     suggestionsHandler.onSuggestionsReady(suggestItems);
+                    
+                    console.log(value);
+                    
+                    List<Dataset> datasetList = Arrays.asList(datasets);
+                    listStore.setData(new ArrayList<Dataset>());
+
+                    
                     return null;
                 }).catch_(error -> {
                     console.log(error);
@@ -264,41 +281,135 @@ public class AppEntryPoint implements EntryPoint {
         
         topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(suggestBox)).element());
         
-        ListGroup<Dataset> listGroup = ListGroup.<Dataset>create()
-                .setBordered(false)
-                .setItemRenderer((listGroup1, listItem) -> {
-                    HTMLElement datasetLink = a().attr("class", "dataset-link")
-                            .add(TextNode.of(listItem.getValue().getTitle())).element();
-                    datasetLink.addEventListener("click", event -> {                        
-                        showDatasetDetail(listItem.getValue());
-                    });
-                    
-                    Row datasetRow = Row.create();
-                    datasetRow.appendChild(Column.span11().setContent(datasetLink));
-                    
-                    Button button = Button.createPrimary(Icons.ALL.arrow_forward())
-                            .circle().setSize(ButtonSize.SMALL)
-                            .setButtonType(StyleType.DANGER)
-                            .style()
-                            .setBackgroundColor("#ef5350")
-                            .get();
-                    
-                    button.addClickListener(even -> {
-                        openDatasetDialog(listItem.getValue());
-                    });
-                    
-                    datasetRow.appendChild(Column.span1().style().setTextAlign("right").get().setContent(button));
-
-                    listItem.appendChild(div()
-                            .css("dataset-list")
-                            .add(datasetRow));                        
-                })
-                .setItems(datasetList);
+        TableConfig<Dataset> tableConfig = new TableConfig<>();
+        tableConfig
+//            .addColumn(ColumnConfig.<Dataset>create("id", "Id")
+//                .textAlign("left")
+//                .sortable()
+//                .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getId())))
+                .addColumn(ColumnConfig.<Dataset>create("title", "Titel")
+                        .setShowTooltip(false)
+                        .textAlign("left")
+                        .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getTitle())))
+                .addColumn(ColumnConfig.<Dataset>create("lastEditingDate", "Aktualisiert")
+                        .setShowTooltip(false)                        
+                        .textAlign("left")
+                        .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getLastEditingDate())))
+                .addColumn(ColumnConfig.<Dataset>create("metadata", "Metadaten")
+                        .setShowTooltip(false)                        
+                        .textAlign("left")
+                        .setCellRenderer(cell -> a().attr("href", "https://geocat.ch").textContent("geocat.ch").element()))
+        .addColumn(ColumnConfig.<Dataset>create("perimeter", "Gebietseinteilung")
+                .setShowTooltip(false)                        
+                .textAlign("center")
+                .setCellRenderer(cell -> TextNode.of("-")))
+        .addColumn(ColumnConfig.<Dataset>create("formats", "Dateiformat auswählen")
+                .setShowTooltip(false)                        
+                .textAlign("left")
+                .setCellRenderer(cell -> 
+                                
+//                {
+//                    return div().id("fubar").element();
+//                }
+                
+                div()
+                        .add(
+                                Badge.create("GeoPackage").setBackground(Color.GREY_LIGHTEN_4).style().setMarginRight("10px").get().element()
+                        )
+                        .add(
+                                Badge.create("INTERLIS").setBackground(Color.GREY_LIGHTEN_4).style().setMarginRight("10px").get().element()
+                        )
+                        .add(
+                                Badge.create("DXF").setBackground(Color.GREY_LIGHTEN_4).style().setMarginRight("10px").get().element()
+                        )
+                        .add(
+                                Badge.create("Shapefile").setBackground(Color.GREY_LIGHTEN_4).element()
+                        ).element()
+                ))
+        .addColumn(ColumnConfig.<Dataset>create("services", "Servicelink")
+                .setShowTooltip(false)                        
+                .textAlign("left")
+                .setCellRenderer(cell -> div()
+                        .add(
+                                a().attr("href", "WMS").textContent("WMS").element()
+                         )
+                        .add(TextNode.of(" / " ))
+                        .add(
+                                a().attr("href", "WFS").textContent("WFS").element()
+                        ).element()
+                        
+//                {
+//                    HTMLElement div = new HTMLElement();
+//                    div.appendChild(a().attr("href", "WMS").textContent("WMS").element());
+//                    div.appendChild(a().attr("href", "Data Service").textContent("Data Service").element());
+//                    return div;
+//                }
+                
+                        ));
         
-        topLevelContent.appendChild(listGroup.element());
+        
+        
+
+//            .addColumn(ColumnConfig.<Dataset>create("model", "Datenmodell")
+//                .textAlign("left")
+//                .sortable()
+//                .setCellRenderer(cell -> a().on(click, event -> showModel(cell.getRecord().model)).id("modelLink").attr("class", "DataSetDetailLink").add(span().textContent(cell.getRecord().model)).element()));
+
+        tableConfig.addPlugin(new HeaderBarPlugin("Demo table", "this a sample table with all features")
+                .addActionElement(new HeaderBarPlugin.ClearSearch<>())                
+                .addActionElement(new HeaderBarPlugin.SearchTableAction<>()));
+        
+        listStore = new LocalListDataStore<>();
+        listStore.setData(Arrays.asList(datasets));
+        listStore.setSearchFilter(new DatasetSearchFilter());
+
+        datasetTable = new DataTable<>(tableConfig, listStore);
+        datasetTable.setId("dataset-table");
+        datasetTable.noStripes();
+        datasetTable.noHover();
+        datasetTable.load();
+        
+        topLevelContent.appendChild(datasetTable.element());
+
+//        ListGroup<Dataset> listGroup = ListGroup.<Dataset>create()
+//                .setBordered(false)
+//                .setItemRenderer((listGroup1, listItem) -> {
+//                    HTMLElement datasetLink = a().attr("class", "dataset-link")
+//                            .add(TextNode.of(listItem.getValue().getTitle())).element();
+//                    datasetLink.addEventListener("click", event -> {                        
+//                        showDatasetDetail(listItem.getValue());
+//                    });
+//                    
+//                    Row datasetRow = Row.create();
+//                    datasetRow.appendChild(Column.span11().setContent(datasetLink));
+//                    
+//                    Button button = Button.createPrimary(Icons.ALL.arrow_forward())
+//                            .circle().setSize(ButtonSize.SMALL)
+//                            .setButtonType(StyleType.DANGER)
+//                            .style()
+//                            .setBackgroundColor("#ef5350")
+//                            .get();
+//                    
+//                    button.addClickListener(even -> {
+//                        openDatasetDialog(listItem.getValue());
+//                    });
+//                    
+//                    datasetRow.appendChild(Column.span1().style().setTextAlign("right").get().setContent(button));
+//
+//                    listItem.appendChild(div()
+//                            .css("dataset-list")
+//                            .add(datasetRow));                        
+//                })
+//                .setItems(datasetList);
+//        
+//        topLevelContent.appendChild(listGroup.element());
         
         container.appendChild(topLevelContent);
         body().add(container);
+        
+        
+        
+        /*----*/
         
         History.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
