@@ -112,10 +112,18 @@ public class MainController {
         return resultList;
     }
    
+//    @GetMapping("/datasets")
+//    public List<Dataset> datasets() {
+//        return config.getDatasets();
+//    }    
+    
     @GetMapping("/datasets")
-    public List<Dataset> datasets() {
+    public List<Dataset> searchDatasets(@RequestParam(value="query", required=false) String queryString) {
+        
+        
         return config.getDatasets();
-    }    
+    }
+    
     
     @GetMapping("/dataset/{id}/format/{format}") 
     public RedirectView datset(@PathVariable String id, @PathVariable String format) {

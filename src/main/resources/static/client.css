@@ -92,7 +92,7 @@ a {
 }
 
 a:hover {
-    color: #333333;
+    color: #ef5350;
     text-decoration: underline !important;
     text-decoration-thickness: 2px !important;   
 }  

@@ -29,6 +29,7 @@ import org.dominokit.domino.ui.dropdown.DropDownMenu;
 import org.dominokit.domino.ui.forms.SuggestBox.DropDownPositionDown;
 import org.dominokit.domino.ui.forms.SuggestBoxStore;
 import org.dominokit.domino.ui.forms.SuggestItem;
+import org.dominokit.domino.ui.forms.TextBox;
 import org.dominokit.domino.ui.grid.Column;
 import org.dominokit.domino.ui.grid.Row;
 import org.dominokit.domino.ui.forms.Select;
@@ -200,86 +201,118 @@ public class AppEntryPoint implements EntryPoint {
         topLevelContent.appendChild(div().css("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
 //        container.appendChild(div().id("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
         
-        SuggestBoxStore dynamicStore = new SuggestBoxStore() {
-            @Override
-            public void filter(String value, SuggestionsHandler suggestionsHandler) {
-                if (value.trim().length() == 0) {
-                    return;
-                }
-                
-                RequestInit requestInit = RequestInit.create();
-                Headers headers = new Headers();
-                // TODO: notwendig? Bin auf dem gleichen Server.
-                headers.append("Content-Type", "application/x-www-form-urlencoded"); 
-                requestInit.setHeaders(headers);
-
-                DomGlobal.fetch("/search?query=" + value.trim().toLowerCase(), requestInit)
-                .then(response -> {
-                    if (!response.ok) {
-                        return null;
-                    }
-                    return response.text();
-                })
-                .then(json -> {
-                    Dataset[] searchResults = (Dataset[]) Global.JSON.parse(json);
-                    List<Dataset> searchResultList = Arrays.asList(datasets);
-                    
-                    List<SuggestItem<Dataset>> suggestItems = new ArrayList<>();
-                    for (Dataset dataset : searchResults) {
-                      SuggestItem<Dataset> suggestItem = SuggestItem.create(dataset, dataset.getTitle(), null);
-                      suggestItems.add(suggestItem);
-                    }
-                    suggestionsHandler.onSuggestionsReady(suggestItems);
-                    
-                    console.log(value);
-                    
-                    List<Dataset> datasetList = Arrays.asList(datasets);
-                    listStore.setData(new ArrayList<Dataset>());
-
-                    
-                    return null;
-                }).catch_(error -> {
-                    console.log(error);
-                    return null;
-                });
-            }
-
-            @Override
-            public void find(Object searchValue, Consumer handler) {
-                if (searchValue == null) {
-                    return;
-                }
-                Dataset searchResult = (Dataset) searchValue;
-                SuggestItem<Dataset> suggestItem = SuggestItem.create(searchResult, null);
-                handler.accept(suggestItem);
-            }
-        };
-
-        SuggestBox suggestBox = SuggestBox.create("Suchbegriff", dynamicStore);
-        suggestBox.addLeftAddOn(Icons.ALL.search());
-        suggestBox.setAutoSelect(false);
-        suggestBox.setFocusColor(Color.RED);
-        suggestBox.getInputElement().setAttribute("autocomplete", "off");
-        suggestBox.getInputElement().setAttribute("spellcheck", "false");
-        DropDownMenu suggestionsMenu = suggestBox.getSuggestionsMenu();
-        suggestionsMenu.setPosition(new DropDownPositionDown());
-
-        suggestBox.addSelectionHandler(new SelectionHandler() {
-            @Override
-            public void onSelection(Object value) {
-                SuggestItem<Dataset> item = (SuggestItem<Dataset>) value;
-
-                // TODO: we need a Map instead of a List...
-                for (Dataset ds : datasetList) {
-                    if (ds.getId().equalsIgnoreCase(item.getValue().getId())) {
-                        openDatasetDialog(ds);
-                        return;
-                    }
-                }
-            }
-        });
+//        SuggestBoxStore dynamicStore = new SuggestBoxStore() {
+//            @Override
+//            public void filter(String value, SuggestionsHandler suggestionsHandler) {
+//                if (value.trim().length() == 0) {
+//                    return;
+//                }
+//                
+//                RequestInit requestInit = RequestInit.create();
+//                Headers headers = new Headers();
+//                // TODO: notwendig? Bin auf dem gleichen Server.
+//                headers.append("Content-Type", "application/x-www-form-urlencoded"); 
+//                requestInit.setHeaders(headers);
+//
+//                DomGlobal.fetch("/search?query=" + value.trim().toLowerCase(), requestInit)
+//                .then(response -> {
+//                    if (!response.ok) {
+//                        return null;
+//                    }
+//                    return response.text();
+//                })
+//                .then(json -> {
+//                    Dataset[] searchResults = (Dataset[]) Global.JSON.parse(json);
+//                    List<Dataset> searchResultList = Arrays.asList(datasets);
+//                    
+//                    List<SuggestItem<Dataset>> suggestItems = new ArrayList<>();
+//                    for (Dataset dataset : searchResults) {
+//                      SuggestItem<Dataset> suggestItem = SuggestItem.create(dataset, dataset.getTitle(), null);
+//                      suggestItems.add(suggestItem);
+//                    }
+//                    suggestionsHandler.onSuggestionsReady(suggestItems);
+//                    
+//                    List<Dataset> datasetList = Arrays.asList(datasets);
+//                    listStore.setData(new ArrayList<Dataset>());
+//
+//                    return null;
+//                }).catch_(error -> {
+//                    console.log(error);
+//                    return null;
+//                });
+//            }
+//
+//            @Override
+//            public void find(Object searchValue, Consumer handler) {
+//                if (searchValue == null) {
+//                    return;
+//                }
+//                Dataset searchResult = (Dataset) searchValue;
+//                SuggestItem<Dataset> suggestItem = SuggestItem.create(searchResult, null);
+//                handler.accept(suggestItem);
+//            }
+//        };
+//
+//        SuggestBox suggestBox = SuggestBox.create("Suchbegriff", dynamicStore);
+//        suggestBox.addLeftAddOn(Icons.ALL.search());
+//        suggestBox.setAutoSelect(false);
+//        suggestBox.setFocusColor(Color.RED);
+//        suggestBox.getInputElement().setAttribute("autocomplete", "off");
+//        suggestBox.getInputElement().setAttribute("spellcheck", "false");
+//        
+//        DropDownMenu suggestionsMenu = suggestBox.getSuggestionsMenu();
+//        suggestionsMenu.setPosition(new DropDownPositionDown());
+//
+//        suggestBox.addSelectionHandler(new SelectionHandler() {
+//            @Override
+//            public void onSelection(Object value) {
+//                SuggestItem<Dataset> item = (SuggestItem<Dataset>) value;
+//
+//                // TODO: we need a Map instead of a List...
+//                for (Dataset ds : datasetList) {
+//                    if (ds.getId().equalsIgnoreCase(item.getValue().getId())) {
+//                        openDatasetDialog(ds);
+//                        return;
+//                    }
+//                }
+//            }
+//        });
+//        
+//        topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(suggestBox)).element());
         
-        topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(suggestBox)).element());
+        
+        TextBox textBox = TextBox.create().setLabel("Suchbegriff");
+        textBox.addLeftAddOn(Icons.ALL.search());
+        textBox.setFocusColor(Color.RED);
+        textBox.getInputElement().setAttribute("autocomplete", "off");
+        textBox.getInputElement().setAttribute("spellcheck", "false");
+        
+        HTMLElement resetIcon = Icons.ALL.close().style().setCursor("pointer").get().element();
+        resetIcon.addEventListener("click", new EventListener() {
+//            @Override
+//            public void handleEvent(Event evt) {
+//                HTMLInputElement el =(HTMLInputElement) suggestBox.getInputElement().element();
+//                el.value = "";
+//                suggestBox.unfocus();
+//                ol.source.Vector vectorSource = map.getHighlightLayer().getSource();
+//                vectorSource.clear(false); 
+//            }
+
+            @Override
+            public void handleEvent(elemental2.dom.Event evt) {
+                // TODO Auto-generated method stub
+                
+            }
+        });        
+        textBox.addRightAddOn(resetIcon);
+
+        textBox.addEventListener("keyup", event -> {
+           console.log(textBox.getValue()); 
+        });
+ 
+        
+        topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(textBox)).element());
+        
         
         TableConfig<Dataset> tableConfig = new TableConfig<>();
         tableConfig
@@ -294,7 +327,12 @@ public class AppEntryPoint implements EntryPoint {
                 .addColumn(ColumnConfig.<Dataset>create("lastEditingDate", "Aktualisiert")
                         .setShowTooltip(false)                        
                         .textAlign("left")
-                        .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getLastEditingDate())))
+                        .setCellRenderer(cell -> {
+                            Date date = DateTimeFormat.getFormat("yyyy-MM-dd").parse(cell.getTableRow().getRecord().getLastEditingDate());
+                            String dateString = DateTimeFormat.getFormat("dd.MM.yyyy").format(date);
+                            return TextNode.of(dateString);
+                            
+                        }))
                 .addColumn(ColumnConfig.<Dataset>create("metadata", "Metadaten")
                         .setShowTooltip(false)                        
                         .textAlign("left")
