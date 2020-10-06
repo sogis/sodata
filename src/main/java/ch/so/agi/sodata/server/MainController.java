@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -74,8 +75,18 @@ public class MainController {
     private Integer QUERY_DEFAULT_RECORDS;
 
     @Value("${lucene.query.max.records:50}")
-    private Integer QUERY_MAX_RECORDS;    
+    private Integer QUERY_MAX_RECORDS;   
     
+    private Map<String, Dataset> datasetMap;
+    
+    @PostConstruct
+    public void init() {
+        datasetMap = new HashMap<String, Dataset>();
+        for (Dataset dataset : config.getDatasets()) {
+            datasetMap.put(dataset.getId(), dataset);
+        }
+    }
+
     @GetMapping("/ping")
     public ResponseEntity<String> ping() throws ParseException, IOException, LuceneSearcherException, InvalidLuceneQueryException {
         String query = "ch.so.agi kant natur";
@@ -102,10 +113,12 @@ public class MainController {
                 .map(r -> {
                     // TODO: Wenn die config eine Map wäre, könnte man das Dataset dort requesten.
                     // Oder reicht es im Client?
-                    Dataset ds = new Dataset();
-                    ds.setId(r.get("id"));
-                    ds.setTitle(r.get("title"));
-                    return ds;
+//                    Dataset ds = new Dataset();
+//                    ds.setId(r.get("id"));
+//                    ds.setTitle(r.get("title"));
+//                    return ds;
+                    
+                    return datasetMap.get(r.get("id"));
                 })
                 .collect(Collectors.toList());
         
@@ -119,11 +132,27 @@ public class MainController {
     
     @GetMapping("/datasets")
     public List<Dataset> searchDatasets(@RequestParam(value="query", required=false) String queryString) {
-        
-        
-        return config.getDatasets();
+        if (queryString == null) {
+            return config.getDatasets();
+
+        } else {
+            Result results = null;
+            try {
+                results = indexSearcher.searchIndex(queryString, QUERY_DEFAULT_RECORDS, false);
+                log.info("Search for '" + queryString +"' found " + results.getAvailable() + " and retrieved " + results.getRetrieved() + " records");            
+            } catch (LuceneSearcherException | InvalidLuceneQueryException e) {
+                throw new IllegalStateException(e);
+            }
+
+            List<Map<String, String>> records = results.getRecords();
+            List<Dataset> resultList = records.stream()
+                    .map(r -> {
+                        return datasetMap.get(r.get("id"));
+                    })
+                    .collect(Collectors.toList());
+            return resultList;
+        }
     }
-    
     
     @GetMapping("/dataset/{id}/format/{format}") 
     public RedirectView datset(@PathVariable String id, @PathVariable String format) {

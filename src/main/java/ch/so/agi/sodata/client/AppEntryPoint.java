@@ -24,6 +24,7 @@ import org.dominokit.domino.ui.datatable.ColumnConfig;
 import org.dominokit.domino.ui.datatable.DataTable;
 import org.dominokit.domino.ui.datatable.TableConfig;
 import org.dominokit.domino.ui.datatable.plugins.HeaderBarPlugin;
+import org.dominokit.domino.ui.datatable.plugins.RecordDetailsPlugin;
 import org.dominokit.domino.ui.datatable.store.LocalListDataStore;
 import org.dominokit.domino.ui.dropdown.DropDownMenu;
 import org.dominokit.domino.ui.forms.SuggestBox.DropDownPositionDown;
@@ -38,6 +39,7 @@ import org.dominokit.domino.ui.forms.SuggestBox;
 import org.dominokit.domino.ui.icons.Icon;
 import org.dominokit.domino.ui.icons.Icons;
 import org.dominokit.domino.ui.icons.MdiIcon;
+import org.dominokit.domino.ui.infoboxes.InfoBox;
 import org.dominokit.domino.ui.lists.ListGroup;
 import org.dominokit.domino.ui.modals.ModalDialog;
 import org.dominokit.domino.ui.notifications.Notification;
@@ -289,25 +291,53 @@ public class AppEntryPoint implements EntryPoint {
         
         HTMLElement resetIcon = Icons.ALL.close().style().setCursor("pointer").get().element();
         resetIcon.addEventListener("click", new EventListener() {
-//            @Override
-//            public void handleEvent(Event evt) {
-//                HTMLInputElement el =(HTMLInputElement) suggestBox.getInputElement().element();
-//                el.value = "";
-//                suggestBox.unfocus();
-//                ol.source.Vector vectorSource = map.getHighlightLayer().getSource();
-//                vectorSource.clear(false); 
-//            }
-
             @Override
             public void handleEvent(elemental2.dom.Event evt) {
-                // TODO Auto-generated method stub
-                
+                textBox.clear();
+                listStore.setData(Arrays.asList(datasets));
             }
+
+//            @Override
+//            public void handleEvent(elemental2.dom.Event evt) {
+//                // TODO Auto-generated method stub
+//                
+//                
+//            }
         });        
         textBox.addRightAddOn(resetIcon);
 
-        textBox.addEventListener("keyup", event -> {
-           console.log(textBox.getValue()); 
+        textBox.addEventListener("keyup", event -> {            
+            if (textBox.getValue().trim().length() == 0) {
+                return;
+            }
+           
+            DomGlobal.fetch("/datasets?query=" + textBox.getValue().toLowerCase()).then(response -> {
+                if (!response.ok) {
+                    return null;
+                }
+                return response.text();
+            }).then(json -> {
+                Dataset[] searchResults = (Dataset[]) Global.JSON.parse(json);
+                List<Dataset> searchResultList = Arrays.asList(searchResults);
+                
+//                console.log(searchResultList.get(0).getId());
+
+//                List<SuggestItem<Dataset>> suggestItems = new ArrayList<>();
+//                for (Dataset dataset : searchResults) {
+//                    SuggestItem<Dataset> suggestItem = SuggestItem.create(dataset, dataset.getTitle(), null);
+//                    suggestItems.add(suggestItem);
+//                }
+//                suggestionsHandler.onSuggestionsReady(suggestItems);
+//
+//                List<Dataset> datasetList = Arrays.asList(datasets);
+                listStore.setData(searchResultList);
+
+                return null;
+            }).catch_(error -> {
+                console.log(error);
+                return null;
+            });
+
         });
  
         
@@ -316,10 +346,6 @@ public class AppEntryPoint implements EntryPoint {
         
         TableConfig<Dataset> tableConfig = new TableConfig<>();
         tableConfig
-//            .addColumn(ColumnConfig.<Dataset>create("id", "Id")
-//                .textAlign("left")
-//                .sortable()
-//                .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getId())))
                 .addColumn(ColumnConfig.<Dataset>create("title", "Titel")
                         .setShowTooltip(false)
                         .textAlign("left")
@@ -336,26 +362,33 @@ public class AppEntryPoint implements EntryPoint {
                 .addColumn(ColumnConfig.<Dataset>create("metadata", "Metadaten")
                         .setShowTooltip(false)                        
                         .textAlign("left")
-                        .setCellRenderer(cell -> a().attr("href", "https://geocat.ch").textContent("geocat.ch").element()))
+                        .setCellRenderer(cell -> a().css("generic-link").attr("href", "https://geocat.ch").textContent("geocat.ch").element()))
         .addColumn(ColumnConfig.<Dataset>create("perimeter", "Gebietseinteilung")
                 .setShowTooltip(false)                        
                 .textAlign("center")
                 .setCellRenderer(cell -> TextNode.of("-")))
-        .addColumn(ColumnConfig.<Dataset>create("formats", "Dateiformat auswählen")
+        .addColumn(ColumnConfig.<Dataset>create("formats", "Daten herunterladen")
                 .setShowTooltip(false)                        
                 .textAlign("left")
-                .setCellRenderer(cell -> 
-                                
+                .setCellRenderer(cell ->              
 //                {
 //                    return div().id("fubar").element();
 //                }
-                
                 div()
                         .add(
-                                Badge.create("GeoPackage").setBackground(Color.GREY_LIGHTEN_4).style().setMarginRight("10px").get().element()
+                                a().css("badge-link").attr("href", "/dataset/"+cell.getRecord().getId()+"/format/gpkg")
+                                .add(
+                                        Badge.create("GeoPackage")
+                                        .setBackground(Color.GREY_LIGHTEN_2)
+                                        .style()
+                                            .setMarginRight("10px")
+                                            .get()
+                                        .element()
+
+                                )
                         )
                         .add(
-                                Badge.create("INTERLIS").setBackground(Color.GREY_LIGHTEN_4).style().setMarginRight("10px").get().element()
+                                Badge.create("INTERLIS").setBackground(Color.GREY_LIGHTEN_3).style().setMarginRight("10px").get().element()
                         )
                         .add(
                                 Badge.create("DXF").setBackground(Color.GREY_LIGHTEN_4).style().setMarginRight("10px").get().element()
@@ -366,40 +399,33 @@ public class AppEntryPoint implements EntryPoint {
                 ))
         .addColumn(ColumnConfig.<Dataset>create("services", "Servicelink")
                 .setShowTooltip(false)                        
-                .textAlign("left")
-                .setCellRenderer(cell -> div()
-                        .add(
-                                a().attr("href", "WMS").textContent("WMS").element()
-                         )
-                        .add(TextNode.of(" / " ))
-                        .add(
-                                a().attr("href", "WFS").textContent("WFS").element()
-                        ).element()
+                .textAlign("center")
+                .setCellRenderer(cell -> {
+                    //HTMLElement serviceLinkElement = div().add(a().css("generic-link").textContent("WMS").element()).add(TextNode.of(" / " )).add(a().textContent("WFS").element()).element();
+                    HTMLElement serviceLinkElement = div().add(Icons.ALL.information_outline_mdi().style().setCursor("pointer")).element();
+                    serviceLinkElement.addEventListener("click", new EventListener() {
+                        @Override
+                        public void handleEvent(elemental2.dom.Event evt) {
+                            openServiceLinkDialog(cell.getRecord());                            
+                        }
                         
-//                {
-//                    HTMLElement div = new HTMLElement();
-//                    div.appendChild(a().attr("href", "WMS").textContent("WMS").element());
-//                    div.appendChild(a().attr("href", "Data Service").textContent("Data Service").element());
-//                    return div;
-//                }
+                    });
+                    return serviceLinkElement;                        
+                }));
                 
-                        ));
-        
-        
-        
-
 //            .addColumn(ColumnConfig.<Dataset>create("model", "Datenmodell")
 //                .textAlign("left")
 //                .sortable()
 //                .setCellRenderer(cell -> a().on(click, event -> showModel(cell.getRecord().model)).id("modelLink").attr("class", "DataSetDetailLink").add(span().textContent(cell.getRecord().model)).element()));
 
-        tableConfig.addPlugin(new HeaderBarPlugin("Demo table", "this a sample table with all features")
-                .addActionElement(new HeaderBarPlugin.ClearSearch<>())                
-                .addActionElement(new HeaderBarPlugin.SearchTableAction<>()));
+//        tableConfig.addPlugin(new HeaderBarPlugin("Demo table", "this a sample table with all features")
+//                .addActionElement(new HeaderBarPlugin.ClearSearch<>())                
+//                .addActionElement(new HeaderBarPlugin.SearchTableAction<>()));
+        tableConfig.addPlugin(new RecordDetailsPlugin<>(cell -> new DatasetDetail(cell).element()));
         
         listStore = new LocalListDataStore<>();
         listStore.setData(Arrays.asList(datasets));
-        listStore.setSearchFilter(new DatasetSearchFilter());
+//        listStore.setSearchFilter(new DatasetSearchFilter());
 
         datasetTable = new DataTable<>(tableConfig, listStore);
         datasetTable.setId("dataset-table");
@@ -475,132 +501,131 @@ public class AppEntryPoint implements EntryPoint {
                     
                     
                     
-                    showDatasetDetail(ds);
+                    //showDatasetDetail(ds);
                     return;
                 }
             }
         }
     }
     
-    private void showDatasetDetail(Dataset dataset) {
-        topLevelContent.hidden = true;
-        
-        History.newItem("dataset=" + dataset.getId());
-        
-//        String newUrl = baseUrl + "dataset/" + dataset.getId() + "/format/html";
-//        updateURLWithoutReloading(newUrl);
-        
-        datasetContent = div().id("dataset-content").element();
-        
-        // Breadcrumb
-        Breadcrumb breadcrumb = Breadcrumb.create()
-        .appendChild(Icons.ALL.home()," Home ", (evt) -> {
-            Window.open("https://geo.so.ch/", "_blank", null);
-        })
-        .appendChild(" Geodaten ", (evt) -> {
-            showHome();
-        })
-        .appendChild(" "+dataset.getTitle()+" ", (evt) -> {});
-        datasetContent.appendChild(breadcrumb.element());
-        
-        // Title of dataset
-        datasetContent.appendChild(div().css("sodata-title").textContent(dataset.getTitle()).element());
-        
-        // Short description
-        datasetContent.appendChild(div().css("info").textContent(dataset.getShortDescription()).element());
-
-        // Last editing date
-        Date date = DateTimeFormat.getFormat("yyyy-MM-dd").parse(dataset.getLastEditingDate());
-        HTMLElement lastEditingDate = div().css("info").add(TextNode.of(
-                "Stand der Daten: " + DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_LONG).format(date)))
-                .element();
-        datasetContent.appendChild(lastEditingDate);
-        
-        // The row which contains the map and the trees
-        Row mapPlusRow = Row.create();
-        mapPlusRow.setId("map-plus-row");
-        
-        // Show dataset in map
-        Column mapColumn = Column.span10();
-        
-        String knownWMS = dataset.getKnownWMS();
-        HashMap<String,String> queryParams = this.getUrlValues(knownWMS);
-        String layers = queryParams.get("LAYERS");
-        // TODO: make this optional in gwt-wgc-embed ?
-        String layersOpacity = "";
-        for (String layer : layers.split(",")) {
-            layersOpacity += "1,";
-        }
-        layersOpacity = layersOpacity.substring(0, layersOpacity.length() - 1);
-        
-        HTMLElement iframe = iframe().id("map").element();
-        iframe.style.setProperty("width", "100%");
-        iframe.style.setProperty("border", "0px solid white");
-        iframe.style.setProperty("height", "600px");
-        iframe.setAttribute("src", "https://geo-t.so.ch/api/embed/v1/embed.html?bgLayer=ch.so.agi.hintergrundkarte_sw&layers="+layers+"&layers_opacity="+layersOpacity+"&E=2620000&N=1237800&zoom=5");
-        mapColumn.appendChild(iframe);
-        mapPlusRow.appendChild(mapColumn);
-
-        // Data download and services
-        Row fileTreesRow = Row.create();
-        fileTreesRow.setId("file-trees-row");
-
-        Tree downloadTree =
-                Tree.create("Download")
-                    .setToggleTarget(ToggleTarget.ICON)
-                    .appendChild(
-                        TreeItem.create("INTERLIS/XTF", Icons.ALL.file_download_mdi()).removeWaves()
-                            .addClickListener((evt) -> Window.open("/dataset/"+dataset.getId()+"/format/xtf", "_blank", null)))
-                    .appendChild(
-                        TreeItem.create("GeoPackage", Icons.ALL.file_download_mdi()).removeWaves()
-                           .addClickListener((evt) -> Window.open("/dataset/"+dataset.getId()+"/format/gpkg", "_blank", null)))
-                    .appendChild(
-                        TreeItem.create("Shapefile", Icons.ALL.file_download_mdi()).removeWaves()
-                           .addClickListener((evt) -> Window.open("/dataset/"+dataset.getId()+"/format/shp", "_blank", null)))
-                    .appendChild(
-                        TreeItem.create("DXF", Icons.ALL.file_download_mdi()).removeWaves()
-                            .addClickListener((evt) -> Window.open("/dataset/"+dataset.getId()+"/format/dxf", "_blank", null)));
-        Column downloadColumn = Column.span12();
-        downloadColumn.appendChild(downloadTree.element());
-        fileTreesRow.appendChild(downloadColumn);
-        
-        Tree serviceTree =
-                Tree.create("Dienste")
-                    .setToggleTarget(ToggleTarget.ICON)
-                    .appendChild(
-                        TreeItem.create("WMS", Icons.ALL.map()).removeWaves()
-                           .addClickListener((evt) -> Notification.create("WMS").show()))
-                    .appendChild(
-                        TreeItem.create("WFS", Icons.ALL.file_download()).removeWaves()
-                           .addClickListener((evt) -> Notification.create("WFS").show()))
-                    .appendChild(
-                        TreeItem.create("Data service", Icons.ALL.file_download()).removeWaves()
-                            .addClickListener((evt) -> Notification.create("Cloud").show()));
-        Column serviceColumn = Column.span12();
-        serviceColumn.appendChild(serviceTree.element());
-        fileTreesRow.appendChild(serviceColumn);
-
-        Column fileTreesColumn = Column.span2();
-        fileTreesColumn.appendChild(fileTreesRow);
-        
-        mapPlusRow.appendChild(fileTreesColumn);
-        datasetContent.appendChild(mapPlusRow.element());
-       
-        // Keywords        
-        Row chipRow = Row.create();
-        Column chipColumn = Column.span12();
-        String[] keywords = dataset.getKeywords().split(",");
-        for (String keyword : keywords) {
-            chipColumn.appendChild(Chip.create()
-                    .setValue(keyword)
-                    .setColor(Color.GREY_LIGHTEN_1));
-            
-        }
-        chipRow.appendChild(chipColumn);
-        datasetContent.appendChild(div().css("info").add(chipRow.element()).element());
-
-        container.appendChild(datasetContent);        
-    }
+//    private void showDatasetDetail(Dataset dataset) {
+//        topLevelContent.hidden = true;
+//        
+//        History.newItem("dataset=" + dataset.getId());
+//        
+////        String newUrl = baseUrl + "dataset/" + dataset.getId() + "/format/html";
+////        updateURLWithoutReloading(newUrl);
+//        
+//        datasetContent = div().id("dataset-content").element();
+//        
+//        // Breadcrumb
+//        Breadcrumb breadcrumb = Breadcrumb.create()
+//        .appendChild(Icons.ALL.home()," Home ", (evt) -> {
+//            Window.open("https://geo.so.ch/", "_blank", null);
+//        })
+//        .appendChild(" Geodaten ", (evt) -> {
+//            showHome();
+//        })
+//        .appendChild(" "+dataset.getTitle()+" ", (evt) -> {});
+//        datasetContent.appendChild(breadcrumb.element());
+//        
+//        // Title of dataset
+//        datasetContent.appendChild(div().css("sodata-title").textContent(dataset.getTitle()).element());
+//        
+//        // Short description
+//        datasetContent.appendChild(div().css("info").textContent(dataset.getShortDescription()).element());
+//
+//        // Last editing date
+//        Date date = DateTimeFormat.getFormat("yyyy-MM-dd").parse(dataset.getLastEditingDate());
+//        HTMLElement lastEditingDate = div().css("info").add(TextNode.of(
+//                "Stand der Daten: " + DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_LONG).format(date)))
+//                .element();
+//        datasetContent.appendChild(lastEditingDate);
+//        
+//        // The row which contains the map and the trees
+//        Row mapPlusRow = Row.create();
+//        mapPlusRow.setId("map-plus-row");
+//        
+//        // Show dataset in map
+//        Column mapColumn = Column.span10();
+//        
+//        String knownWMS = dataset.getKnownWMS();
+//        HashMap<String,String> queryParams = this.getUrlValues(knownWMS);
+//        String layers = queryParams.get("LAYERS");
+//        // TODO: make this optional in gwt-wgc-embed ?
+//        String layersOpacity = "";
+//            layersOpacity += "1,";
+//        }
+//        layersOpacity = layersOpacity.substring(0, layersOpacity.length() - 1);
+//        
+//        HTMLElement iframe = iframe().id("map").element();
+//        iframe.style.setProperty("width", "100%");
+//        iframe.style.setProperty("border", "0px solid white");
+//        iframe.style.setProperty("height", "600px");
+//        iframe.setAttribute("src", "https://geo-t.so.ch/api/embed/v1/embed.html?bgLayer=ch.so.agi.hintergrundkarte_sw&layers="+layers+"&layers_opacity="+layersOpacity+"&E=2620000&N=1237800&zoom=5");
+//        mapColumn.appendChild(iframe);
+//        mapPlusRow.appendChild(mapColumn);
+//
+//        // Data download and services
+//        Row fileTreesRow = Row.create();
+//        fileTreesRow.setId("file-trees-row");
+//
+//        Tree downloadTree =
+//                Tree.create("Download")
+//                    .setToggleTarget(ToggleTarget.ICON)
+//                    .appendChild(
+//                        TreeItem.create("INTERLIS/XTF", Icons.ALL.file_download_mdi()).removeWaves()
+//                            .addClickListener((evt) -> Window.open("/dataset/"+dataset.getId()+"/format/xtf", "_blank", null)))
+//                    .appendChild(
+//                        TreeItem.create("GeoPackage", Icons.ALL.file_download_mdi()).removeWaves()
+//                           .addClickListener((evt) -> Window.open("/dataset/"+dataset.getId()+"/format/gpkg", "_blank", null)))
+//                    .appendChild(
+//                        TreeItem.create("Shapefile", Icons.ALL.file_download_mdi()).removeWaves()
+//                           .addClickListener((evt) -> Window.open("/dataset/"+dataset.getId()+"/format/shp", "_blank", null)))
+//                    .appendChild(
+//                        TreeItem.create("DXF", Icons.ALL.file_download_mdi()).removeWaves()
+//                            .addClickListener((evt) -> Window.open("/dataset/"+dataset.getId()+"/format/dxf", "_blank", null)));
+//        Column downloadColumn = Column.span12();
+//        downloadColumn.appendChild(downloadTree.element());
+//        fileTreesRow.appendChild(downloadColumn);
+//        
+//        Tree serviceTree =
+//                Tree.create("Dienste")
+//                    .setToggleTarget(ToggleTarget.ICON)
+//                    .appendChild(
+//                        TreeItem.create("WMS", Icons.ALL.map()).removeWaves()
+//                           .addClickListener((evt) -> Notification.create("WMS").show()))
+//                    .appendChild(
+//                        TreeItem.create("WFS", Icons.ALL.file_download()).removeWaves()
+//                           .addClickListener((evt) -> Notification.create("WFS").show()))
+//                    .appendChild(
+//                        TreeItem.create("Data service", Icons.ALL.file_download()).removeWaves()
+//                            .addClickListener((evt) -> Notification.create("Cloud").show()));
+//        Column serviceColumn = Column.span12();
+//        serviceColumn.appendChild(serviceTree.element());
+//        fileTreesRow.appendChild(serviceColumn);
+//
+//        Column fileTreesColumn = Column.span2();
+//        fileTreesColumn.appendChild(fileTreesRow);
+//        
+//        mapPlusRow.appendChild(fileTreesColumn);
+//        datasetContent.appendChild(mapPlusRow.element());
+//       
+//        // Keywords        
+//        Row chipRow = Row.create();
+//        Column chipColumn = Column.span12();
+//        String[] keywords = dataset.getKeywords().split(",");
+//        for (String keyword : keywords) {
+//            chipColumn.appendChild(Chip.create()
+//                    .setValue(keyword)
+//                    .setColor(Color.GREY_LIGHTEN_1));
+//            
+//        }
+//        chipRow.appendChild(chipColumn);
+//        datasetContent.appendChild(div().css("info").add(chipRow.element()).element());
+//
+//        container.appendChild(datasetContent);        
+//    }
     
     private void showHome() {
         // TODO fix me
@@ -610,6 +635,30 @@ public class AppEntryPoint implements EntryPoint {
         datasetContent.hidden = true;
         topLevelContent.hidden = false;
     }
+    
+    private void openServiceLinkDialog(Dataset dataset) {
+        ModalDialog modal = ModalDialog.create("Servicelink").setAutoClose(true);
+
+//        modal.appendChild(div().add(Icons.ALL.file_download_mdi().element()).add(span().textContent("WMS: https://geo.so.ch/wms")));
+//        modal.appendChild(div().textContent("WFS: https://geo.so.ch/wfs"));
+        
+        modal.appendChild(
+                InfoBox.create(Icons.ALL.map(), "WMS", "https://geo.so.ch/wms").setIconBackground(Color.RED)
+        );
+        modal.appendChild(
+                InfoBox.create(Icons.ALL.file_download_mdi(), "WFS", "https://geo.so.ch/wfs").setIconBackground(Color.RED)
+        );
+        modal.appendChild(
+                InfoBox.create(Icons.ALL.file_download_mdi(), "Data Service", "https://geo.so.ch/api/data/v1/api/").setIconBackground(Color.RED)
+        );        
+        
+        Button closeButton = Button.create("CLOSE").linkify();
+        EventListener closeModalListener = (evt) -> modal.close();
+        closeButton.addClickListener(closeModalListener);
+        modal.appendFooterChild(closeButton);
+        modal.open();
+    }
+    
         
     private void openDatasetDialog(Dataset dataset) {
         ModalDialog modal = ModalDialog.create(dataset.getTitle()).setAutoClose(true);
