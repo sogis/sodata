@@ -217,13 +217,6 @@ public class AppEntryPoint implements EntryPoint {
                 textBox.clear();
                 listStore.setData(Arrays.asList(datasets));
             }
-
-//            @Override
-//            public void handleEvent(elemental2.dom.Event evt) {
-//                // TODO Auto-generated method stub
-//                
-//                
-//            }
         });        
         textBox.addRightAddOn(resetIcon);
 
@@ -239,31 +232,15 @@ public class AppEntryPoint implements EntryPoint {
                 return response.text();
             }).then(json -> {
                 Dataset[] searchResults = (Dataset[]) Global.JSON.parse(json);
-                List<Dataset> searchResultList = Arrays.asList(searchResults);
-                
-//                console.log(searchResultList.get(0).getId());
-
-//                List<SuggestItem<Dataset>> suggestItems = new ArrayList<>();
-//                for (Dataset dataset : searchResults) {
-//                    SuggestItem<Dataset> suggestItem = SuggestItem.create(dataset, dataset.getTitle(), null);
-//                    suggestItems.add(suggestItem);
-//                }
-//                suggestionsHandler.onSuggestionsReady(suggestItems);
-//
-//                List<Dataset> datasetList = Arrays.asList(datasets);
+                List<Dataset> searchResultList = Arrays.asList(searchResults);                
                 listStore.setData(searchResultList);
-
                 return null;
             }).catch_(error -> {
                 console.log(error);
                 return null;
             });
-
         });
- 
-        
         topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(textBox)).element());
-        
         
         TableConfig<Dataset> tableConfig = new TableConfig<>();
         tableConfig
@@ -302,20 +279,20 @@ public class AppEntryPoint implements EntryPoint {
                                         Badge.create("GeoPackage")
                                         .setBackground(Color.GREY_LIGHTEN_2)
                                         .style()
-                                            .setMarginRight("10px")
+                                            .setMarginRight("10px").setMarginTop("5px").setMarginBottom("5px")
                                             .get()
                                         .element()
 
                                 )
                         )
                         .add(
-                                Badge.create("INTERLIS").setBackground(Color.GREY_LIGHTEN_3).style().setMarginRight("10px").get().element()
+                                Badge.create("INTERLIS").setBackground(Color.GREY_LIGHTEN_3).style().setMarginRight("10px").setMarginTop("5px").setMarginBottom("5px").get().element()
                         )
                         .add(
-                                Badge.create("DXF").setBackground(Color.GREY_LIGHTEN_4).style().setMarginRight("10px").get().element()
+                                Badge.create("DXF").setBackground(Color.GREY_LIGHTEN_4).style().setMarginRight("10px").setMarginTop("5px").setMarginBottom("5px").get().element()
                         )
                         .add(
-                                Badge.create("Shapefile").setBackground(Color.GREY_LIGHTEN_4).element()
+                                Badge.create("Shapefile").setBackground(Color.GREY_LIGHTEN_4).style().setMarginTop("5px").setMarginBottom("5px").get().element()
                         ).element()
                 ))
         .addColumn(ColumnConfig.<Dataset>create("services", "Servicelink")
@@ -355,39 +332,6 @@ public class AppEntryPoint implements EntryPoint {
         datasetTable.load();
         
         topLevelContent.appendChild(datasetTable.element());
-
-//        ListGroup<Dataset> listGroup = ListGroup.<Dataset>create()
-//                .setBordered(false)
-//                .setItemRenderer((listGroup1, listItem) -> {
-//                    HTMLElement datasetLink = a().attr("class", "dataset-link")
-//                            .add(TextNode.of(listItem.getValue().getTitle())).element();
-//                    datasetLink.addEventListener("click", event -> {                        
-//                        showDatasetDetail(listItem.getValue());
-//                    });
-//                    
-//                    Row datasetRow = Row.create();
-//                    datasetRow.appendChild(Column.span11().setContent(datasetLink));
-//                    
-//                    Button button = Button.createPrimary(Icons.ALL.arrow_forward())
-//                            .circle().setSize(ButtonSize.SMALL)
-//                            .setButtonType(StyleType.DANGER)
-//                            .style()
-//                            .setBackgroundColor("#ef5350")
-//                            .get();
-//                    
-//                    button.addClickListener(even -> {
-//                        openDatasetDialog(listItem.getValue());
-//                    });
-//                    
-//                    datasetRow.appendChild(Column.span1().style().setTextAlign("right").get().setContent(button));
-//
-//                    listItem.appendChild(div()
-//                            .css("dataset-list")
-//                            .add(datasetRow));                        
-//                })
-//                .setItems(datasetList);
-//        
-//        topLevelContent.appendChild(listGroup.element());
         
         container.appendChild(topLevelContent);
         body().add(container);
