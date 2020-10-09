@@ -38,7 +38,7 @@ body, div {
 #container {
     margin-left: auto;
     margin-right: auto;
-    width: 1600px;
+    width: 1400px;
     max-width: 95%;
     background-color: #FFFFFF;        
 }
@@ -60,7 +60,7 @@ body, div {
 
 .info {
     margin-top: 30px;
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
 }
 
@@ -137,7 +137,7 @@ a.badge-link:visited {
 }
 
 #dataset-table {
-	font-size: 15px;
+	font-size: 16px;
 }
 
 tr {
@@ -149,10 +149,10 @@ th div {
 }
 
 .dataset-list {
-    font-size: 17px;
+    font-size: 16px;
     border-bottom: 1px solid #e0e0e0;
-    padding-top: 15px;
-    padding-bottom: 15px;
+    padding-top: 16px;
+    padding-bottom: 16px;
     /*margin: -1px -1px 0px -1px;*/    
 }
 
@@ -174,17 +174,17 @@ a.dataset-link:visited {
 }
 
 .model-header {
-	font-size: 17px !important;
+	font-size: 16px !important;
     color: #333333 !important;	
 }
 
 .modal .modal-content .modal-body {
-	font-size: 15px !important;
+	font-size: 16px !important;
 	color: #333333 !important;
 }
 
 .modal-body-paragraph {
-	padding-bottom: 15px;
+	padding-bottom: 16px;
 }
 
 #modalContainer {

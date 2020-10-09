@@ -95,41 +95,7 @@ public class MainController {
 
         return new ResponseEntity<String>("sodata", HttpStatus.OK);
     }
-    
-    @GetMapping("/search")
-    public List<Dataset> search(@RequestParam(value="query", required=true) String queryString) {
-        log.info("queryString: " + queryString);
         
-        Result results = null;
-        try {
-            results = indexSearcher.searchIndex(queryString, QUERY_DEFAULT_RECORDS, false);
-            log.info("Search for '" + queryString +"' found " + results.getAvailable() + " and retrieved " + results.getRetrieved() + " records");            
-        } catch (LuceneSearcherException | InvalidLuceneQueryException e) {
-            throw new IllegalStateException(e);
-        }
-
-        List<Map<String, String>> records = results.getRecords();
-        List<Dataset> resultList = records.stream()
-                .map(r -> {
-                    // TODO: Wenn die config eine Map wäre, könnte man das Dataset dort requesten.
-                    // Oder reicht es im Client?
-//                    Dataset ds = new Dataset();
-//                    ds.setId(r.get("id"));
-//                    ds.setTitle(r.get("title"));
-//                    return ds;
-                    
-                    return datasetMap.get(r.get("id"));
-                })
-                .collect(Collectors.toList());
-        
-        return resultList;
-    }
-   
-//    @GetMapping("/datasets")
-//    public List<Dataset> datasets() {
-//        return config.getDatasets();
-//    }    
-    
     @GetMapping("/datasets")
     public List<Dataset> searchDatasets(@RequestParam(value="query", required=false) String queryString) {
         if (queryString == null) {
@@ -154,25 +120,12 @@ public class MainController {
         }
     }
     
-    @GetMapping("/dataset/{id}/format/{format}") 
-    public RedirectView datset(@PathVariable String id, @PathVariable String format) {
-        log.info(id);
-        log.info(format);
-        
-        // Nur falls dataset URL direkt aufgerufen wird.
-        if (format.equalsIgnoreCase("html")) {
-            RedirectView redirectView = new RedirectView();
-            String url = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "#dataset="+id;
-            log.info(url);
-            redirectView.setUrl(url);
-            return redirectView;
-
-        } else {
-            RedirectView redirectView = new RedirectView();
-            // TODO: Im wahren Leben steckt die URL in der Konfig, da sie unterschiedlich sein kann.
-            redirectView.setUrl("https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata/"+id+"_"+format+".zip");
-            return redirectView;
-        }
+    @GetMapping("/dataset/{fileName}") 
+    public RedirectView datset(@PathVariable String fileName) {
+        RedirectView redirectView = new RedirectView();
+        // TODO: Im wahren Leben steckt die URL in der Konfig, da sie unterschiedlich sein kann.
+        redirectView.setUrl("https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata/" + fileName);
+        return redirectView;
     }
     
     // TODO: PostConstruct
@@ -265,11 +218,15 @@ public class MainController {
                     fileFormat = "x-gis/x-shapefile";
                 } else if (fileStr.equalsIgnoreCase("dxf")) {
                     fileFormat = "application/dxf";
+                } else if (fileStr.equalsIgnoreCase("gtiff")) {
+                    fileFormat = "image/geo+tiff";
+                } else if (fileStr.equalsIgnoreCase("laz")) {
+                    fileFormat = "application/octet-stream";
                 }
                 files.setattrvalue("fileFormat", fileFormat);
                 
                 Iom_jObject file = new Iom_jObject("DatasetIdx16.File", null);
-                file.setattrvalue("path", "/dataset/"+dataset.getId()+"/format/"+fileStr);
+                file.setattrvalue("path", "/dataset/" + dataset.getId() + "_" + fileStr + ".zip");
                 files.addattrobj("file", file);
                 iomObj.addattrobj("files", files);                
             } 

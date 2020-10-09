@@ -26,6 +26,26 @@ logging:
 app:
     myVar: ${VAR:defaultValue}
     datasets:
+        - id: ch.so.agi.lidar_2019.dtm_hillshade
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AGI_Lidarprodukte_Publikation_20180202
+          epsgCode: 2056
+          resolutionScope: 500
+          publishingDate: 2019-05-13
+          lastEditingDate: 2019-05-13
+          title: Relief digitales Terrainmodell (LiDAR 2019)
+          shortDescription: Bei der Ebene "Relief digitales Terrainmodell (LiDAR 2019)" handelt es sich um die schattierte Abbildung der Erdoberfläche ohne Gebäuden und Vegetation. Die Daten basieren auf luftgestützten Lasermessungen mit einer mittleren Punktdichte von 16 Punkten pro m2 und einer Höhengenauigkeit von 10 cm (1 Sigma=68%). Die Auflösung des Reliefs beträgt 25 cm. Die Befliegung erfolgte im Frühjahr 2019.
+          keywords: LiDAR,Laserscanning,DTM,Schattenbild,Hillshading,Terrain,AGI
+          provider: Amt für Geoinformation (AGI)
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_Lidarprodukte_Publikation_20180202.uml
+          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          subunits: ch.so.agi.lidar_2019.index
+          files:
+            - gtiff
         - id: ch.so.agi.av_gb_administrative_einteilungen
           version: current
           owner: mailto:agi@bd.so.ch

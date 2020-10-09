@@ -118,7 +118,15 @@ public class AppEntryPoint implements EntryPoint {
     LocalListDataStore<Dataset> listStore;
     DataTable<Dataset> datasetTable;
     
+    HashMap<String,String> formats = new HashMap<String,String>();
+    
     public void onModuleLoad() {
+        formats.put("xtf", "INTERLIS");
+        formats.put("shp", "Shapefile");
+        formats.put("dxf", "DXF");
+        formats.put("gpkg", "GeoPackage");
+        formats.put("gtiff", "GeoTIFF");
+        
         settingsService.settingsServer(new AsyncCallback<SettingsResponse>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -196,9 +204,9 @@ public class AppEntryPoint implements EntryPoint {
 //        container.appendChild(div().css("sodata-title").textContent("Geodaten Kanton Solothurn").element());
         
         String infoString = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
-                + "<a href='https://geoweb.so.ch/geodaten/index.php' target='_blank'>https://geoweb.so.ch/geodaten/index.php</a> eirmod "
+                + "<a class='generic-link' href='https://geoweb.so.ch/geodaten/index.php' target='_blank'>https://geoweb.so.ch/geodaten/index.php</a> eirmod "
                 + "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et "
-                + "justo <a href='https://geo.so.ch/geodata' target='_blank'>https://geo.so.ch/geodata</a> "
+                + "justo <a class='generic-link' href='https://geo.so.ch/geodata' target='_blank'>https://geo.so.ch/geodata</a> "
                 + "duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
         topLevelContent.appendChild(div().css("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
 //        container.appendChild(div().id("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
@@ -257,73 +265,84 @@ public class AppEntryPoint implements EntryPoint {
                             return TextNode.of(dateString);
                             
                         }))
-                .addColumn(ColumnConfig.<Dataset>create("metadata", "Metadaten")
-                        .setShowTooltip(false)                        
-                        .textAlign("left")
-                        .setCellRenderer(cell -> a().css("generic-link").attr("href", "https://geocat.ch").textContent("geocat.ch").element()))
-        .addColumn(ColumnConfig.<Dataset>create("perimeter", "Gebietseinteilung")
+//                .addColumn(ColumnConfig.<Dataset>create("metadata", "Metadaten")
+//                        .setShowTooltip(false)                        
+//                        .textAlign("left")
+//                        .setCellRenderer(cell -> a().css("generic-link").attr("href", "https://geocat.ch").textContent("geocat.ch").element()))
+        .addColumn(ColumnConfig.<Dataset>create("perimeter", "Gebiet")
                 .setShowTooltip(false)                        
                 .textAlign("center")
-                .setCellRenderer(cell -> TextNode.of("-")))
+                .setCellRenderer(cell -> {
+                    if (cell.getRecord().getSubunits() != null) {
+                        HTMLElement regionSelectionElement = a().css("generic-link").textContent("Gebietsauswahl nötig").element();
+                        regionSelectionElement.addEventListener("click", new EventListener() {
+                            @Override
+                            public void handleEvent(elemental2.dom.Event evt) {
+                                openRegionSelectionDialog(cell.getRecord());                            
+                            }
+
+                        });
+                        return regionSelectionElement;
+                        
+                    } else {
+                        return TextNode.of("-");
+                    }
+                    
+                    
+                }))
         .addColumn(ColumnConfig.<Dataset>create("formats", "Daten herunterladen")
                 .setShowTooltip(false)                        
                 .textAlign("left")
-                .setCellRenderer(cell ->              
-//                {
-//                    return div().id("fubar").element();
-//                }
-                div()
-                        .add(
-                                a().css("badge-link").attr("href", "/dataset/"+cell.getRecord().getId()+"/format/gpkg")
-                                .add(
-                                        Badge.create("GeoPackage")
-                                        .setBackground(Color.GREY_LIGHTEN_2)
-                                        .style()
-                                            .setMarginRight("10px").setMarginTop("5px").setMarginBottom("5px")
-                                            .get()
-                                        .element()
-
-                                )
-                        )
-                        .add(
-                                Badge.create("INTERLIS").setBackground(Color.GREY_LIGHTEN_3).style().setMarginRight("10px").setMarginTop("5px").setMarginBottom("5px").get().element()
-                        )
-                        .add(
-                                Badge.create("DXF").setBackground(Color.GREY_LIGHTEN_4).style().setMarginRight("10px").setMarginTop("5px").setMarginBottom("5px").get().element()
-                        )
-                        .add(
-                                Badge.create("Shapefile").setBackground(Color.GREY_LIGHTEN_4).style().setMarginTop("5px").setMarginBottom("5px").get().element()
-                        ).element()
-                ))
+                .setCellRenderer(cell -> {
+                    HTMLElement badgesElement = div().element();
+                    
+                    for (String fileStr : cell.getRecord().getFiles()) {                        
+                        if (cell.getRecord().getSubunits() != null) {
+                            badgesElement.appendChild(
+                                Badge.create(formats.get(fileStr))
+                                    .setBackground(Color.GREY_LIGHTEN_4)
+                                    .style()
+                                        .setMarginRight("10px")
+                                        .setMarginTop("5px")
+                                        .setMarginBottom("5px")
+                                        .get()
+                                    .element()
+                            );
+                        } else {
+                            badgesElement.appendChild(a().css("badge-link")
+                                    .attr("href", "/dataset/" + cell.getRecord().getId() + "_" + fileStr + ".zip")
+                                    .add(Badge.create(formats.get(fileStr))
+                                            .setBackground(Color.GREY_LIGHTEN_2)
+                                            .style()
+                                                .setMarginRight("10px")
+                                                .setMarginTop("5px")
+                                                .setMarginBottom("5px")
+                                                .get()
+                                            .element())
+                                    .element());
+                        }
+                    }
+                    
+                    return badgesElement;
+                }))
         .addColumn(ColumnConfig.<Dataset>create("services", "Servicelink")
                 .setShowTooltip(false)                        
                 .textAlign("center")
                 .setCellRenderer(cell -> {
-                    //HTMLElement serviceLinkElement = div().add(a().css("generic-link").textContent("WMS").element()).add(TextNode.of(" / " )).add(a().textContent("WFS").element()).element();
                     HTMLElement serviceLinkElement = div().add(Icons.ALL.information_outline_mdi().style().setCursor("pointer")).element();
                     serviceLinkElement.addEventListener("click", new EventListener() {
                         @Override
                         public void handleEvent(elemental2.dom.Event evt) {
                             openServiceLinkDialog(cell.getRecord());                            
                         }
-                        
                     });
                     return serviceLinkElement;                        
                 }));
                 
-//            .addColumn(ColumnConfig.<Dataset>create("model", "Datenmodell")
-//                .textAlign("left")
-//                .sortable()
-//                .setCellRenderer(cell -> a().on(click, event -> showModel(cell.getRecord().model)).id("modelLink").attr("class", "DataSetDetailLink").add(span().textContent(cell.getRecord().model)).element()));
-
-//        tableConfig.addPlugin(new HeaderBarPlugin("Demo table", "this a sample table with all features")
-//                .addActionElement(new HeaderBarPlugin.ClearSearch<>())                
-//                .addActionElement(new HeaderBarPlugin.SearchTableAction<>()));
         tableConfig.addPlugin(new RecordDetailsPlugin<>(cell -> new DatasetDetail(cell).element()));
         
         listStore = new LocalListDataStore<>();
         listStore.setData(Arrays.asList(datasets));
-//        listStore.setSearchFilter(new DatasetSearchFilter());
 
         datasetTable = new DataTable<>(tableConfig, listStore);
         datasetTable.setId("dataset-table");
@@ -501,11 +520,19 @@ public class AppEntryPoint implements EntryPoint {
         topLevelContent.hidden = false;
     }
     
+    private void openRegionSelectionDialog(Dataset dataset) {
+        ModalDialog modal = ModalDialog.create("Gebietsauswahl").setAutoClose(true);
+
+        Button closeButton = Button.create("CLOSE").linkify();
+        EventListener closeModalListener = (evt) -> modal.close();
+        closeButton.addClickListener(closeModalListener);
+        modal.appendFooterChild(closeButton);
+        modal.large().open();
+    }
+    
+    
     private void openServiceLinkDialog(Dataset dataset) {
         ModalDialog modal = ModalDialog.create("Servicelink").setAutoClose(true);
-
-//        modal.appendChild(div().add(Icons.ALL.file_download_mdi().element()).add(span().textContent("WMS: https://geo.so.ch/wms")));
-//        modal.appendChild(div().textContent("WFS: https://geo.so.ch/wfs"));
         
         modal.appendChild(
                 InfoBox.create(Icons.ALL.map(), "WMS", "https://geo.so.ch/wms").setIconBackground(Color.RED)

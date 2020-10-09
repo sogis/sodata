@@ -24,6 +24,7 @@ public final class Dataset {
     private String furtherInformation;
     private String furtherMetadata;
     private String knownWMS;
+    private String subunits;
     private String[] files;
     
     @JsOverlay
@@ -162,6 +163,14 @@ public final class Dataset {
     public void setKnownWMS(String knownWMS) {
         this.knownWMS = knownWMS;
     }
+    @JsOverlay
+    public String getSubunits() {
+        return subunits;
+    }
+    @JsOverlay
+    public void setSubunits(String subunits) {
+        this.subunits = subunits;
+    }    
     @JsOverlay
     public String[] getFiles() {
         return files;
