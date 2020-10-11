@@ -50,7 +50,7 @@ public class DatasetDetail implements IsElement<HTMLElement> {
         if (cell.getRecord().getTables() != null) {
             for (DatasetTable datasetTable : cell.getRecord().getTables()) {
                 HTMLElement details = (HTMLElement) DomGlobal.document.createElement("details");
-                details.style.paddingBottom = CSSProperties.PaddingBottomUnionType.of("10px");
+                details.style.paddingBottom = CSSProperties.PaddingBottomUnionType.of("5px");
                 details.style.paddingRight = CSSProperties.PaddingRightUnionType.of("30px");
                 HTMLElement summary = (HTMLElement) DomGlobal.document.createElement("summary");
                 summary.textContent = datasetTable.getTitle();
