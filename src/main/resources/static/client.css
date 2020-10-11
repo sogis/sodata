@@ -86,6 +86,10 @@ a:visited {
 } 
 */
 
+h4, .h4 {
+    font-size: 16px !important;
+}
+
 a {
     color: #333333; 
     text-decoration: underline !important;

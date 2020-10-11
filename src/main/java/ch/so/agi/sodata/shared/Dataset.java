@@ -26,6 +26,7 @@ public final class Dataset {
     private String knownWMS;
     private String subunits;
     private String[] files;
+    private DatasetTable[] tables;
     
     @JsOverlay
     public String getId() {
@@ -178,5 +179,13 @@ public final class Dataset {
     @JsOverlay    
     public void setFiles(String[] files) {
         this.files = files;
-    } 
+    }
+    @JsOverlay
+    public DatasetTable[] getTables() {
+        return tables;
+    }
+    @JsOverlay
+    public void setTables(DatasetTable[] tables) {
+        this.tables = tables;
+    }
 }

@@ -1,13 +1,18 @@
 # sodata
 
 ## TODO
-- history
-- bookmarkable
-- Modal via URL (z.B localhost:8080/ch.so.awjf.forstkreise)
-- ilidata.xml
+- ~~history~~
+- ~~bookmarkable~~
+- ~~Modal via URL (z.B localhost:8080/ch.so.awjf.forstkreise)~~
+- ~~ilidata.xml~~
 - Lucene Suche
-- group by Amt
-- ...
+- ~~group by Amt~~
+- dataset link mit korrektem name der Datei
+- Gebietseinteilung
+- Detail zum Datensatz
+- Link zur Karte (siehe Mockup)
+- Raster vs. Vektorsubunits
+- versionierte Datensätze?
 - ...
 
 ## Development

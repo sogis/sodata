@@ -83,6 +83,9 @@ public class MainController {
     public void init() {
         datasetMap = new HashMap<String, Dataset>();
         for (Dataset dataset : config.getDatasets()) {
+
+            log.info("******" + dataset.getTables());
+
             datasetMap.put(dataset.getId(), dataset);
         }
     }

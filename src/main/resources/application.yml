@@ -68,6 +68,11 @@ app:
             - gpkg
             - shp
             - dxf
+          tables:
+            - title: Grundbuchkreis
+              description: Grundbuchkreisaufteilung inkl. Anschrift etc. der einzelnen Kreise
+            - title: Gemeinde
+              description: Gemeinde mit zuständigem Nachführungsgeometer und Anschrift der Firma etc.
         - id: ch.so.agi.dummy
           version: current
           owner: mailto:agi@bd.so.ch

@@ -194,7 +194,7 @@ public class AppEntryPoint implements EntryPoint {
         // Breadcrumb
         Breadcrumb breadcrumb = Breadcrumb.create()
         .appendChild(Icons.ALL.home()," Home ", (evt) -> {
-            Window.open("https://geo.so.ch/", "_blank", null);
+            Window.open("https://geo.so.ch/", "_self", null);
         })
         .appendChild(" Geodaten ", (evt) -> {});
         topLevelContent.appendChild(breadcrumb.element());
@@ -511,17 +511,18 @@ public class AppEntryPoint implements EntryPoint {
 //        container.appendChild(datasetContent);        
 //    }
     
-    private void showHome() {
-        // TODO fix me
-        // auch mit replaceState versuchen. Vielleicht funktioniert es wie gewünscht.
-        updateURLWithoutReloading(baseUrl);
-        datasetContent.innerHTML = "";
-        datasetContent.hidden = true;
-        topLevelContent.hidden = false;
-    }
-    
     private void openRegionSelectionDialog(Dataset dataset) {
         ModalDialog modal = ModalDialog.create("Gebietsauswahl").setAutoClose(true);
+        
+        String subunitsWmsLayer = dataset.getSubunits();
+        
+        HTMLElement iframe = iframe().id("map").element();
+        iframe.style.setProperty("width", "100%");
+        iframe.style.setProperty("border", "0px solid white");
+        iframe.style.setProperty("height", "600px");
+        iframe.setAttribute("src",
+                "https://geo.so.ch/api/embed/v1/embed.html?bgLayer=ch.so.agi.hintergrundkarte_sw&layers="+subunitsWmsLayer+"&layers_opacity=1.0&E=2620000&N=1237800&zoom=5");
+        modal.appendChild(iframe);
 
         Button closeButton = Button.create("CLOSE").linkify();
         EventListener closeModalListener = (evt) -> modal.close();
