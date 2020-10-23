@@ -36,3 +36,13 @@ Build fat jar and docker image:
 ```
 GITHUB_RUN_NUMBER=9999 mvn clean package
 ```
+
+
+### QGIS server
+```
+docker-compose build
+```
+
+```
+http://localhost:8083/wms/subunits?SERVICE=WMS&REQUEST=GetCapabilities
+```
