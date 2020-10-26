@@ -367,9 +367,10 @@ public class AppEntryPoint implements EntryPoint {
         modal = ModalDialog.create("Gebietsauswahl").setAutoClose(true);
         
         HTMLDivElement mapDiv2 = div().id("map").element();
+        Map map2 = MapPresets.getBlackAndWhiteMap(mapDiv2.id);   
         modal.appendChild(mapDiv2);
 
-        Map map2 = MapPresets.getBlackAndWhiteMap(mapDiv2.id);        
+             
                 
 
         Button closeButton = Button.create("CLOSE").linkify();
