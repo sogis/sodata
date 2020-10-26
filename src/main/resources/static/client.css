@@ -12,7 +12,9 @@ body, div {
 
 #map {
 	/*margin-top: 30px;*/
-    height: 100%;
+    /*height: 100%;*/
+    width: 400px;
+    height: 300px;
 }
 
 #map-plus-row {

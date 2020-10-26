@@ -15,17 +15,11 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import ch.so.agi.sodata.shared.SettingsResponse;
 import ch.so.agi.sodata.shared.SettingsService;
 
-public class SettingsServiceImpl extends RemoteServiceServlet implements SettingsService {
+public class SettingsServiceImpl extends SpringRemoteServiceServlet implements SettingsService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Value("${app.myVar}")
     private String myVar;
-
-    @Override
-    public void init() throws ServletException {
-         super.init();
-         SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
-    }
     
     @Override
     public SettingsResponse settingsServer() throws IllegalArgumentException, IOException {

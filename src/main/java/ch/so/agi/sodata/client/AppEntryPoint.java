@@ -108,17 +108,20 @@ public class AppEntryPoint implements EntryPoint {
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
     private NumberFormat fmtPercent = NumberFormat.getFormat("#0.0");
         
-    String baseUrl;
-    HTMLElement container;
-    HTMLElement topLevelContent;
-    HTMLElement datasetContent;
-    Dataset[] datasets;
-    List<Dataset> datasetList;
+    private Map map;
+    private HTMLElement mapDiv;
+    ModalDialog modal;
+    private String baseUrl;
+    private HTMLElement container;
+    private HTMLElement topLevelContent;
+    private HTMLElement datasetContent;
+    private Dataset[] datasets;
+    private List<Dataset> datasetList;
     
-    LocalListDataStore<Dataset> listStore;
-    DataTable<Dataset> datasetTable;
+    private LocalListDataStore<Dataset> listStore;
+    private DataTable<Dataset> datasetTable;
     
-    HashMap<String,String> formats = new HashMap<String,String>();
+    private HashMap<String,String> formats = new HashMap<String,String>();
     
     public void onModuleLoad() {
         formats.put("xtf", "INTERLIS");
@@ -174,7 +177,7 @@ public class AppEntryPoint implements EntryPoint {
     }
 
     @SuppressWarnings("unchecked")
-    private void init() {      
+    private void init() {              
         // TODO Überprüfen, ob es nicht im else vom redirect stehen muss.
         baseUrl = Window.Location.getProtocol() + "//" + Window.Location.getHost() + Window.Location.getPath();
         
@@ -355,6 +358,33 @@ public class AppEntryPoint implements EntryPoint {
         container.appendChild(topLevelContent);
         body().add(container);
         
+//        mapDiv = div().id("map").element();
+//        body().add(mapDiv);
+//        map = MapPresets.getBlackAndWhiteMap(mapDiv.id);
+
+        
+        
+        modal = ModalDialog.create("Gebietsauswahl").setAutoClose(true);
+        
+        HTMLDivElement mapDiv2 = div().id("map").element();
+        modal.appendChild(mapDiv2);
+
+        Map map2 = MapPresets.getBlackAndWhiteMap(mapDiv2.id);        
+                
+
+        Button closeButton = Button.create("CLOSE").linkify();
+        EventListener closeModalListener = (evt) -> modal.close();
+        closeButton.addClickListener(closeModalListener);
+        modal.appendFooterChild(closeButton);
+        
+        body().add(modal);
+        
+        map2.changed();
+        
+        
+        console.log(map2.getView().getCenter().toString());
+
+        
         
         
         /*----*/
@@ -512,23 +542,30 @@ public class AppEntryPoint implements EntryPoint {
 //    }
     
     private void openRegionSelectionDialog(Dataset dataset) {
-        ModalDialog modal = ModalDialog.create("Gebietsauswahl").setAutoClose(true);
-        
-        String subunitsWmsLayer = dataset.getSubunits();
-        
-        HTMLElement iframe = iframe().id("map").element();
-        iframe.style.setProperty("width", "100%");
-        iframe.style.setProperty("border", "0px solid white");
-        iframe.style.setProperty("height", "600px");
-        iframe.setAttribute("src",
-                "https://geo.so.ch/api/embed/v1/embed.html?bgLayer=ch.so.agi.hintergrundkarte_sw&layers="+subunitsWmsLayer+"&layers_opacity=1.0&E=2620000&N=1237800&zoom=5");
-        modal.appendChild(iframe);
-
-        Button closeButton = Button.create("CLOSE").linkify();
-        EventListener closeModalListener = (evt) -> modal.close();
-        closeButton.addClickListener(closeModalListener);
-        modal.appendFooterChild(closeButton);
+//        modal = ModalDialog.create("Gebietsauswahl").setAutoClose(true);
+//        
+//        String subunitsWmsLayer = dataset.getSubunits();
+//        
+//        HTMLDivElement mapDiv2 = div().id("map").element();
+//        Map map2 = MapPresets.getBlackAndWhiteMap(mapDiv2.id);        
+//        modal.appendChild(mapDiv2);
+//
+//        
+////        HTMLElement iframe = iframe().id("map").element();
+////        iframe.style.setProperty("width", "100%");
+////        iframe.style.setProperty("border", "0px solid white");
+////        iframe.style.setProperty("height", "600px");
+////        iframe.setAttribute("src",
+////                "https://geo.so.ch/api/embed/v1/embed.html?bgLayer=ch.so.agi.hintergrundkarte_sw&layers="+subunitsWmsLayer+"&layers_opacity=1.0&E=2620000&N=1237800&zoom=5");
+////        modal.appendChild(iframe);
+//
+//        Button closeButton = Button.create("CLOSE").linkify();
+//        EventListener closeModalListener = (evt) -> modal.close();
+//        closeButton.addClickListener(closeModalListener);
+//        modal.appendFooterChild(closeButton);
         modal.large().open();
+        
+
     }
     
     
@@ -553,100 +590,100 @@ public class AppEntryPoint implements EntryPoint {
     }
     
         
-    private void openDatasetDialog(Dataset dataset) {
-        ModalDialog modal = ModalDialog.create(dataset.getTitle()).setAutoClose(true);
-        modal.style().setMaxHeight("calc(100% - 120px)");
-        modal.style().setOverFlowY("auto");
-
-        // Short description
-        HTMLElement shortDescription = div().css("modal-body-paragraph").add(TextNode.of(dataset.getShortDescription())).element();
-        modal.appendChild(shortDescription);
-        
-        // Last editing date
-        Date date = DateTimeFormat.getFormat("yyyy-MM-dd").parse(dataset.getLastEditingDate());
-        HTMLElement lastEditingDate = div().css("modal-body-paragraph").add(TextNode.of(
-                "Stand der Daten: " + DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_LONG).format(date)))
-                .element();
-        modal.appendChild(lastEditingDate);
-
-        // Download data
-        Row selectRow = Row.create();        
-        Column downloadSelectColumn = Column.span4();
-        Column serviceSelectColumn = Column.span4();
-        Column metaSelectColumn = Column.span4();
-               
-        Select downloadSelect = Select.create("Download")
-            .appendChild(SelectOption.create("-", "Datenformat wählen"))
-            .appendChild(SelectOption.create("xtf", "INTERLIS"))
-            .appendChild(SelectOption.create("gpkg", "GeoPackage"))
-            .appendChild(SelectOption.create("shp", "Shapefile"))
-            .appendChild(SelectOption.create("dxf", "DXF"))
-            .setSearchable(false)
-            .selectAt(0);
-        downloadSelect.setFocusColor(Color.RED);
-        downloadSelectColumn.setContent(downloadSelect);
-        selectRow.addColumn(downloadSelectColumn);
-       
-        downloadSelect.addSelectionHandler((option) -> {
-           console.log(option.getValue().toString()); 
-           String format = option.getValue().toString();
-           if (format.equalsIgnoreCase("-")) return;
-           Window.open("/dataset/"+dataset.getId()+"/format/"+format, "_blank", null);
-        });
-        
-        Select serviceSelect = Select.create("Services")
-                .appendChild(SelectOption.create("-", "Service wählen"))
-                .appendChild(SelectOption.create("value10", "WMS"))
-                .appendChild(SelectOption.create("value20", "WFS"))
-                .appendChild(SelectOption.create("value30", "Data Service"))
-                .setSearchable(false)
-                .selectAt(0);
-        serviceSelect.setFocusColor(Color.RED);
-        serviceSelectColumn.setContent(serviceSelect);
-        selectRow.addColumn(serviceSelectColumn);
-
-        Select metaSelect = Select.create("Dokumentation")
-                .appendChild(SelectOption.create("-", "Format wählen"))
-                .appendChild(SelectOption.create("value10", "Online (geocat.ch)"))
-                .appendChild(SelectOption.create("value20", "PDF"))
-                .setSearchable(false)
-                .selectAt(0);
-        metaSelect.setFocusColor(Color.RED);
-        metaSelectColumn.setContent(metaSelect);
-        selectRow.addColumn(metaSelectColumn);
-        
-        modal.appendChild(selectRow);
-
-        // Show data in map
-        String knownWMS = dataset.getKnownWMS();
-        HashMap<String,String> queryParams = this.getUrlValues(knownWMS);
-        String layers = queryParams.get("LAYERS");
-        // TODO: make this optional in gwt-wgc-embed ?
-        String layersOpacity = "";
-        for (String layer : layers.split(",")) {
-            layersOpacity += "1,";
-        }
-        layersOpacity = layersOpacity.substring(0, layersOpacity.length() - 1);
-        String embeddedMap = "<iframe src='https://geo-t.so.ch/api/embed/v1/embed.html?bgLayer=ch.so.agi.hintergrundkarte_sw&layers="+layers+"&layers_opacity="+layersOpacity+"&E=2618000&N=1237800&zoom=5' height='500' style='width: 100%; border:0px solid white;'></iframe>";
-        modal.appendChild(div().id("map").css("modal-body-paragraph").innerHtml(SafeHtmlUtils.fromTrustedString(embeddedMap)).element());
-
-        Row chipRow = Row.create();
-        Column chipColumn = Column.span12();
-        String[] keywords = dataset.getKeywords().split(",");
-        for (String keyword : keywords) {
-            chipColumn.appendChild(Chip.create()
-                    .setValue(keyword)
-                    .setColor(Color.RED_LIGHTEN_1));
-        }
-        chipRow.appendChild(chipColumn);
-        modal.appendChild(div().css("modal-body-paragraph").add(chipRow.element()));
-        
-        Button closeButton = Button.create("CLOSE").linkify();
-        EventListener closeModalListener = (evt) -> modal.close();
-        closeButton.addClickListener(closeModalListener);
-        modal.appendFooterChild(closeButton);
-        modal.large().open();
-    }
+//    private void openDatasetDialog(Dataset dataset) {
+//        ModalDialog modal = ModalDialog.create(dataset.getTitle()).setAutoClose(true);
+//        modal.style().setMaxHeight("calc(100% - 120px)");
+//        modal.style().setOverFlowY("auto");
+//
+//        // Short description
+//        HTMLElement shortDescription = div().css("modal-body-paragraph").add(TextNode.of(dataset.getShortDescription())).element();
+//        modal.appendChild(shortDescription);
+//        
+//        // Last editing date
+//        Date date = DateTimeFormat.getFormat("yyyy-MM-dd").parse(dataset.getLastEditingDate());
+//        HTMLElement lastEditingDate = div().css("modal-body-paragraph").add(TextNode.of(
+//                "Stand der Daten: " + DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_LONG).format(date)))
+//                .element();
+//        modal.appendChild(lastEditingDate);
+//
+//        // Download data
+//        Row selectRow = Row.create();        
+//        Column downloadSelectColumn = Column.span4();
+//        Column serviceSelectColumn = Column.span4();
+//        Column metaSelectColumn = Column.span4();
+//               
+//        Select downloadSelect = Select.create("Download")
+//            .appendChild(SelectOption.create("-", "Datenformat wählen"))
+//            .appendChild(SelectOption.create("xtf", "INTERLIS"))
+//            .appendChild(SelectOption.create("gpkg", "GeoPackage"))
+//            .appendChild(SelectOption.create("shp", "Shapefile"))
+//            .appendChild(SelectOption.create("dxf", "DXF"))
+//            .setSearchable(false)
+//            .selectAt(0);
+//        downloadSelect.setFocusColor(Color.RED);
+//        downloadSelectColumn.setContent(downloadSelect);
+//        selectRow.addColumn(downloadSelectColumn);
+//       
+//        downloadSelect.addSelectionHandler((option) -> {
+//           console.log(option.getValue().toString()); 
+//           String format = option.getValue().toString();
+//           if (format.equalsIgnoreCase("-")) return;
+//           Window.open("/dataset/"+dataset.getId()+"/format/"+format, "_blank", null);
+//        });
+//        
+//        Select serviceSelect = Select.create("Services")
+//                .appendChild(SelectOption.create("-", "Service wählen"))
+//                .appendChild(SelectOption.create("value10", "WMS"))
+//                .appendChild(SelectOption.create("value20", "WFS"))
+//                .appendChild(SelectOption.create("value30", "Data Service"))
+//                .setSearchable(false)
+//                .selectAt(0);
+//        serviceSelect.setFocusColor(Color.RED);
+//        serviceSelectColumn.setContent(serviceSelect);
+//        selectRow.addColumn(serviceSelectColumn);
+//
+//        Select metaSelect = Select.create("Dokumentation")
+//                .appendChild(SelectOption.create("-", "Format wählen"))
+//                .appendChild(SelectOption.create("value10", "Online (geocat.ch)"))
+//                .appendChild(SelectOption.create("value20", "PDF"))
+//                .setSearchable(false)
+//                .selectAt(0);
+//        metaSelect.setFocusColor(Color.RED);
+//        metaSelectColumn.setContent(metaSelect);
+//        selectRow.addColumn(metaSelectColumn);
+//        
+//        modal.appendChild(selectRow);
+//
+//        // Show data in map
+//        String knownWMS = dataset.getKnownWMS();
+//        HashMap<String,String> queryParams = this.getUrlValues(knownWMS);
+//        String layers = queryParams.get("LAYERS");
+//        // TODO: make this optional in gwt-wgc-embed ?
+//        String layersOpacity = "";
+//        for (String layer : layers.split(",")) {
+//            layersOpacity += "1,";
+//        }
+//        layersOpacity = layersOpacity.substring(0, layersOpacity.length() - 1);
+//        String embeddedMap = "<iframe src='https://geo-t.so.ch/api/embed/v1/embed.html?bgLayer=ch.so.agi.hintergrundkarte_sw&layers="+layers+"&layers_opacity="+layersOpacity+"&E=2618000&N=1237800&zoom=5' height='500' style='width: 100%; border:0px solid white;'></iframe>";
+//        modal.appendChild(div().id("map").css("modal-body-paragraph").innerHtml(SafeHtmlUtils.fromTrustedString(embeddedMap)).element());
+//
+//        Row chipRow = Row.create();
+//        Column chipColumn = Column.span12();
+//        String[] keywords = dataset.getKeywords().split(",");
+//        for (String keyword : keywords) {
+//            chipColumn.appendChild(Chip.create()
+//                    .setValue(keyword)
+//                    .setColor(Color.RED_LIGHTEN_1));
+//        }
+//        chipRow.appendChild(chipColumn);
+//        modal.appendChild(div().css("modal-body-paragraph").add(chipRow.element()));
+//        
+//        Button closeButton = Button.create("CLOSE").linkify();
+//        EventListener closeModalListener = (evt) -> modal.close();
+//        closeButton.addClickListener(closeModalListener);
+//        modal.appendFooterChild(closeButton);
+//        modal.large().open();
+//    }
     
     private HashMap<String, String> getUrlValues(String url) {
         int i = url.indexOf("?");
