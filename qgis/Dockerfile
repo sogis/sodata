@@ -1,4 +1,4 @@
-FROM sogis/qgis-server-base:3.10
+FROM sogis/qgis-server-base:3.4
 
 # copy .qgs and .gpkg for dummy data
 COPY subunits.qgs /data/subunits.qgs

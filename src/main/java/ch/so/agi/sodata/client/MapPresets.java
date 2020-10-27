@@ -1,16 +1,27 @@
 package ch.so.agi.sodata.client;
 
-import com.google.gwt.core.client.GWT;
+import static elemental2.dom.DomGlobal.console;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.Node;
+import com.google.gwt.xml.client.NodeList;
+import com.google.gwt.xml.client.XMLParser;
+
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Headers;
+import elemental2.dom.RequestInit;
 import ol.Collection;
 import ol.Coordinate;
 import ol.Extent;
 import ol.Map;
+import ol.MapBrowserEvent;
 import ol.MapOptions;
 import ol.OLFactory;
 import ol.View;
 import ol.ViewOptions;
 import ol.control.Control;
+import ol.event.EventListener;
 import ol.interaction.DefaultInteractionsOptions;
 import ol.interaction.Interaction;
 import ol.layer.Base;
@@ -41,7 +52,7 @@ public class MapPresets {
 
     public static double resolutions[] = new double[] { 4000.0, 2000.0, 1000.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 1.0, 0.5, 0.25, 0.1 };
 
-    public static Map getBlackAndWhiteMap(String mapId) {
+    public static Map getBlackAndWhiteMap(String mapId, String subunitsWmsLayer) {
         Proj4.defs("EPSG:2056", "+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs");
 
         ProjectionOptions projectionOptions = OLFactory.createOptions();
@@ -68,20 +79,16 @@ public class MapPresets {
         wmtsLayerOptions.setSource(wmtsSource);
 
         Tile wmtsLayer = new Tile(wmtsLayerOptions);
-        wmtsLayer.setOpacity(1.0);
+        wmtsLayer.setOpacity(0.8);
 
         ViewOptions viewOptions = OLFactory.createOptions();
         viewOptions.setProjection(projection);
         viewOptions.setResolutions(new double[] { 4000.0, 2000.0, 1000.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 1.0, 0.5, 0.25, 0.1 });
         View view = new View(viewOptions);
-        Coordinate centerCoordinate = new Coordinate(2616491, 1240287);
-//        Coordinate centerCoordinate = new Coordinate(2600593,1215639); // Messen
-//        Coordinate centerCoordinate = new Coordinate(2600470,1215425); // Messen
-//        Coordinate centerCoordinate = new Coordinate(2626873,1241448); // Egerkingen 1293 
+        Coordinate centerCoordinate = new Coordinate(2618000, 1237800);
 
         view.setCenter(centerCoordinate);
         view.setZoom(6);
-//        view.setZoom(13);
         
         MapOptions mapOptions = OLFactory.createOptions();
         mapOptions.setTarget(mapId);
@@ -94,6 +101,141 @@ public class MapPresets {
 
         Map map = new Map(mapOptions);
         map.addLayer(wmtsLayer);
+        
+        // Add subunit wms layer
+        ImageWmsParams imageWMSParams = OLFactory.createOptions();
+        imageWMSParams.setLayers(subunitsWmsLayer);
+        imageWMSParams.set("FORMAT", "image/png");
+        imageWMSParams.set("TRANSPARENT", "true");
+
+        ImageWmsOptions imageWMSOptions = OLFactory.createOptions();
+        imageWMSOptions.setUrl("http://localhost:8083/wms/subunits"); // TODO: settings
+        imageWMSOptions.setRatio(1.2f);
+        imageWMSOptions.setParams(imageWMSParams);
+
+        ImageWms imageWMSSource = new ImageWms(imageWMSOptions);
+
+        LayerOptions layerOptions = OLFactory.createOptions();
+        layerOptions.setSource(imageWMSSource);
+        
+        ol.layer.Image wmsLayer = new Image(layerOptions);
+        map.addLayer(wmsLayer);
+
+        // Add click event for selecting subunit.
+        map.addClickListener(new EventListener<MapBrowserEvent>() {
+            @Override
+            public void onEvent(MapBrowserEvent event) {
+                double resolution = map.getView().getResolution();
+
+                double minX = event.getCoordinate().getX() - 50 * resolution;
+                double maxX = event.getCoordinate().getX() + 51 * resolution;
+                double minY = event.getCoordinate().getY() - 50 * resolution;
+                double maxY = event.getCoordinate().getY() + 51 * resolution;
+
+                // TODO: settings
+                String getFeatureInfoUrl = "http://localhost:8083/wms/subunits?SERVICE=WMS&version=1.3.0&REQUEST=GetFeatureInfo&x=51&y=51&i=51&j=51&height=101&width=101&srs=EPSG:2056&crs=EPSG:2056&info_format=text%2Fxml&with_geometry=true&with_maptip=false&feature_count=1&FI_POINT_TOLERANCE=2&FI_LINE_TOLERANCE=2&FI_POLYGON_TOLERANCE=2";
+                getFeatureInfoUrl += "&layers=" + subunitsWmsLayer;
+                getFeatureInfoUrl += "&query_layers=" + subunitsWmsLayer;
+                getFeatureInfoUrl += "&bbox=" + minX + "," + minY + "," + maxX + "," + maxY;
+
+                console.log(getFeatureInfoUrl);
+                
+                RequestInit requestInit = RequestInit.create();
+                Headers headers = new Headers();
+                headers.append("Content-Type", "application/x-www-form-urlencoded"); 
+                requestInit.setHeaders(headers);
+                
+                DomGlobal.fetch(getFeatureInfoUrl)
+                .then(response -> {
+                    if (!response.ok) {
+                        return null;
+                    }
+                    return response.text();
+                })
+                .then(xml -> {
+                    Document messageDom = XMLParser.parse(xml);
+                    if (messageDom.getElementsByTagName("Feature").getLength() == 0) {
+                        return null;
+                    }
+                                       
+                    Node layerNode = messageDom.getElementsByTagName("Layer").item(0);
+                    NodeList featureNodes = ((com.google.gwt.xml.client.Element) layerNode).getElementsByTagName("Feature");
+                    NodeList attrNodes = ((com.google.gwt.xml.client.Element) featureNodes.item(0)).getElementsByTagName("Attribute");
+                    for (int i = 0; i < attrNodes.getLength(); i++) {
+                        Node attrNode = attrNodes.item(i);
+                        console.log(attrNode.toString());
+                        console.log(attrNode.toString());
+                        
+                        
+                        String attrName = ((com.google.gwt.xml.client.Element) attrNode).getAttribute("name");
+                        String attrValue = ((com.google.gwt.xml.client.Element) attrNode).getAttribute("value");
+                    }
+
+                    
+//                    for (int i=0; i<messageDom.getElementsByTagName("Layer").getLength(); i++) {
+//                        Node layerNode = messageDom.getElementsByTagName("Layer").item(i);
+//                        String layerName = ((com.google.gwt.xml.client.Element) layerNode).getAttribute("layername"); 
+//                        String layerTitle = ((com.google.gwt.xml.client.Element) layerNode).getAttribute("name"); 
+//                        
+//                        if (layerNode.getChildNodes().getLength() == 0) {
+//                            continue;
+//                        };
+                        
+//                        NodeList htmlNodes = ((com.google.gwt.xml.client.Element) layerNode).getElementsByTagName("HtmlContent");
+//                        for (int j=0; j<htmlNodes.getLength(); j++) {
+                                                        
+//                            Text htmlNode = (Text) htmlNodes.item(j).getFirstChild();   
+//                            root.appendChild(div().css("popupLayerHeader").textContent(layerTitle).element());     
+//                            
+//                            HtmlContentBuilder popupContentBuilder = div().css("popupContent");
+//                            
+//                            HTMLDivElement featureInfoHtml = div().innerHtml(SafeHtmlUtils.fromTrustedString(htmlNode.getData())).element();
+//                            popupContentBuilder.add(featureInfoHtml);
+//
+//                            com.google.gwt.xml.client.Element layerElement = ((com.google.gwt.xml.client.Element) layerNode);
+//                            if (layerElement.getAttribute("featurereport") != null) {                                
+//                                double x = event.getCoordinate().getX();
+//                                double y = event.getCoordinate().getY();
+//                                
+//                                com.google.gwt.xml.client.Element featureNode = ((com.google.gwt.xml.client.Element) htmlNodes.item(j).getParentNode());
+//                                String featureId = featureNode.getAttribute("id");
+//                                
+//                                String urlReport = map.getBaseUrlReport() + layerElement.getAttribute("featurereport") + "?feature=" + featureId +
+//                                        "&x=" + String.valueOf(x) + "&y=" + String.valueOf(y) + "&crs=EPSG%3A2056";                                
+//                                
+//                                Button pdfBtn = Button.create(Icons.ALL.file_pdf_box_outline_mdi())
+//                                        .setSize(ButtonSize.SMALL)
+//                                        .setContent("Objektblatt")
+//                                        .setBackground(Color.WHITE)
+//                                        .elevate(0)
+//                                        .style()
+//                                        .setColor("#e53935")
+//                                        .setBorder("1px #e53935 solid")
+//                                        .setPadding("5px 5px 5px 0px;")
+//                                        .setMinWidth(px.of(100)).get();
+//                                
+//                                pdfBtn.addClickListener(evt -> {
+//                                    Window.open(urlReport, "_blank", null);
+//                                });
+//                                
+//                                popupContentBuilder.add(div().style("padding-top: 5px;").element());
+//                                popupContentBuilder.add(pdfBtn);
+//                            }
+//                            root.appendChild(popupContentBuilder.element());
+//                            root.hidden = false;
+//                        }                        
+//                    }
+                    return null;
+                })
+                .catch_(error -> {
+                    console.log(error);
+                    DomGlobal.window.alert(error);
+                    return null;
+                });
+
+                
+            }
+        });
         
         return map;
     }
