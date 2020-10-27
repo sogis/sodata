@@ -11,10 +11,9 @@ body, div {
 }
 
 #map {
-	/*margin-top: 30px;*/
-    /*height: 100%;*/
     width: 400px;
     height: 300px;
+    background-color: blue;
 }
 
 #map-plus-row {
