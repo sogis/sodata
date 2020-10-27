@@ -95,6 +95,8 @@ import ol.Map;
 import ol.MapBrowserEvent;
 import ol.MapEvent;
 import ol.events.Event;
+import ol.layer.Base;
+import ol.layer.Vector;
 
 
 public class AppEntryPoint implements EntryPoint {
@@ -488,12 +490,26 @@ public class AppEntryPoint implements EntryPoint {
         modal.getBodyElement().appendChild(mapDiv);
 
         Button proceedButton = Button.create("WEITER").setBackground(Color.RED).linkify();
-        Button closeButton = Button.create("CLOSE").linkify();
+        Button closeButton = Button.create("SCHLIESSEN").linkify();
         EventListener closeModalListener = (evt) -> modal.close();
         closeButton.addClickListener(closeModalListener);
         modal.appendFooterChild(proceedButton);        
         modal.appendFooterChild(closeButton);
         modal.large().open();
+        
+        
+        proceedButton.addClickListener(new EventListener() {
+            @Override
+            public void handleEvent(elemental2.dom.Event evt) {
+                console.log("click");
+                Vector vectorLayer = (Vector) getMapLayerById("vector");
+                ol.source.Vector vectorSource = vectorLayer.getSource();
+//                vectorSource.getFeatures();
+//                vectorSource.getFeaturesCollection();
+            }
+        });
+        
+        
         
         map = MapPresets.getBlackAndWhiteMap(mapDiv.id, subunitsWmsLayer);
         proceedButton.blur();
@@ -616,22 +632,46 @@ public class AppEntryPoint implements EntryPoint {
 //        modal.large().open();
 //    }
     
-    private HashMap<String, String> getUrlValues(String url) {
-        int i = url.indexOf("?");
-        HashMap<String, String> paramsMap = new HashMap<String, String>();
-        if (i > -1) {
-            String searchURL = url.substring(url.indexOf("?") + 1);
-            String params[] = searchURL.split("&");
-
-            for (String param : params) {
-                String temp[] = param.split("=");
-                try {
-                    paramsMap.put(temp[0], URL.decodeQueryString(temp[1]));
-                } catch (NullPointerException e) {}
+//    private HashMap<String, String> getUrlValues(String url) {
+//        int i = url.indexOf("?");
+//        HashMap<String, String> paramsMap = new HashMap<String, String>();
+//        if (i > -1) {
+//            String searchURL = url.substring(url.indexOf("?") + 1);
+//            String params[] = searchURL.split("&");
+//
+//            for (String param : params) {
+//                String temp[] = param.split("=");
+//                try {
+//                    paramsMap.put(temp[0], URL.decodeQueryString(temp[1]));
+//                } catch (NullPointerException e) {}
+//            }
+//        }
+//        return paramsMap;
+//    }
+    
+    // Get Openlayers map layer by id.
+    private Base getMapLayerById(String id) {
+        ol.Collection<Base> layers = map.getLayers();
+        for (int i = 0; i < layers.getLength(); i++) {
+            Base item = layers.item(i);            
+            try {
+                String layerId = item.get("id");
+                if (layerId == null) {
+                    continue;
+                }
+                if (layerId.equalsIgnoreCase(id)) {
+                    return item;
+                }
+            } catch (Exception e) {
+                console.log(e.getMessage());
+                console.log("should not reach here");
             }
         }
-        return paramsMap;
+        return null;
     }
+
+
+    
     
     private static native void updateURLWithoutReloading(String newUrl) /*-{
         console.log("fubar");

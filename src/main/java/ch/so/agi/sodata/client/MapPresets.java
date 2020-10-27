@@ -14,6 +14,7 @@ import elemental2.dom.RequestInit;
 import ol.Collection;
 import ol.Coordinate;
 import ol.Extent;
+import ol.Feature;
 import ol.Map;
 import ol.MapBrowserEvent;
 import ol.MapOptions;
@@ -22,6 +23,8 @@ import ol.View;
 import ol.ViewOptions;
 import ol.control.Control;
 import ol.event.EventListener;
+import ol.format.Wkt;
+import ol.geom.Geometry;
 import ol.interaction.DefaultInteractionsOptions;
 import ol.interaction.Interaction;
 import ol.layer.Base;
@@ -29,6 +32,7 @@ import ol.layer.Group;
 import ol.layer.Image;
 import ol.layer.LayerOptions;
 import ol.layer.Tile;
+import ol.layer.VectorLayerOptions;
 import ol.proj.Projection;
 import ol.proj.ProjectionOptions;
 import ol.source.ImageWms;
@@ -37,8 +41,13 @@ import ol.source.ImageWmsParams;
 import ol.source.TileWms;
 import ol.source.TileWmsOptions;
 import ol.source.TileWmsParams;
+import ol.source.Vector;
+import ol.source.VectorOptions;
 import ol.source.Wmts;
 import ol.source.WmtsOptions;
+import ol.style.Fill;
+import ol.style.Stroke;
+import ol.style.Style;
 import ol.tilegrid.TileGrid;
 import ol.tilegrid.WmtsTileGrid;
 import ol.tilegrid.WmtsTileGridOptions;
@@ -120,6 +129,16 @@ public class MapPresets {
         
         ol.layer.Image wmsLayer = new Image(layerOptions);
         map.addLayer(wmsLayer);
+        
+        // Add empty vector layer
+        VectorOptions vectorSourceOptions = OLFactory.createOptions();
+        Vector vectorSource = new Vector(vectorSourceOptions);
+
+        VectorLayerOptions vectorLayerOptions = OLFactory.createOptions();
+        vectorLayerOptions.setSource(vectorSource);
+        ol.layer.Vector vectorLayer = new ol.layer.Vector(vectorLayerOptions);
+        vectorLayer.set("id", "vector");
+        map.addLayer(vectorLayer);
 
         // Add click event for selecting subunit.
         map.addClickListener(new EventListener<MapBrowserEvent>() {
@@ -138,7 +157,7 @@ public class MapPresets {
                 getFeatureInfoUrl += "&query_layers=" + subunitsWmsLayer;
                 getFeatureInfoUrl += "&bbox=" + minX + "," + minY + "," + maxX + "," + maxY;
 
-                console.log(getFeatureInfoUrl);
+//                console.log(getFeatureInfoUrl);
                 
                 RequestInit requestInit = RequestInit.create();
                 Headers headers = new Headers();
@@ -159,72 +178,44 @@ public class MapPresets {
                     }
                                        
                     Node layerNode = messageDom.getElementsByTagName("Layer").item(0);
+
                     NodeList featureNodes = ((com.google.gwt.xml.client.Element) layerNode).getElementsByTagName("Feature");
+                    String featureId = ((com.google.gwt.xml.client.Element) featureNodes.item(0)).getAttribute("id");
+                    
+                    Feature feature = vectorSource.getFeatureById(featureId);
+                    if (feature != null) {
+                        console.log("fubar");
+                        vectorSource.removeFeature(feature);
+                        return null;
+                    } 
+                    
+                    feature = new Feature();
+                    feature.setId(featureId);
+                    
+                    Style style = new Style();
+                    Stroke stroke = new Stroke();
+                    stroke.setWidth(8);
+                    stroke.setColor(new ol.color.Color(244, 67, 53, 1));
+                    style.setStroke(stroke);
+                    Fill fill = new Fill();
+                    fill.setColor(new ol.color.Color(255, 255, 255, 0.6));
+                    style.setFill(fill);
+                    feature.setStyle(style);
+
                     NodeList attrNodes = ((com.google.gwt.xml.client.Element) featureNodes.item(0)).getElementsByTagName("Attribute");
                     for (int i = 0; i < attrNodes.getLength(); i++) {
                         Node attrNode = attrNodes.item(i);
-                        console.log(attrNode.toString());
-                        console.log(attrNode.toString());
-                        
                         
                         String attrName = ((com.google.gwt.xml.client.Element) attrNode).getAttribute("name");
                         String attrValue = ((com.google.gwt.xml.client.Element) attrNode).getAttribute("value");
-                    }
 
-                    
-//                    for (int i=0; i<messageDom.getElementsByTagName("Layer").getLength(); i++) {
-//                        Node layerNode = messageDom.getElementsByTagName("Layer").item(i);
-//                        String layerName = ((com.google.gwt.xml.client.Element) layerNode).getAttribute("layername"); 
-//                        String layerTitle = ((com.google.gwt.xml.client.Element) layerNode).getAttribute("name"); 
-//                        
-//                        if (layerNode.getChildNodes().getLength() == 0) {
-//                            continue;
-//                        };
-                        
-//                        NodeList htmlNodes = ((com.google.gwt.xml.client.Element) layerNode).getElementsByTagName("HtmlContent");
-//                        for (int j=0; j<htmlNodes.getLength(); j++) {
-                                                        
-//                            Text htmlNode = (Text) htmlNodes.item(j).getFirstChild();   
-//                            root.appendChild(div().css("popupLayerHeader").textContent(layerTitle).element());     
-//                            
-//                            HtmlContentBuilder popupContentBuilder = div().css("popupContent");
-//                            
-//                            HTMLDivElement featureInfoHtml = div().innerHtml(SafeHtmlUtils.fromTrustedString(htmlNode.getData())).element();
-//                            popupContentBuilder.add(featureInfoHtml);
-//
-//                            com.google.gwt.xml.client.Element layerElement = ((com.google.gwt.xml.client.Element) layerNode);
-//                            if (layerElement.getAttribute("featurereport") != null) {                                
-//                                double x = event.getCoordinate().getX();
-//                                double y = event.getCoordinate().getY();
-//                                
-//                                com.google.gwt.xml.client.Element featureNode = ((com.google.gwt.xml.client.Element) htmlNodes.item(j).getParentNode());
-//                                String featureId = featureNode.getAttribute("id");
-//                                
-//                                String urlReport = map.getBaseUrlReport() + layerElement.getAttribute("featurereport") + "?feature=" + featureId +
-//                                        "&x=" + String.valueOf(x) + "&y=" + String.valueOf(y) + "&crs=EPSG%3A2056";                                
-//                                
-//                                Button pdfBtn = Button.create(Icons.ALL.file_pdf_box_outline_mdi())
-//                                        .setSize(ButtonSize.SMALL)
-//                                        .setContent("Objektblatt")
-//                                        .setBackground(Color.WHITE)
-//                                        .elevate(0)
-//                                        .style()
-//                                        .setColor("#e53935")
-//                                        .setBorder("1px #e53935 solid")
-//                                        .setPadding("5px 5px 5px 0px;")
-//                                        .setMinWidth(px.of(100)).get();
-//                                
-//                                pdfBtn.addClickListener(evt -> {
-//                                    Window.open(urlReport, "_blank", null);
-//                                });
-//                                
-//                                popupContentBuilder.add(div().style("padding-top: 5px;").element());
-//                                popupContentBuilder.add(pdfBtn);
-//                            }
-//                            root.appendChild(popupContentBuilder.element());
-//                            root.hidden = false;
-//                        }                        
-//                    }
+                        if (attrName.equalsIgnoreCase("geometry")) {
+                            feature.setGeometry(new Wkt().readGeometry(attrValue));
+                        } else {
+                            feature.set(attrName, attrValue);
+                        }
+                    }
+                    vectorSource.addFeature(feature);
                     return null;
                 })
                 .catch_(error -> {
