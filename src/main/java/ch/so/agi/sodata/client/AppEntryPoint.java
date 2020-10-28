@@ -48,6 +48,8 @@ import org.dominokit.domino.ui.style.ColorScheme;
 import org.dominokit.domino.ui.style.StyleType;
 import org.dominokit.domino.ui.style.Styles;
 import org.dominokit.domino.ui.style.WaveColor;
+import org.dominokit.domino.ui.tabs.Tab;
+import org.dominokit.domino.ui.tabs.TabsPanel;
 import org.dominokit.domino.ui.themes.Theme;
 import org.dominokit.domino.ui.tree.ToggleTarget;
 import org.dominokit.domino.ui.tree.Tree;
@@ -91,6 +93,7 @@ import elemental2.dom.RequestInit;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import ol.Coordinate;
+import ol.Feature;
 import ol.Map;
 import ol.MapBrowserEvent;
 import ol.MapEvent;
@@ -98,18 +101,17 @@ import ol.events.Event;
 import ol.layer.Base;
 import ol.layer.Vector;
 
-
 public class AppEntryPoint implements EntryPoint {
     private MyMessages messages = GWT.create(MyMessages.class);
     private final SettingsServiceAsync settingsService = GWT.create(SettingsService.class);
-    
+
     // Application settings
     private String myVar;
-    
+
     // Format settings
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
     private NumberFormat fmtPercent = NumberFormat.getFormat("#0.0");
-        
+
     private Map map;
 //    private HTMLElement mapDiv;
 //    private ModalDialog modal;
@@ -119,19 +121,19 @@ public class AppEntryPoint implements EntryPoint {
     private HTMLElement datasetContent;
     private Dataset[] datasets;
     private List<Dataset> datasetList;
-    
+
     private LocalListDataStore<Dataset> listStore;
     private DataTable<Dataset> datasetTable;
-    
-    private HashMap<String,String> formats = new HashMap<String,String>();
-    
+
+    private HashMap<String, String> formats = new HashMap<String, String>();
+
     public void onModuleLoad() {
         formats.put("xtf", "INTERLIS");
         formats.put("shp", "Shapefile");
         formats.put("dxf", "DXF");
         formats.put("gpkg", "GeoPackage");
         formats.put("gtiff", "GeoTIFF");
-        
+
         settingsService.settingsServer(new AsyncCallback<SettingsResponse>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -142,31 +144,29 @@ public class AppEntryPoint implements EntryPoint {
             @Override
             public void onSuccess(SettingsResponse result) {
                 myVar = (String) result.getSettings().get("MY_VAR");
-                
+
                 // Alle vorhandenen Datensätze anfordern.
                 RequestInit requestInit = RequestInit.create();
                 Headers headers = new Headers();
-                headers.append("Content-Type", "application/x-www-form-urlencoded"); 
+                headers.append("Content-Type", "application/x-www-form-urlencoded");
                 requestInit.setHeaders(headers);
 
-                DomGlobal.fetch("datasets", requestInit)
-                .then(response -> {
+                DomGlobal.fetch("datasets", requestInit).then(response -> {
                     if (!response.ok) {
                         return null;
                     }
                     return response.text();
-                })
-                .then(json -> {                    
+                }).then(json -> {
                     datasets = (Dataset[]) Global.JSON.parse(json);
                     datasetList = Arrays.asList(datasets);
-                   
+
                     Collections.sort(datasetList, new Comparator<Dataset>() {
                         @Override
                         public int compare(Dataset o1, Dataset o2) {
                             return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
                         }
                     });
-                    
+
                     // GUI initialisieren.
                     init();
                     return null;
@@ -179,35 +179,33 @@ public class AppEntryPoint implements EntryPoint {
     }
 
     @SuppressWarnings("unchecked")
-    private void init() {              
+    private void init() {
         // TODO Überprüfen, ob es nicht im else vom redirect stehen muss.
         baseUrl = Window.Location.getProtocol() + "//" + Window.Location.getHost() + Window.Location.getPath();
-        
+
         Theme theme = new Theme(ColorScheme.RED);
         theme.apply();
-        
+
         container = div().id("container").element();
-          
+
         HTMLElement logoDiv = div().css("logo").element();
-        HTMLElement logoCanton = div().add(img().attr("src", GWT.getHostPageBaseURL() + "Logo.png")
-                .attr("alt", "Logo Kanton")).element();
+        HTMLElement logoCanton = div()
+                .add(img().attr("src", GWT.getHostPageBaseURL() + "Logo.png").attr("alt", "Logo Kanton")).element();
         logoDiv.appendChild(logoCanton);
         container.appendChild(logoDiv);
-        
+
         topLevelContent = div().id("top-level-content").element();
 
         // Breadcrumb
-        Breadcrumb breadcrumb = Breadcrumb.create()
-        .appendChild(Icons.ALL.home()," Home ", (evt) -> {
+        Breadcrumb breadcrumb = Breadcrumb.create().appendChild(Icons.ALL.home(), " Home ", (evt) -> {
             Window.open("https://geo.so.ch/", "_self", null);
-        })
-        .appendChild(" Geodaten ", (evt) -> {});
+        }).appendChild(" Geodaten ", (evt) -> {
+        });
         topLevelContent.appendChild(breadcrumb.element());
 
-        
         topLevelContent.appendChild(div().css("sodata-title").textContent("Geodaten Kanton Solothurn").element());
 //        container.appendChild(div().css("sodata-title").textContent("Geodaten Kanton Solothurn").element());
-        
+
         String infoString = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
                 + "<a class='generic-link' href='https://geoweb.so.ch/geodaten/index.php' target='_blank'>https://geoweb.so.ch/geodaten/index.php</a> eirmod "
                 + "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et "
@@ -215,14 +213,14 @@ public class AppEntryPoint implements EntryPoint {
                 + "duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
         topLevelContent.appendChild(div().css("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
 //        container.appendChild(div().id("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
-                
+
         // Suche
         TextBox textBox = TextBox.create().setLabel("Suchbegriff");
         textBox.addLeftAddOn(Icons.ALL.search());
         textBox.setFocusColor(Color.RED);
         textBox.getInputElement().setAttribute("autocomplete", "off");
         textBox.getInputElement().setAttribute("spellcheck", "false");
-        
+
         HTMLElement resetIcon = Icons.ALL.close().style().setCursor("pointer").get().element();
         resetIcon.addEventListener("click", new EventListener() {
             @Override
@@ -230,14 +228,14 @@ public class AppEntryPoint implements EntryPoint {
                 textBox.clear();
                 listStore.setData(Arrays.asList(datasets));
             }
-        });        
+        });
         textBox.addRightAddOn(resetIcon);
 
-        textBox.addEventListener("keyup", event -> {            
+        textBox.addEventListener("keyup", event -> {
             if (textBox.getValue().trim().length() == 0) {
                 return;
             }
-           
+
             DomGlobal.fetch("/datasets?query=" + textBox.getValue().toLowerCase()).then(response -> {
                 if (!response.ok) {
                     return null;
@@ -245,7 +243,7 @@ public class AppEntryPoint implements EntryPoint {
                 return response.text();
             }).then(json -> {
                 Dataset[] searchResults = (Dataset[]) Global.JSON.parse(json);
-                List<Dataset> searchResultList = Arrays.asList(searchResults);                
+                List<Dataset> searchResultList = Arrays.asList(searchResults);
                 listStore.setData(searchResultList);
                 return null;
             }).catch_(error -> {
@@ -254,98 +252,81 @@ public class AppEntryPoint implements EntryPoint {
             });
         });
         topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(textBox)).element());
-        
+
+        // Liste (sämtlicher) Datensätze
         TableConfig<Dataset> tableConfig = new TableConfig<>();
         tableConfig
-                .addColumn(ColumnConfig.<Dataset>create("title", "Titel")
-                        .setShowTooltip(false)
-                        .textAlign("left")
+                .addColumn(ColumnConfig.<Dataset>create("title", "Titel").setShowTooltip(false).textAlign("left")
                         .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getTitle())))
-                .addColumn(ColumnConfig.<Dataset>create("lastEditingDate", "Aktualisiert")
-                        .setShowTooltip(false)                        
-                        .textAlign("left")
-                        .setCellRenderer(cell -> {
-                            Date date = DateTimeFormat.getFormat("yyyy-MM-dd").parse(cell.getTableRow().getRecord().getLastEditingDate());
+                .addColumn(ColumnConfig.<Dataset>create("lastEditingDate", "Aktualisiert").setShowTooltip(false)
+                        .textAlign("left").setCellRenderer(cell -> {
+                            Date date = DateTimeFormat.getFormat("yyyy-MM-dd")
+                                    .parse(cell.getTableRow().getRecord().getLastEditingDate());
                             String dateString = DateTimeFormat.getFormat("dd.MM.yyyy").format(date);
                             return TextNode.of(dateString);
-                            
+
                         }))
 //                .addColumn(ColumnConfig.<Dataset>create("metadata", "Metadaten")
 //                        .setShowTooltip(false)                        
 //                        .textAlign("left")
 //                        .setCellRenderer(cell -> a().css("generic-link").attr("href", "https://geocat.ch").textContent("geocat.ch").element()))
-        .addColumn(ColumnConfig.<Dataset>create("perimeter", "Gebiet")
-                .setShowTooltip(false)                        
-                .textAlign("center")
-                .setCellRenderer(cell -> {
-                    if (cell.getRecord().getSubunits() != null) {
-                        HTMLElement regionSelectionElement = a().css("generic-link").textContent("Gebietsauswahl nötig").element();
-                        regionSelectionElement.addEventListener("click", new EventListener() {
-                            @Override
-                            public void handleEvent(elemental2.dom.Event evt) {
-                                openRegionSelectionDialog(cell.getRecord());                            
+                .addColumn(ColumnConfig.<Dataset>create("perimeter", "Gebiet").setShowTooltip(false).textAlign("center")
+                        .setCellRenderer(cell -> {
+                            if (cell.getRecord().getSubunits() != null) {
+                                HTMLElement regionSelectionElement = a().css("generic-link")
+                                        .textContent("Gebietsauswahl nötig").element();
+                                regionSelectionElement.addEventListener("click", new EventListener() {
+                                    @Override
+                                    public void handleEvent(elemental2.dom.Event evt) {
+                                        openRegionSelectionDialog(cell.getRecord());
+                                    }
+
+                                });
+                                return regionSelectionElement;
+
+                            } else {
+                                return TextNode.of("-");
                             }
 
-                        });
-                        return regionSelectionElement;
-                        
-                    } else {
-                        return TextNode.of("-");
-                    }
-                    
-                    
-                }))
-        .addColumn(ColumnConfig.<Dataset>create("formats", "Daten herunterladen")
-                .setShowTooltip(false)                        
-                .textAlign("left")
-                .setCellRenderer(cell -> {
-                    HTMLElement badgesElement = div().element();
-                    
-                    for (String fileStr : cell.getRecord().getFiles()) {                        
-                        if (cell.getRecord().getSubunits() != null) {
-                            badgesElement.appendChild(
-                                Badge.create(formats.get(fileStr))
-                                    .setBackground(Color.GREY_LIGHTEN_4)
-                                    .style()
-                                        .setMarginRight("10px")
-                                        .setMarginTop("5px")
-                                        .setMarginBottom("5px")
-                                        .get()
-                                    .element()
-                            );
-                        } else {
-                            badgesElement.appendChild(a().css("badge-link")
-                                    .attr("href", "/dataset/" + cell.getRecord().getId() + "_" + fileStr + ".zip")
-                                    .add(Badge.create(formats.get(fileStr))
-                                            .setBackground(Color.GREY_LIGHTEN_2)
-                                            .style()
-                                                .setMarginRight("10px")
-                                                .setMarginTop("5px")
-                                                .setMarginBottom("5px")
-                                                .get()
-                                            .element())
-                                    .element());
-                        }
-                    }
-                    
-                    return badgesElement;
-                }))
-        .addColumn(ColumnConfig.<Dataset>create("services", "Servicelink")
-                .setShowTooltip(false)                        
-                .textAlign("center")
-                .setCellRenderer(cell -> {
-                    HTMLElement serviceLinkElement = div().add(Icons.ALL.information_outline_mdi().style().setCursor("pointer")).element();
-                    serviceLinkElement.addEventListener("click", new EventListener() {
-                        @Override
-                        public void handleEvent(elemental2.dom.Event evt) {
-                            openServiceLinkDialog(cell.getRecord());                            
-                        }
-                    });
-                    return serviceLinkElement;                        
-                }));
-                
-        tableConfig.addPlugin(new RecordDetailsPlugin<>(cell -> new DatasetDetail(cell).element()));
-        
+                        }))
+                .addColumn(ColumnConfig.<Dataset>create("formats", "Daten herunterladen").setShowTooltip(false)
+                        .textAlign("left").setCellRenderer(cell -> {
+                            HTMLElement badgesElement = div().element();
+
+                            for (String fileStr : cell.getRecord().getFiles()) {
+                                if (cell.getRecord().getSubunits() != null) {
+                                    badgesElement.appendChild(Badge.create(formats.get(fileStr))
+                                            .setBackground(Color.GREY_LIGHTEN_4).style().setMarginRight("10px")
+                                            .setMarginTop("5px").setMarginBottom("5px").get().element());
+                                } else {
+                                    badgesElement.appendChild(a().css("badge-link")
+                                            .attr("href",
+                                                    "/dataset/" + cell.getRecord().getId() + "_" + fileStr + ".zip")
+                                            .add(Badge.create(formats.get(fileStr)).setBackground(Color.GREY_LIGHTEN_2)
+                                                    .style().setMarginRight("10px").setMarginTop("5px")
+                                                    .setMarginBottom("5px").get().element())
+                                            .element());
+                                }
+                            }
+
+                            return badgesElement;
+                        }))
+                .addColumn(ColumnConfig.<Dataset>create("services", "Servicelink").setShowTooltip(false)
+                        .textAlign("center").setCellRenderer(cell -> {
+                            HTMLElement serviceLinkElement = div()
+                                    .add(Icons.ALL.information_outline_mdi().style().setCursor("pointer")).element();
+                            serviceLinkElement.addEventListener("click", new EventListener() {
+                                @Override
+                                public void handleEvent(elemental2.dom.Event evt) {
+                                    openServiceLinkDialog(cell.getRecord());
+                                }
+                            });
+                            return serviceLinkElement;
+                        }));
+
+        // TODO: delete
+//        tableConfig.addPlugin(new RecordDetailsPlugin<>(cell -> new DatasetDetail(cell).element()));
+
         listStore = new LocalListDataStore<>();
         listStore.setData(Arrays.asList(datasets));
 
@@ -354,13 +335,13 @@ public class AppEntryPoint implements EntryPoint {
         datasetTable.noStripes();
         datasetTable.noHover();
         datasetTable.load();
-        
+
         topLevelContent.appendChild(datasetTable.element());
-        
+
         container.appendChild(topLevelContent);
         body().add(container);
     }
-    
+
 //    private void showDatasetDetail(Dataset dataset) {
 //        topLevelContent.hidden = true;
 //        
@@ -479,64 +460,92 @@ public class AppEntryPoint implements EntryPoint {
 //
 //        container.appendChild(datasetContent);        
 //    }
-    
+
     private void openRegionSelectionDialog(Dataset dataset) {
         ModalDialog modal = ModalDialog.create("Gebietsauswahl: " + dataset.getTitle()).setAutoClose(true);
-        
-        String subunitsWmsLayer = dataset.getSubunits();
-        
-        HTMLDivElement mapDiv = div().id("map").element();
-        modal.getBodyElement().appendChild(div().css("modal-body-paragraph").textContent("Sie können einzelne Datensätze mit einem Klick in die Karte aus- und abwählen. Mit einem Klick auf 'Weiter' gelangen Sie zu den Downloadlinks."));
-        modal.getBodyElement().appendChild(mapDiv);
+        modal.style().setMaxHeight("calc(100% - 120px)");
+        modal.style().setOverFlowY("auto");
 
-        Button proceedButton = Button.create("WEITER").setBackground(Color.RED).linkify();
+        String subunitsWmsLayer = dataset.getSubunits();
+
+        TabsPanel tabsPanel = TabsPanel.create().setColor(Color.RED);
+        Tab selectionTab = Tab.create(Icons.ALL.map_outline_mdi(), "AUSWAHL");
+        Tab downloadTab = Tab.create(Icons.ALL.file_download_outline_mdi(), "HERUNTERLADEN");
+        tabsPanel.appendChild(selectionTab);
+        tabsPanel.appendChild(downloadTab);
+
+        HTMLDivElement mapDiv = div().id("map").element();
+        modal.getBodyElement().appendChild(div().css("modal-body-paragraph")
+                .textContent("Sie können einzelne Datensätze mit einem Klick in die Karte aus- und abwählen. "
+                        + "Im Reiter 'Herunterladen' können Sie die Daten anschliessend herunterladen. "
+                        + "Wünschen Sie viele Datensätze herunterzuladen ... Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor "
+                        + "invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et."));
+
+        selectionTab.appendChild(mapDiv);
+
+        TableConfig<Feature> tableConfig = new TableConfig<>();
+        tableConfig.addColumn(ColumnConfig.<Feature>create("title", "Titel").setShowTooltip(false).textAlign("left")
+                .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().get("aname"))));
+
+        LocalListDataStore<Feature> subunitListStore = new LocalListDataStore<>();
+
+        DataTable<Feature> subunitFeatureTable = new DataTable<>(tableConfig, subunitListStore);
+        subunitFeatureTable.setId("dataset-table");
+        subunitFeatureTable.noStripes();
+        subunitFeatureTable.noHover();
+        subunitFeatureTable.load();
+        downloadTab.appendChild(subunitFeatureTable.element());
+
+        modal.getBodyElement().appendChild(tabsPanel);
+
         Button closeButton = Button.create("SCHLIESSEN").linkify();
+        closeButton.setBackground(Color.RED);
         EventListener closeModalListener = (evt) -> modal.close();
         closeButton.addClickListener(closeModalListener);
-        modal.appendFooterChild(proceedButton);        
         modal.appendFooterChild(closeButton);
         modal.large().open();
-        
-        
-        proceedButton.addClickListener(new EventListener() {
+
+        downloadTab.addClickListener(new EventListener() {
             @Override
             public void handleEvent(elemental2.dom.Event evt) {
-                console.log("click");
                 Vector vectorLayer = (Vector) getMapLayerById("vector");
                 ol.source.Vector vectorSource = vectorLayer.getSource();
-//                vectorSource.getFeatures();
-//                vectorSource.getFeaturesCollection();
+                ol.Collection<Feature> features = vectorSource.getFeaturesCollection();
+
+                List<Feature> featuresList = new ArrayList<Feature>();
+                for (int i = 0; i < features.getLength(); i++) {
+                    Feature feature = features.item(i);
+                    feature.set("files", dataset.getFiles());
+                    featuresList.add(feature);
+                }
+                subunitListStore.setData(featuresList);
             }
         });
-        
-        
-        
+
         map = MapPresets.getBlackAndWhiteMap(mapDiv.id, subunitsWmsLayer);
-        proceedButton.blur();
+        closeButton.blur();
     }
-    
-    
+
     private void openServiceLinkDialog(Dataset dataset) {
         ModalDialog modal = ModalDialog.create("Servicelink").setAutoClose(true);
-        
+
+        modal.appendChild(InfoBox.create(Icons.ALL.map(), "WMS", "https://geo.so.ch/wms").setIconBackground(Color.RED));
+        modal.appendChild(InfoBox.create(Icons.ALL.file_download_mdi(), "WFS", "https://geo.so.ch/wfs")
+                .setIconBackground(Color.RED));
         modal.appendChild(
-                InfoBox.create(Icons.ALL.map(), "WMS", "https://geo.so.ch/wms").setIconBackground(Color.RED)
-        );
-        modal.appendChild(
-                InfoBox.create(Icons.ALL.file_download_mdi(), "WFS", "https://geo.so.ch/wfs").setIconBackground(Color.RED)
-        );
-        modal.appendChild(
-                InfoBox.create(Icons.ALL.file_download_mdi(), "Data Service", "https://geo.so.ch/api/data/v1/api/").setIconBackground(Color.RED)
-        );        
-        
-        Button closeButton = Button.create("CLOSE").linkify();
+                InfoBox.create(Icons.ALL.file_download_mdi(), "Data Service", "https://geo.so.ch/api/data/v1/api/")
+                        .setIconBackground(Color.RED));
+
+        Button closeButton = Button.create("SCHLIESSEN").linkify();
+        closeButton.setBackground(Color.RED);
         EventListener closeModalListener = (evt) -> modal.close();
         closeButton.addClickListener(closeModalListener);
         modal.appendFooterChild(closeButton);
         modal.open();
-    }
-    
         
+        closeButton.blur();
+    }
+
 //    private void openDatasetDialog(Dataset dataset) {
 //        ModalDialog modal = ModalDialog.create(dataset.getTitle()).setAutoClose(true);
 //        modal.style().setMaxHeight("calc(100% - 120px)");
@@ -631,7 +640,7 @@ public class AppEntryPoint implements EntryPoint {
 //        modal.appendFooterChild(closeButton);
 //        modal.large().open();
 //    }
-    
+
 //    private HashMap<String, String> getUrlValues(String url) {
 //        int i = url.indexOf("?");
 //        HashMap<String, String> paramsMap = new HashMap<String, String>();
@@ -648,12 +657,12 @@ public class AppEntryPoint implements EntryPoint {
 //        }
 //        return paramsMap;
 //    }
-    
+
     // Get Openlayers map layer by id.
     private Base getMapLayerById(String id) {
         ol.Collection<Base> layers = map.getLayers();
         for (int i = 0; i < layers.getLength(); i++) {
-            Base item = layers.item(i);            
+            Base item = layers.item(i);
             try {
                 String layerId = item.get("id");
                 if (layerId == null) {
@@ -670,11 +679,8 @@ public class AppEntryPoint implements EntryPoint {
         return null;
     }
 
-
-    
-    
     private static native void updateURLWithoutReloading(String newUrl) /*-{
-        console.log("fubar");
-        $wnd.history.pushState(newUrl, "", newUrl);
-    }-*/;
+                                                                        console.log("fubar");
+                                                                        $wnd.history.pushState(newUrl, "", newUrl);
+                                                                        }-*/;
 }

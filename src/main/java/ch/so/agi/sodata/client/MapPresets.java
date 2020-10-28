@@ -132,6 +132,7 @@ public class MapPresets {
         
         // Add empty vector layer
         VectorOptions vectorSourceOptions = OLFactory.createOptions();
+        vectorSourceOptions.setUseSpatialIndex(false); // Notwendig, sonst liefert getFeatureCollection null zurück.
         Vector vectorSource = new Vector(vectorSourceOptions);
 
         VectorLayerOptions vectorLayerOptions = OLFactory.createOptions();
