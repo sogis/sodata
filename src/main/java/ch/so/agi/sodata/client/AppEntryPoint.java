@@ -265,16 +265,23 @@ public class AppEntryPoint implements EntryPoint {
                             String dateString = DateTimeFormat.getFormat("dd.MM.yyyy").format(date);
                             return TextNode.of(dateString);
 
+                        }))                
+                .addColumn(ColumnConfig.<Dataset>create("metadata", "Metadaten").setShowTooltip(false)
+                        .textAlign("center").setCellRenderer(cell -> {
+                            HTMLElement metadataLinkElement = div()
+                                    .add(Icons.ALL.open_in_new().style().setCursor("pointer")).element();
+                            metadataLinkElement.addEventListener("click", new EventListener() {
+                                @Override
+                                public void handleEvent(elemental2.dom.Event evt) {
+                                    openMetadataDialog(cell.getRecord());
+                                }
+                            });
+                            return metadataLinkElement;
                         }))
-                
-                // Icons.ALL.open_in_new()
-                
-                .addColumn(ColumnConfig.<Dataset>create("metadata", "Metadaten")
-                        .setShowTooltip(false)                        
-                        .textAlign("left")
-                        .setCellRenderer(cell -> a().css("generic-link").attr("href", "https://geocat.ch").textContent("geocat.ch").element()))
-                .addColumn(ColumnConfig.<Dataset>create("perimeter", "Gebiet").setShowTooltip(false).textAlign("center")
-                        .setCellRenderer(cell -> {
+                .addColumn(ColumnConfig.<Dataset>create("formats", "Daten herunterladen").setShowTooltip(false)
+                        .textAlign("left").setCellRenderer(cell -> {
+                            HTMLElement badgesElement = div().element();
+                            
                             if (cell.getRecord().getSubunits() != null) {
                                 HTMLElement regionSelectionElement = a().css("generic-link")
                                         .textContent("Gebietsauswahl nötig").element();
@@ -286,33 +293,24 @@ public class AppEntryPoint implements EntryPoint {
 
                                 });
                                 return regionSelectionElement;
-
                             } else {
-                                return TextNode.of("-");
-                            }
-
-                        }))
-                .addColumn(ColumnConfig.<Dataset>create("formats", "Daten herunterladen").setShowTooltip(false)
-                        .textAlign("left").setCellRenderer(cell -> {
-                            HTMLElement badgesElement = div().element();
-
-                            for (String fileStr : cell.getRecord().getFiles()) {
-                                if (cell.getRecord().getSubunits() != null) {
-                                    badgesElement.appendChild(Badge.create(formats.get(fileStr))
-                                            .setBackground(Color.GREY_LIGHTEN_4).style().setMarginRight("10px")
-                                            .setMarginTop("5px").setMarginBottom("5px").get().element());
-                                } else {
-                                    badgesElement.appendChild(a().css("badge-link")
-                                            .attr("href",
-                                                    "/dataset/" + cell.getRecord().getId() + "_" + fileStr + ".zip")
-                                            .add(Badge.create(formats.get(fileStr)).setBackground(Color.GREY_LIGHTEN_2)
-                                                    .style().setMarginRight("10px").setMarginTop("5px")
-                                                    .setMarginBottom("5px").get().element())
-                                            .element());
+                                for (String fileStr : cell.getRecord().getFiles()) {
+                                    if (cell.getRecord().getSubunits() != null) {
+                                        badgesElement.appendChild(Badge.create(formats.get(fileStr))
+                                                .setBackground(Color.GREY_LIGHTEN_4).style().setMarginRight("10px")
+                                                .setMarginTop("5px").setMarginBottom("5px").get().element());
+                                    } else {
+                                        badgesElement.appendChild(a().css("badge-link")
+                                                .attr("href",
+                                                        "/dataset/" + cell.getRecord().getId() + "_" + fileStr + ".zip")
+                                                .add(Badge.create(formats.get(fileStr)).setBackground(Color.GREY_LIGHTEN_2)
+                                                        .style().setMarginRight("10px").setMarginTop("5px")
+                                                        .setMarginBottom("5px").get().element())
+                                                .element());
+                                    }
                                 }
+                                return badgesElement; 
                             }
-
-                            return badgesElement;
                         }))
                 .addColumn(ColumnConfig.<Dataset>create("services", "Servicelink").setShowTooltip(false)
                         .textAlign("center").setCellRenderer(cell -> {
@@ -463,6 +461,32 @@ public class AppEntryPoint implements EntryPoint {
 //
 //        container.appendChild(datasetContent);        
 //    }
+    
+    private void openMetadataDialog(Dataset dataset) {
+        ModalDialog modal = ModalDialog.create("Metadaten: " + dataset.getTitle()).setAutoClose(true);
+        modal.style().setMaxHeight("calc(100% - 120px)");
+        modal.style().setOverFlowY("auto");
+
+        modal.appendChild(h(4, "Beschreibung"));
+        modal.appendChild(p().textContent(dataset.getShortDescription()));
+        
+        modal.appendChild(h(4, "Weitere Metadaten"));
+        modal.appendChild(p().textContent(dataset.getShortDescription()));
+        
+        modal.appendChild(h(4, "Inhalt"));
+        modal.appendChild(p().textContent(dataset.getShortDescription()));
+
+
+
+        Button closeButton = Button.create("SCHLIESSEN").linkify();
+        closeButton.setBackground(Color.RED);
+        EventListener closeModalListener = (evt) -> modal.close();
+        closeButton.addClickListener(closeModalListener);
+        modal.appendFooterChild(closeButton);
+        modal.open();
+        
+        closeButton.blur();
+    }
 
     private void openRegionSelectionDialog(Dataset dataset) {
         ModalDialog modal = ModalDialog.create("Gebietsauswahl: " + dataset.getTitle()).setAutoClose(true);
