@@ -266,10 +266,13 @@ public class AppEntryPoint implements EntryPoint {
                             return TextNode.of(dateString);
 
                         }))
-//                .addColumn(ColumnConfig.<Dataset>create("metadata", "Metadaten")
-//                        .setShowTooltip(false)                        
-//                        .textAlign("left")
-//                        .setCellRenderer(cell -> a().css("generic-link").attr("href", "https://geocat.ch").textContent("geocat.ch").element()))
+                
+                // Icons.ALL.open_in_new()
+                
+                .addColumn(ColumnConfig.<Dataset>create("metadata", "Metadaten")
+                        .setShowTooltip(false)                        
+                        .textAlign("left")
+                        .setCellRenderer(cell -> a().css("generic-link").attr("href", "https://geocat.ch").textContent("geocat.ch").element()))
                 .addColumn(ColumnConfig.<Dataset>create("perimeter", "Gebiet").setShowTooltip(false).textAlign("center")
                         .setCellRenderer(cell -> {
                             if (cell.getRecord().getSubunits() != null) {
