@@ -2,7 +2,8 @@
 
 ## TODO
 - Bug: Suchen -> backspace alle Zeichen -> nicht komplette Liste
-- Firefox zeigt Aufklappen-Zeichen nicht bei Tabellen
+- Bug: Firefox zeigt Aufklappen-Zeichen nicht bei Tabellen
+- Link/Icon zu geocat.ch sollte auch beim hovern rot erscheinen.
 
 - ilidata.xml: Gebietsauswahl adaptieren. Raster -> Verweis auf Subunits, dito bei Vektor?
 - Lucene Suche
