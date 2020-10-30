@@ -29,7 +29,7 @@ app:
         - id: ch.so.agi.lidar_2019.dtm_hillshade
           version: current
           owner: mailto:agi@bd.so.ch
-          model: SO_AGI_Lidarprodukte_Publikation_20180202
+          model: SO_AGI_Subunits_Base_20201023
           epsgCode: 2056
           resolutionScope: 500
           publishingDate: 2019-05-13
@@ -41,7 +41,7 @@ app:
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_Lidarprodukte_Publikation_20180202.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
           subunits: ch.so.agi.subunits_lidar_2019.dtm_hillshade
           files:
@@ -55,13 +55,13 @@ app:
           publishingDate: 2020-08-29
           lastEditingDate: 2020-08-29
           title: Administrative Einteilungen der amtlichen Vermessung und des Grundbuchs
-          shortDescription: Administrative Einteilungen der amtlichen Vermessung (Nummerierungsbereiche, Adressen der Nachführungsgeometer, ...) und des Grundbuchs (Grundbuchkreise, Adressen der Grundbuchämter, ...).
+          shortDescription: Administrative Einteilungen der amtlichen Vermessung (Nummerierungsbereiche, Adressen der Nachführungsgeometer, etc.) und des Grundbuchs (Grundbuchkreise, Adressen der Grundbuchämter, etc.).
           keywords: Amtliche Vermessung,Grundbuch,Grundbuchamt,Nachführungsgeometer,Geometer,AGI,AS
           provider: Amt für Geoinformation (AGI)
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
           files:
             - xtf
@@ -88,7 +88,7 @@ app:
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
           files:
             - xtf
@@ -111,7 +111,7 @@ app:
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: http://geo.so.ch/models/ARP/SO_ARP_Naturreservate_Publikation_20200609.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.arp.naturreservate.teilgebiete%2Cch.so.arp.naturreservate.reservate&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255%2C255&t=292&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321'
           files:
             - xtf
@@ -133,7 +133,7 @@ app:
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: http://geo.so.ch/models/AWJF/SO_Forstreviere_Publikation_20170428.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.awjf.forstreviere.forstreviere%2Cch.so.awjf.forstreviere.forstkreis&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255%2C255&t=292&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C265832'
           files:
             - xtf
@@ -155,7 +155,7 @@ app:
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: http://geo.so.ch/models/ALW/SO_ALW_Infoflora_Publikation_20191028.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.alw.neophyten_infoflora.weitere_wichtige_arten%2Cch.so.alw.neophyten_infoflora.prioritaere_arten&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255%2C255&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
           files:
             - xtf
@@ -177,7 +177,7 @@ app:
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: https://geo.so.ch/models/AFU/SO_AFU_Ekat_Publikation_20190222.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.afu.ekat2015&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
           files:
             - xtf
@@ -199,7 +199,7 @@ app:
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: https://geo.so.ch/models/AFU/SO_AFU_Geotope_Publikation_20200623.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.afu.geotope&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
           files:
             - xtf
@@ -221,7 +221,7 @@ app:
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: https://geo.so.ch/models/AFU/SO_AfU_Gewaesserschutz_Publikation_20200115.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.afu.gewaesserschutz&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
           files:
             - xtf
@@ -243,7 +243,7 @@ app:
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: https://geo.so.ch/models/AGI/SO_Hoheitsgrenzen_Publikation_20170626.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.hoheitsgrenzen&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
           files:
             - xtf
@@ -258,20 +258,86 @@ app:
           resolutionScope: 500
           publishingDate: 2020-09-23
           lastEditingDate: 2020-09-23
-          title: Daten der amtlichen Vermessung (MOpublic)
+          title: Daten der amtlichen Vermessung (ganzer Kanton)
           shortDescription: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
           keywords: Amtliche Vermessung,AV,Bodenbedeckung,Gebäude,Grundstücke,Parzelle,Liegenschaften,Baurecht,Fixpunkt,AGI
           provider: Amt für Geoinformation (AGI)             
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: https://geo.so.ch/models/AGI/SO_AGI_MOpublic_20190424.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.amtliche_vermessung&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
           files:
             - xtf
             - gpkg
             - shp
             - dxf
+        - id: ch.so.agi.amtliche_vermessung.dm01so
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AGI_Subunits_Base_20201023
+          epsgCode: 2056
+          resolutionScope: 500
+          publishingDate: 2020-09-23
+          lastEditingDate: 2020-09-23
+          title: Daten der amtlichen Vermessung (gemeindeweise, DM01 Solothurn)
+          shortDescription: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+          keywords: Amtliche Vermessung,AV,Bodenbedeckung,Gebäude,Grundstücke,Parzelle,Liegenschaften,Baurecht,Fixpunkt,AGI
+          provider: Amt für Geoinformation (AGI)             
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          furtherInformation: https://geo.so.ch/models/AGI/SO_AGI_MOpublic_20190424.uml
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.amtliche_vermessung&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
+          files:
+            - xtf
+          subunits: ch.so.agi.subunits.amtliche_vermessung
+        - id: ch.so.agi.amtliche_vermessung.dm01ch
+          version: current
+          owner: mailto:agi@bd.so.ch
+          # Wo steckt grundsätzlich und v.a. in subunit-Fällen die URL zum Download?
+          # Geht nicht auf. Modell für Subunit kann nicht hier stehen bei Vektordaten. Sonst verliert man das Wissen auf welchem Modell die Vektordaten basieren.
+          model: SO_AGI_Subunits_Base_20201023
+          epsgCode: 2056
+          resolutionScope: 500
+          publishingDate: 2020-09-23
+          lastEditingDate: 2020-09-23
+          title: Daten der amtlichen Vermessung (gemeindeweise, DM01 Bund)
+          shortDescription: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+          keywords: Amtliche Vermessung,AV,Bodenbedeckung,Gebäude,Grundstücke,Parzelle,Liegenschaften,Baurecht,Fixpunkt,AGI
+          provider: Amt für Geoinformation (AGI)             
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          furtherInformation: https://geo.so.ch/models/AGI/SO_AGI_MOpublic_20190424.uml
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.amtliche_vermessung&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
+          files:
+            - xtf
+            - dxf
+          subunits: ch.so.agi.subunits.amtliche_vermessung     
+        - id: ch.so.agi.amtliche_vermessung.mopublicso
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AGI_Subunits_Base_20201023
+          epsgCode: 2056
+          resolutionScope: 500
+          publishingDate: 2020-09-23
+          lastEditingDate: 2020-09-23
+          title: Daten der amtlichen Vermessung (gemeindeweise, MOpublic Solothurn)
+          shortDescription: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+          keywords: Amtliche Vermessung,AV,Bodenbedeckung,Gebäude,Grundstücke,Parzelle,Liegenschaften,Baurecht,Fixpunkt,AGI
+          provider: Amt für Geoinformation (AGI)             
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          furtherInformation: https://geo.so.ch/models/AGI/SO_AGI_MOpublic_20190424.uml
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.amtliche_vermessung&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
+          files:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+          subunits: ch.so.agi.subunits.amtliche_vermessung               
         - id: ch.so.agi_plz_ortschaften
           version: current
           owner: mailto:agi@bd.so.ch
@@ -287,7 +353,7 @@ app:
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: https://geo.so.ch/models/AGI/SO_AGI_PLZ_Ortschaften_Publikation_20180406.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.gebaeudeadressen.plz_ortschaften&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
           files:
             - xtf
@@ -309,7 +375,7 @@ app:
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: https://geo.so.ch/models/AGI/SO_AGI_swissBOUNDARIES3D_Publikation_20171026.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=FUBAR&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
           files:
             - xtf
@@ -331,7 +397,7 @@ app:
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: https://geo.so.ch/models/AMB/SO_AMB_Notfalltreffpunkte_Publikation_20180822.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.amb.notfalltreffpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
           files:
             - xtf
@@ -353,7 +419,7 @@ app:
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: https://geo.so.ch/models/ARP/SO_Nutzungsplanung_Publikation_20190909.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.arp.nutzungsplanung&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
           files:
             - xtf
@@ -372,7 +438,7 @@ app:
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: https://geo.so.ch/models/ARP/SO_Nutzungsplanung_Publikation_20190909.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.arp.richtplan&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
           files:
             - xtf
@@ -394,7 +460,7 @@ app:
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           furtherInformation: https://geo.so.ch/models/ARP/SO_Agglomerationsprogramme_Publikation_20200813.uml
-          furtherMetadata: http://www.geolion.zh.ch/geodatensatz/1484
+          furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.arp.aggloprogramme&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
           files:
             - xtf

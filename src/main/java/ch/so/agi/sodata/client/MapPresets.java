@@ -210,6 +210,13 @@ public class MapPresets {
                         String attrName = ((com.google.gwt.xml.client.Element) attrNode).getAttribute("name");
                         String attrValue = ((com.google.gwt.xml.client.Element) attrNode).getAttribute("value");
 
+//                        console.log(attrName);
+//                        console.log(attrValue);
+                        
+                        if (attrValue.equalsIgnoreCase("NULL")) {
+                            continue;
+                        }
+                        
                         if (attrName.equalsIgnoreCase("geometry")) {
                             feature.setGeometry(new Wkt().readGeometry(attrValue));
                         } else {
