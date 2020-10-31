@@ -329,6 +329,7 @@ public class AppEntryPoint implements EntryPoint {
                 HTMLElement details = (HTMLElement) DomGlobal.document.createElement("details");
                 details.style.paddingBottom = CSSProperties.PaddingBottomUnionType.of("5px");
                 HTMLElement summary = (HTMLElement) DomGlobal.document.createElement("summary");
+                summary.style.display = "list-item"; // needed by firefox
                 summary.textContent = datasetTable.getTitle();
                 HTMLElement p = p().style("padding-top:5px;padding-bottom:5px;").textContent(datasetTable.getDescription()).element();
                 details.appendChild(summary);
