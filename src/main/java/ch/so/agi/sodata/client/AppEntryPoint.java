@@ -186,6 +186,8 @@ public class AppEntryPoint implements EntryPoint {
 
         textBox.addEventListener("keyup", event -> {
             if (textBox.getValue().trim().length() == 0) {
+                console.log("leeeeeeer");
+                listStore.setData(Arrays.asList(datasets));
                 return;
             }
 

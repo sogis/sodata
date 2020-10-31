@@ -1,7 +1,7 @@
 # sodata
 
 ## TODO
-- Bug: Suchen -> backspace alle Zeichen -> nicht komplette Liste
+- ~~Bug: Suchen -> backspace alle Zeichen -> nicht komplette Liste~~ Id war in yml falsch resp. doppelt. Aus diesem Grund kam es zu doppelten Einträgen.
 - ~~Bug: Firefox zeigt Aufklappen-Zeichen nicht bei Tabellen~~
 - ~~Link/Icon zu geocat.ch sollte auch beim hovern rot erscheinen.~~ Nein. War eher ungewollt, da a:hover noch im css file vorhanden war.
 

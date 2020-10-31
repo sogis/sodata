@@ -206,7 +206,7 @@ app:
             - gpkg
             - shp
             - dxf              
-        - id: ch.so.afu.geotope
+        - id: ch.so.afu.gewaesserschutz
           version: current
           owner: mailto:agi@bd.so.ch
           model: SO_AfU_Gewaesserschutz_Publikation_20200115

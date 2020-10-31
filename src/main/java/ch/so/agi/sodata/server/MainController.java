@@ -115,7 +115,9 @@ public class MainController {
 
             List<Map<String, String>> records = results.getRecords();
             List<Dataset> resultList = records.stream()
+                    //.distinct()
                     .map(r -> {
+                        log.info(r.get("id"));
                         return datasetMap.get(r.get("id"));
                     })
                     .collect(Collectors.toList());
