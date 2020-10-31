@@ -1,0 +1,17 @@
+<layer>
+  <name>ch.so.agi.subunits.amtliche_vermessung</name>
+  <id>LayerInfoImpl-533cd829:1757f72e5e7:-7ffa</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl-533cd829:1757f72e5e7:-7ff9</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl-533cd829:1757f72e5e7:-7ffb</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+  <dateCreated>2020-10-31 16:19:36.634 UTC</dateCreated>
+  <dateModified>2020-10-31 16:30:13.580 UTC</dateModified>
+</layer>

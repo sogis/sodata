@@ -1,0 +1,20 @@
+<dataStore>
+  <id>DataStoreInfoImpl-533cd829:1757f72e5e7:-7ffd</id>
+  <name>ch.so.agi.subunits.amtliche_vermessung</name>
+  <description>ch.so.agi.subunits.amtliche_vermessung</description>
+  <type>GeoPackage</type>
+  <enabled>true</enabled>
+  <workspace>
+    <id>WorkspaceInfoImpl-533cd829:1757f72e5e7:-7fff</id>
+  </workspace>
+  <connectionParameters>
+    <entry key="Batch insert size">1</entry>
+    <entry key="database">file:data/ch.so.agi.subunits.amtliche_vermessung.gpkg</entry>
+    <entry key="fetch size">1000</entry>
+    <entry key="Expose primary keys">false</entry>
+    <entry key="dbtype">geopkg</entry>
+    <entry key="namespace">https://agi.so.ch</entry>
+  </connectionParameters>
+  <__default>false</__default>
+  <dateCreated>2020-10-31 16:18:42.493 UTC</dateCreated>
+</dataStore>
