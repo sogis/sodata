@@ -15,17 +15,17 @@
 
 First Terminal:
 ```
-./mvnw clean spring-boot:run
+./mvnw spring-boot:run -Penv-dev -pl *-server -am
 ```
 
 Second Terminal:
 ```
-./mvnw gwt:generate-module gwt:codeserver
+./mvnw gwt:codeserver -pl *-client -am
 ```
 
-Or simple devmode (which worked better for java.xml.bind on client side):
+Or without downloading all the snapshots again:
 ```
-./mvnw gwt:generate-module gwt:devmode 
+./mvnw gwt:codeserver -pl *-client -am -nsu 
 ```
 
 Build fat jar and docker image:
