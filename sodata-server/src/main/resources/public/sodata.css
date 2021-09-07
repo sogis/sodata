@@ -1,13 +1,78 @@
 body {
-  margin: 0px;
-  padding: 0px;
-  background: #fafafa; 
+    margin: 0px;
+    padding: 0px;
+    background: #FFFFFF; 
 }
 
 body, div {
-  font-family: Frutiger, 'Fira Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;   
+    font-family: Frutiger, 'Fira Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;   
 }
 
 #map {
-  height: 100%;
+    height: 100%;
+}
+
+.field-group input, .field-group textarea {
+    font-family: Frutiger, 'Fira Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;   
+    font-size: 16px;   
+    font-weight: 300;     
+}
+
+.field-group .field-label {
+    font-size: 12px;
+    font-weight: 300;   
+}
+
+.dropdown-menu>li>a {
+    font-weight: 300;
+} 
+
+#container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 1400px;
+    max-width: 95%;
+    background-color: #FFFFFF;        
+}
+
+.logo {
+    margin-top: 10px;
+    font-size: 40px;
+    text-align: right;
+}
+
+.breadcrumb {
+    padding: 0px !important;    
+}
+
+.sodata-title {
+    margin-top: 120px;
+    font-size: 40px;
+}
+
+.info {
+    margin-top: 30px;
+    font-size: 16px;
+    font-style: normal;
+}
+
+.default-link {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #c62828; 
+}
+
+a.default-link:hover {
+    color: #c62828;
+    text-decoration: underline !important;
+}  
+
+a.default-link:visited {
+    color: #c62828; 
+    text-decoration: underline !important;
+}  
+
+#search-panel {
+    margin-top: 40px;
+    margin-bottom: 30px;
 }

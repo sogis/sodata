@@ -15,7 +15,7 @@
 
 First Terminal:
 ```
-./mvnw spring-boot:run -Penv-dev -pl *-server -am
+./mvnw spring-boot:run -Penv-dev -pl *-server -am (-Dspring-boot.run.profiles=XXXX)
 ```
 
 Second Terminal:
@@ -31,6 +31,14 @@ Or without downloading all the snapshots again:
 Build fat jar and docker image:
 ```
 GITHUB_RUN_NUMBER=9999 mvn clean package
+```
+
+## Build
+- foo
+
+## Run
+```
+java -jar sodata-server/target/sodata.jar --spring.profiles.active=prod
 ```
 
 
