@@ -10,7 +10,7 @@ public class Dataset {
     private String epsgCode;
     private String resolutionScope;
     private String publishingDate; 
-    private String lastEditingDate; // TODO: Date type?
+    private String lastEditingDate; // TODO: Date type binding ist nicht möglich, da es dazu eine Spring-Annotation benötigt, die im shared-Modul nicht sichtbar ist.
     private String title;
     private String shortDescription;
     private String keywords;
@@ -21,7 +21,8 @@ public class Dataset {
     private String furtherMetadata;
     private String knownWMS;
     private String subunits;
-    private List files;
+    private List<String> fileFormats;
+    private List<DatasetTable> tables;
     
     public String getId() {
         return id;
@@ -131,10 +132,16 @@ public class Dataset {
     public void setSubunits(String subunits) {
         this.subunits = subunits;
     }
-    public List getFiles() {
-        return files;
+    public List<String> getFileFormats() {
+        return fileFormats;
     }
-    public void setFiles(List files) {
-        this.files = files;
+    public void setFileFormats(List<String> fileFormats) {
+        this.fileFormats = fileFormats;
+    }
+    public List<DatasetTable> getTables() {
+        return tables;
+    }
+    public void setTables(List<DatasetTable> tables) {
+        this.tables = tables;
     }
 }

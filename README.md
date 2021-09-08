@@ -1,6 +1,11 @@
 # sodata
 
+## Docs
+- Index beim Hochfahren. Index im Pod, nicht persistent.
+- Index: Leading wildcard ist momentan nicht umgesetzt -> Feedback abwarten. Falls notwendig, siehe "modelfinder".
+
 ## TODO
+- Testing!
 - ~~Bug: Suchen -> backspace alle Zeichen -> nicht komplette Liste~~ Id war in yml falsch resp. doppelt. Aus diesem Grund kam es zu doppelten Einträgen.
 - ~~Bug: Firefox zeigt Aufklappen-Zeichen nicht bei Tabellen~~
 - ~~Link/Icon zu geocat.ch sollte auch beim hovern rot erscheinen.~~ Nein. War eher ungewollt, da a:hover noch im css file vorhanden war.
@@ -40,6 +45,10 @@ GITHUB_RUN_NUMBER=9999 mvn clean package
 ```
 java -jar sodata-server/target/sodata.jar --spring.profiles.active=prod
 ```
+
+## Testrequests
+- Alle Datensätze: http://localhost:8080/datasets
+- Suche: http://localhost:8080/datasets?query=admin
 
 
 ### QGIS server

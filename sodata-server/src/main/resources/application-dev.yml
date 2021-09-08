@@ -19,7 +19,7 @@ app:
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
           subunits: ch.so.agi.subunits_lidar_2019.dtm_hillshade
-          files:
+          fileFormats:
             - gtiff
         - id: ch.so.agi.av_gb_administrative_einteilungen
           version: current
@@ -38,7 +38,7 @@ app:
           furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
-          files:
+          fileFormats:
             - xtf
             - gpkg
             - shp
@@ -65,7 +65,7 @@ app:
           furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
-          files:
+          fileFormats:
             - xtf
             - gpkg
             - shp
@@ -88,7 +88,7 @@ app:
           furtherInformation: http://geo.so.ch/models/ARP/SO_ARP_Naturreservate_Publikation_20200609.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.arp.naturreservate.teilgebiete%2Cch.so.arp.naturreservate.reservate&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255%2C255&t=292&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321'
-          files:
+          fileFormats:
             - xtf
             - gpkg
             - shp
@@ -110,7 +110,7 @@ app:
           furtherInformation: http://geo.so.ch/models/AWJF/SO_Forstreviere_Publikation_20170428.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.awjf.forstreviere.forstreviere%2Cch.so.awjf.forstreviere.forstkreis&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255%2C255&t=292&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C265832'
-          files:
+          fileFormats:
             - xtf
             - gpkg
             - shp  
@@ -132,7 +132,7 @@ app:
           furtherInformation: http://geo.so.ch/models/ALW/SO_ALW_Infoflora_Publikation_20191028.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.alw.neophyten_infoflora.weitere_wichtige_arten%2Cch.so.alw.neophyten_infoflora.prioritaere_arten&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255%2C255&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
-          files:
+          fileFormats:
             - xtf
             - gpkg
             - shp  
@@ -154,7 +154,7 @@ app:
           furtherInformation: https://geo.so.ch/models/AFU/SO_AFU_Ekat_Publikation_20190222.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.afu.ekat2015&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
-          files:
+          fileFormats:
             - xtf
             - gpkg
             - shp 
@@ -176,7 +176,7 @@ app:
           furtherInformation: https://geo.so.ch/models/AFU/SO_AFU_Geotope_Publikation_20200623.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.afu.geotope&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
-          files:
+          fileFormats:
             - xtf
             - gpkg
             - shp
@@ -198,7 +198,7 @@ app:
           furtherInformation: https://geo.so.ch/models/AFU/SO_AfU_Gewaesserschutz_Publikation_20200115.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.afu.gewaesserschutz&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
-          files:
+          fileFormats:
             - xtf
             - gpkg
             - shp
@@ -220,7 +220,7 @@ app:
           furtherInformation: https://geo.so.ch/models/AGI/SO_Hoheitsgrenzen_Publikation_20170626.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.hoheitsgrenzen&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
-          files:
+          fileFormats:
             - xtf
             - gpkg
             - shp
@@ -242,7 +242,7 @@ app:
           furtherInformation: https://geo.so.ch/models/AGI/SO_AGI_MOpublic_20190424.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.amtliche_vermessung&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
-          files:
+          fileFormats:
             - xtf
             - gpkg
             - shp
@@ -264,7 +264,7 @@ app:
           furtherInformation: https://geo.so.ch/models/AGI/SO_AGI_MOpublic_20190424.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.amtliche_vermessung&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
-          files:
+          fileFormats:
             - xtf
           subunits: ch.so.agi.subunits.amtliche_vermessung
         - id: ch.so.agi.amtliche_vermessung.dm01ch
@@ -286,7 +286,7 @@ app:
           furtherInformation: https://geo.so.ch/models/AGI/SO_AGI_MOpublic_20190424.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.amtliche_vermessung&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
-          files:
+          fileFormats:
             - xtf
             - dxf
           subunits: ch.so.agi.subunits.amtliche_vermessung     
@@ -307,7 +307,7 @@ app:
           furtherInformation: https://geo.so.ch/models/AGI/SO_AGI_MOpublic_20190424.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.amtliche_vermessung&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
-          files:
+          fileFormats:
             - xtf
             - gpkg
             - shp
@@ -330,7 +330,7 @@ app:
           furtherInformation: https://geo.so.ch/models/AGI/SO_AGI_PLZ_Ortschaften_Publikation_20180406.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.gebaeudeadressen.plz_ortschaften&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
-          files:
+          fileFormats:
             - xtf
             - gpkg
             - shp
@@ -352,7 +352,7 @@ app:
           furtherInformation: https://geo.so.ch/models/AGI/SO_AGI_swissBOUNDARIES3D_Publikation_20171026.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=FUBAR&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
-          files:
+          fileFormats:
             - xtf
             - gpkg
             - shp
@@ -374,7 +374,7 @@ app:
           furtherInformation: https://geo.so.ch/models/AMB/SO_AMB_Notfalltreffpunkte_Publikation_20180822.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.amb.notfalltreffpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
-          files:
+          fileFormats:
             - xtf
             - gpkg
             - shp
@@ -396,7 +396,7 @@ app:
           furtherInformation: https://geo.so.ch/models/ARP/SO_Nutzungsplanung_Publikation_20190909.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.arp.nutzungsplanung&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
-          files:
+          fileFormats:
             - xtf
         - id: ch.so.arp.richtplan
           version: current
@@ -415,7 +415,7 @@ app:
           furtherInformation: https://geo.so.ch/models/ARP/SO_Nutzungsplanung_Publikation_20190909.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.arp.richtplan&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
-          files:
+          fileFormats:
             - xtf
             - gpkg
             - shp
@@ -437,7 +437,7 @@ app:
           furtherInformation: https://geo.so.ch/models/ARP/SO_Agglomerationsprogramme_Publikation_20200813.uml
           furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.arp.aggloprogramme&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
-          files:
+          fileFormats:
             - xtf
             - gpkg
             - shp

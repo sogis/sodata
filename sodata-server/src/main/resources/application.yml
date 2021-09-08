@@ -14,7 +14,7 @@ server:
 # ========================
 logging:
   level:
-    org.springframework: INFO 
+    org.springframework: ${LOG_LEVEL:INFO} 
 
 spring:
     resources:
@@ -23,12 +23,24 @@ spring:
         restart:
             additional-exclude: launcherDir/**
 
+management:
+    health:
+        probes:
+            enabled: true
+    endpoint:
+        health: 
+            show-details: always
+
 # spring:
 #     profiles:
 #         active: test 
 
 # ========================
 # APPLICATION
-# ========================
+# ========================   
+lucene:
+    queryDefaultRecords: ${LUCENE_QUERY_DEFAULT_RECORDS:10}
+    queryMaxRecords: ${LUCENE_QUERY_MAX_RECORDS:50}
+
 app:
     myVar: ${VAR:defaultValue}
