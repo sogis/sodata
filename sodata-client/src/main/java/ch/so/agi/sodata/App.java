@@ -4,14 +4,18 @@ import static elemental2.dom.DomGlobal.console;
 import static elemental2.dom.DomGlobal.fetch;
 import static org.jboss.elemento.Elements.*;
 
+import java.util.List;
+
 import org.dominokit.domino.ui.breadcrumbs.Breadcrumb;
 import org.dominokit.domino.ui.forms.TextBox;
 import org.dominokit.domino.ui.icons.Icons;
 import org.dominokit.domino.ui.style.Color;
 import org.dominokit.domino.ui.style.ColorScheme;
 import org.dominokit.domino.ui.themes.Theme;
+import com.google.gwt.core.client.GWT;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 
+import com.github.nmorel.gwtjackson.client.ObjectMapper;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.i18n.client.NumberFormat;
 
@@ -26,6 +30,8 @@ import ol.OLFactory;
 import ol.proj.Projection;
 import ol.proj.ProjectionOptions;
 import proj4.Proj4;
+
+import ch.so.agi.sodata.Dataset;
 
 public class App implements EntryPoint {
 
@@ -45,12 +51,35 @@ public class App implements EntryPoint {
     //private static final String EPSG_4326 = "EPSG:4326"; 
     //private Projection projection;
 
+    public static interface DatasetMapper extends ObjectMapper<List<Dataset>> {}
+
     private String MAP_DIV_ID = "map";
     private Map map;
 
 	public void onModuleLoad() {
-	    init();
-	}
+	    DatasetMapper mapper = GWT.create(DatasetMapper.class);   
+
+        DomGlobal.fetch("/datasets")
+        .then(response -> {
+            if (!response.ok) {
+                DomGlobal.window.alert(response.statusText + ": " + response.body);
+                return null;
+            }
+            return response.text();
+        })
+        .then(json -> {
+            console.log(json);
+            List<Dataset> datasets = mapper.read(json);
+            
+            init();
+            
+            return null;
+        }).catch_(error -> {
+            console.log(error);
+            DomGlobal.window.alert(error.toString());
+            return null;
+        });
+    }
 	
 	public void init() {
 	    /*

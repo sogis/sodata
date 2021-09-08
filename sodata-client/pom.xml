@@ -17,14 +17,14 @@
       <artifactId>sodata-shared</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <!--
+   
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>sodata-shared</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
-    -->  
+    
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
