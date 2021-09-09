@@ -4,20 +4,32 @@ import static elemental2.dom.DomGlobal.console;
 import static elemental2.dom.DomGlobal.fetch;
 import static org.jboss.elemento.Elements.*;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
+import org.dominokit.domino.ui.badges.Badge;
 import org.dominokit.domino.ui.breadcrumbs.Breadcrumb;
+import org.dominokit.domino.ui.datatable.ColumnConfig;
+import org.dominokit.domino.ui.datatable.DataTable;
+import org.dominokit.domino.ui.datatable.TableConfig;
+import org.dominokit.domino.ui.datatable.store.LocalListDataStore;
 import org.dominokit.domino.ui.forms.TextBox;
 import org.dominokit.domino.ui.icons.Icons;
 import org.dominokit.domino.ui.style.Color;
 import org.dominokit.domino.ui.style.ColorScheme;
 import org.dominokit.domino.ui.themes.Theme;
+import org.dominokit.domino.ui.utils.TextNode;
+
 import com.google.gwt.core.client.GWT;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 
 import com.github.nmorel.gwtjackson.client.ObjectMapper;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.i18n.client.DateTimeFormat;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Event;
@@ -45,6 +57,12 @@ public class App implements EntryPoint {
     private HTMLElement container;
     private HTMLElement topLevelContent;
     private HTMLElement datasetContent;
+    
+    private List<Dataset> datasets;
+    private LocalListDataStore<Dataset> listStore;
+    private DataTable<Dataset> datasetTable;
+
+    private HashMap<String, String> formatLookUp = new HashMap<String, String>();
 
     // Projection
     //private static final String EPSG_2056 = "EPSG:2056";
@@ -57,6 +75,12 @@ public class App implements EntryPoint {
     private Map map;
 
 	public void onModuleLoad() {
+	    formatLookUp.put("xtf", "INTERLIS");
+	    formatLookUp.put("shp", "Shapefile");
+	    formatLookUp.put("dxf", "DXF");
+	    formatLookUp.put("gpkg", "GeoPackage");
+	    formatLookUp.put("gtiff", "GeoTIFF");
+
 	    DatasetMapper mapper = GWT.create(DatasetMapper.class);   
 
         DomGlobal.fetch("/datasets")
@@ -70,6 +94,13 @@ public class App implements EntryPoint {
         .then(json -> {
             console.log(json);
             List<Dataset> datasets = mapper.read(json);
+            
+            Collections.sort(datasets, new Comparator<Dataset>() {
+                @Override
+                public int compare(Dataset o1, Dataset o2) {
+                    return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
+                }
+            });
             
             init();
             
@@ -170,7 +201,83 @@ public class App implements EntryPoint {
         });
         topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(textBox)).element());
 
-        
+        TableConfig<Dataset> tableConfig = new TableConfig<>();
+        tableConfig
+                .addColumn(ColumnConfig.<Dataset>create("title", "Name").setShowTooltip(false).textAlign("left")
+                        .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getTitle())))
+                .addColumn(ColumnConfig.<Dataset>create("lastEditingDate", "Aktualisiert").setShowTooltip(false)
+                        .textAlign("left").setCellRenderer(cell -> {
+                            Date date = DateTimeFormat.getFormat("yyyy-MM-dd")
+                                    .parse(cell.getTableRow().getRecord().getLastEditingDate());
+                            String dateString = DateTimeFormat.getFormat("dd.MM.yyyy").format(date);
+                            return TextNode.of(dateString);
+
+                        }))
+                .addColumn(ColumnConfig.<Dataset>create("metadata", "Metadaten").setShowTooltip(false)
+                        .textAlign("center").setCellRenderer(cell -> {
+                            HTMLElement metadataLinkElement = div()
+                                    .add(Icons.ALL.information_outline_mdi().style().setCursor("pointer")).element();
+                            metadataLinkElement.addEventListener("click", new EventListener() {
+                                @Override
+                                public void handleEvent(elemental2.dom.Event evt) {
+                                    //openMetadataDialog(cell.getRecord());
+                                }
+                            });
+                            return metadataLinkElement;
+                        }))
+                .addColumn(ColumnConfig.<Dataset>create("formats", "Daten herunterladen").setShowTooltip(false)
+                        .textAlign("left").setCellRenderer(cell -> {
+                            HTMLElement badgesElement = div().element();
+
+                            if (cell.getRecord().getSubunits() != null) {
+                                HTMLElement regionSelectionElement = a().css("generic-link")
+                                        .textContent("Gebietsauswahl nötig").element();
+                                regionSelectionElement.addEventListener("click", new EventListener() {
+                                    @Override
+                                    public void handleEvent(elemental2.dom.Event evt) {
+                                        //openRegionSelectionDialog(cell.getRecord());
+                                    }
+
+                                });
+                                return regionSelectionElement;
+                            } else {
+                                for (String fileStr : cell.getRecord().getFileFormats()) {
+                                    badgesElement.appendChild(a().css("badge-link")
+                                            .attr("href",
+                                                    "/dataset/" + cell.getRecord().getId() + "_" + fileStr + ".zip")
+                                            .add(Badge.create(formatLookUp.get(fileStr))
+                                                    .setBackground(Color.GREY_LIGHTEN_2).style()
+                                                    .setMarginRight("10px").setMarginTop("5px")
+                                                    .setMarginBottom("5px").get().element())
+                                            .element());
+                                }
+                                return badgesElement;
+                            }
+                        }))
+                .addColumn(ColumnConfig.<Dataset>create("services", "Servicelink").setShowTooltip(false)
+                        .textAlign("center").setCellRenderer(cell -> {
+                            HTMLElement serviceLinkElement = div()
+                                    .add(Icons.ALL.information_outline_mdi().style().setCursor("pointer")).element();
+                            serviceLinkElement.addEventListener("click", new EventListener() {
+                                @Override
+                                public void handleEvent(elemental2.dom.Event evt) {
+                                    //openServiceLinkDialog(cell.getRecord());
+                                }
+                            });
+                            return serviceLinkElement;
+                        }));
+
+        listStore = new LocalListDataStore<>();
+        listStore.setData(datasets);
+
+        datasetTable = new DataTable<>(tableConfig, listStore);
+        datasetTable.setId("dataset-table");
+        datasetTable.noStripes();
+        datasetTable.noHover();
+        datasetTable.load();
+
+        topLevelContent.appendChild(datasetTable.element());
+
         
         
         // Add the Openlayers map (element) to the body.
