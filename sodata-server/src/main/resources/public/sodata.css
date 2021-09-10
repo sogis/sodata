@@ -111,3 +111,42 @@ a.badge-link:visited {
     font-size: 16px;
 }
 
+.modal-object {
+	max-height: calc(100% - 120px);
+	overflow-y: auto; 
+}
+
+.model-header {
+    font-size: 16px !important;
+    color: #333333 !important;  
+}
+
+.modal .modal-content .modal-body {
+    font-size: 16px !important;
+    color: #333333 !important;
+}
+
+.modal-body-paragraph {
+    padding-bottom: 16px;
+}
+
+h4, .h4 {
+    font-size: 16px !important;
+}
+
+.modal-paragraph {
+    padding-bottom: 20px;
+}
+
+.modal-meta-details {
+	padding-bottom: 5px;
+}
+
+.modal-meta-summary {
+	display: list-item; /* firefox only */
+}
+
+.modal-meta-paragraph {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}

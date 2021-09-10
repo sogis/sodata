@@ -266,7 +266,8 @@ app:
           knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.amtliche_vermessung&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&t=411&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.7083333333'
           fileFormats:
             - xtf
-          subunits: ch.so.agi.subunits.amtliche_vermessung
+          #subunits: ch.so.agi.subunits.amtliche_vermessung
+          subunits: gemeindegrenzen.geojson
         - id: ch.so.agi.amtliche_vermessung.dm01ch
           version: current
           owner: mailto:agi@bd.so.ch

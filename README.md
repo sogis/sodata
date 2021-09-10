@@ -1,10 +1,21 @@
 # sodata
 
+## to be discussed
+- Servicelinks? 
+  * Nur Endpunkt? Wie sinnvoll ist das?
+  * Umgang mit geodienste.ch?
+- Subunits: 
+  * Woher stammt der klickbare Index?
+  * Welche Informationen werden benötigt? (Namen, Datum?)
+- Liefert Config den finalen Link auf den Datensatz? Wie ist das bei den Subunits?
+
+
 ## Docs
 - Index beim Hochfahren. Index im Pod, nicht persistent.
 - Index: Leading wildcard ist momentan nicht umgesetzt -> Feedback abwarten. Falls notwendig, siehe "modelfinder".
 
 ## TODO
+- application.yml ausserhalb Pod verwenden.
 - Testing!
 - ~~Bug: Suchen -> backspace alle Zeichen -> nicht komplette Liste~~ Id war in yml falsch resp. doppelt. Aus diesem Grund kam es zu doppelten Einträgen.
 - ~~Bug: Firefox zeigt Aufklappen-Zeichen nicht bei Tabellen~~
@@ -50,7 +61,7 @@ java -jar sodata-server/target/sodata.jar --spring.profiles.active=prod
 - Alle Datensätze: http://localhost:8080/datasets
 - Suche: http://localhost:8080/datasets?query=admin
 
-
+## WMS
 ### QGIS server
 ```
 docker-compose build
@@ -64,4 +75,22 @@ http://localhost:8083/wms/subunits?SERVICE=WMS&REQUEST=GetCapabilities
 ### Geoserver
 ```
 docker run --rm --name sogis-geoserver -p 8080:8080 -v ~/sources/sodata/geoserver/data_dir:/var/local/geoserver sogis/geoserver:2.18.0
+```
+
+## Subunit Layer
+```
+SELECT 
+    json_build_object(
+        'type',
+        'FeatureCollection',
+        'features',
+        json_agg(ST_AsGeoJSON(t.*)::json)
+    ) 
+FROM 
+(
+    SELECT 
+        t_id, gemeindename AS "name", ST_SnapToGrid(geometrie, 10)
+    FROM 
+        agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze 
+) AS t;
 ```
