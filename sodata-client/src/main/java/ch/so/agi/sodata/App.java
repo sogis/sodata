@@ -58,6 +58,7 @@ public class App implements EntryPoint {
     private HTMLElement topLevelContent;
     private HTMLElement datasetContent;
     
+    private DatasetMapper mapper;
     private List<Dataset> datasets;
     private LocalListDataStore<Dataset> listStore;
     private DataTable<Dataset> datasetTable;
@@ -81,7 +82,7 @@ public class App implements EntryPoint {
 	    formatLookUp.put("gpkg", "GeoPackage");
 	    formatLookUp.put("gtiff", "GeoTIFF");
 
-	    DatasetMapper mapper = GWT.create(DatasetMapper.class);   
+	    mapper = GWT.create(DatasetMapper.class);   
 
         DomGlobal.fetch("/datasets")
         .then(response -> {
@@ -92,8 +93,7 @@ public class App implements EntryPoint {
             return response.text();
         })
         .then(json -> {
-            console.log(json);
-            List<Dataset> datasets = mapper.read(json);
+            datasets = mapper.read(json);
             
             Collections.sort(datasets, new Comparator<Dataset>() {
                 @Override
@@ -172,15 +172,14 @@ public class App implements EntryPoint {
             @Override
             public void handleEvent(Event evt) {
                 textBox.clear();
-                //listStore.setData(Arrays.asList(datasets));
+                listStore.setData(datasets);
             }
         });
         textBox.addRightAddOn(resetIcon);
 
         textBox.addEventListener("keyup", event -> {
             if (textBox.getValue().trim().length() == 0) {
-                console.log("leeeeeeer");
-                //listStore.setData(Arrays.asList(datasets));
+                listStore.setData(datasets);
                 return;
             }
 
@@ -190,9 +189,17 @@ public class App implements EntryPoint {
                 }
                 return response.text();
             }).then(json -> {
-                //Dataset[] searchResults = (Dataset[]) Global.JSON.parse(json);
-                //List<Dataset> searchResultList = Arrays.asList(searchResults);
-                //listStore.setData(searchResultList);
+                List<Dataset> filteredDatasets = mapper.read(json);
+                
+                Collections.sort(filteredDatasets, new Comparator<Dataset>() {
+                    @Override
+                    public int compare(Dataset o1, Dataset o2) {
+                        return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
+                    }
+                });
+
+                listStore.setData(filteredDatasets);
+                
                 return null;
             }).catch_(error -> {
                 console.log(error);
@@ -219,7 +226,7 @@ public class App implements EntryPoint {
                                     .add(Icons.ALL.information_outline_mdi().style().setCursor("pointer")).element();
                             metadataLinkElement.addEventListener("click", new EventListener() {
                                 @Override
-                                public void handleEvent(elemental2.dom.Event evt) {
+                                public void handleEvent(Event evt) {
                                     //openMetadataDialog(cell.getRecord());
                                 }
                             });
@@ -230,11 +237,11 @@ public class App implements EntryPoint {
                             HTMLElement badgesElement = div().element();
 
                             if (cell.getRecord().getSubunits() != null) {
-                                HTMLElement regionSelectionElement = a().css("generic-link")
+                                HTMLElement regionSelectionElement = a().css("default-link")
                                         .textContent("Gebietsauswahl nötig").element();
                                 regionSelectionElement.addEventListener("click", new EventListener() {
                                     @Override
-                                    public void handleEvent(elemental2.dom.Event evt) {
+                                    public void handleEvent(Event evt) {
                                         //openRegionSelectionDialog(cell.getRecord());
                                     }
 
@@ -260,7 +267,7 @@ public class App implements EntryPoint {
                                     .add(Icons.ALL.information_outline_mdi().style().setCursor("pointer")).element();
                             serviceLinkElement.addEventListener("click", new EventListener() {
                                 @Override
-                                public void handleEvent(elemental2.dom.Event evt) {
+                                public void handleEvent(Event evt) {
                                     //openServiceLinkDialog(cell.getRecord());
                                 }
                             });
