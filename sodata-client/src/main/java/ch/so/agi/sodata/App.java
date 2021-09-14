@@ -36,6 +36,7 @@ import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import com.github.nmorel.gwtjackson.client.ObjectMapper;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 import elemental2.dom.CSSProperties;
@@ -45,12 +46,20 @@ import elemental2.dom.EventListener;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.Location;
+import ol.AtPixelOptions;
 import ol.Extent;
 import ol.Map;
+import ol.MapBrowserEvent;
 import ol.OLFactory;
+import ol.Pixel;
+import ol.events.condition.Condition;
 import ol.Feature;
+import ol.FeatureAtPixelFunction;
 import ol.format.GeoJson;
+import ol.interaction.Select;
+import ol.interaction.SelectOptions;
 import ol.layer.Base;
+import ol.layer.Layer;
 import ol.layer.VectorLayerOptions;
 import ol.proj.Projection;
 import ol.proj.ProjectionOptions;
@@ -484,9 +493,70 @@ public class App implements EntryPoint {
 //        });
 
         map = MapPresets.getBlakeAndWhiteMap(mapDiv.id); //, subunitsWmsLayer);
+        
+        
+        map.addSingleClickListener(new MapSingleClickListener());
+
+        
+        
+        
+        SelectOptions selectOptions = new SelectOptions();
+        selectOptions.setCondition(Condition.getClick());
+
+        // TODO: hier wohl am falschen Ort, v.a. wegen selectedFeatures
+        // create a select interaction
+        final Select selectFeature = new Select(selectOptions);
+        map.addInteraction(selectFeature);
+
+        selectFeature.on("select", (Select.Event event) -> {
+
+            Feature[] selectedFeatures = event.getSelected();
+
+            if (selectedFeatures.length > 0) {
+                Feature selectedFeature = selectedFeatures[0];
+                String output = "You selected feature with id '" + selectedFeature.getId() + "'"
+                        + " and name '" + selectedFeature.get("name") + "'"
+                        + " and geometry name '" + selectedFeature.getGeometryName() + "'"
+                        + ".";
+                Window.alert(output);
+            }
+
+        });
+
         closeButton.blur();
     }
+    
+    public final class MapSingleClickListener implements ol.event.EventListener<MapBrowserEvent> {
+        @Override
+        public void onEvent(MapBrowserEvent event) {
+            console.log(event.getPixel().getX());
+            
+            
+            AtPixelOptions featureAtPixelOptions = new AtPixelOptions();
 
+            map.forEachFeatureAtPixel(new Pixel(100, 100), new FeatureAtPixelFunction() {
+
+                @Override
+                public boolean call(Feature feature, Layer layer) {
+                    
+                    //console.log(feature.get("name"));
+                    return false;
+
+                    
+                }
+
+            }, featureAtPixelOptions);
+
+            
+            
+            
+        }
+
+    }
+
+    
+    
+    
     
     private void openServiceLinkDialog(Dataset dataset) {
         ModalDialog modal = ModalDialog.create("Servicelinks").setAutoClose(true);
@@ -511,12 +581,13 @@ public class App implements EntryPoint {
     private void createHighlightVectorLayer(Feature[] features) {
         Style style = new Style();
         Stroke stroke = new Stroke();
-        stroke.setWidth(4);
-        stroke.setColor(new ol.color.Color(249, 128, 0, 1.0));
+        stroke.setWidth(4); 
+        //stroke.setColor(new ol.color.Color(56, 142, 60, 1.0)); 
+        stroke.setColor(new ol.color.Color(78,127,217, 1.0)); // https://so.ch/fileadmin/internet/bjd/bjd-avt/pdf/Downloads/Grundlagen/AVT_CD-Manual.pdf
         //stroke.setColor(new ol.color.Color(230, 0, 0, 0.6));
         style.setStroke(stroke);
         Fill fill = new Fill();
-        fill.setColor(new ol.color.Color(255, 255, 80, 0.6));
+        fill.setColor(new ol.color.Color(255, 255, 255, 0.6));
         style.setFill(fill);
 
         ol.Collection<Feature> featureCollection = new ol.Collection<Feature>();
