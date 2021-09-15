@@ -93,8 +93,11 @@ public class App implements EntryPoint {
     private HashMap<String, String> formatLookUp = new HashMap<String, String>();
 
     private String ID_ATTR_NAME = "id";
-    private String HIGHLIGHT_VECTOR_LAYER_ID = "highlight_vector_layer";
-    private String HIGHLIGHT_VECTOR_FEATURE_ID = "highlight_fid";
+    private String SUBUNIT_VECTOR_LAYER_ID = "subunit_vector_layer";
+    private String SUBUNIT_VECTOR_FEATURE_ID = "subunit_fid";
+    private String SELECTED_VECTOR_LAYER_ID = "selected_vector_layer";
+    private String SELECTED_VECTOR_FEATURE_ID = "selected_fid";
+
 
     // Projection
     //private static final String EPSG_2056 = "EPSG:2056";
@@ -392,21 +395,9 @@ public class App implements EntryPoint {
             }
             return response.text();
         })
-        .then(json -> {
-            console.log(json);
-            
+        .then(json -> {            
             Feature[] features = (new GeoJson()).readFeatures(json); 
-            createHighlightVectorLayer(features);
-            
-//            for (Feature fs : features) {
-//                console.log(fs.getProperties().get("name"));
-//            }
-            
-            
-            
-
-            
-            
+            createSubunitVectorLayer(features);
             return null;
         }).catch_(error -> {
             console.log(error);
@@ -498,30 +489,28 @@ public class App implements EntryPoint {
         map.addSingleClickListener(new MapSingleClickListener());
 
         
-        
-        
-        SelectOptions selectOptions = new SelectOptions();
-        selectOptions.setCondition(Condition.getClick());
-
-        // TODO: hier wohl am falschen Ort, v.a. wegen selectedFeatures
-        // create a select interaction
-        final Select selectFeature = new Select(selectOptions);
-        map.addInteraction(selectFeature);
-
-        selectFeature.on("select", (Select.Event event) -> {
-
-            Feature[] selectedFeatures = event.getSelected();
-
-            if (selectedFeatures.length > 0) {
-                Feature selectedFeature = selectedFeatures[0];
-                String output = "You selected feature with id '" + selectedFeature.getId() + "'"
-                        + " and name '" + selectedFeature.get("name") + "'"
-                        + " and geometry name '" + selectedFeature.getGeometryName() + "'"
-                        + ".";
-                Window.alert(output);
-            }
-
-        });
+//        SelectOptions selectOptions = new SelectOptions();
+//        selectOptions.setCondition(Condition.getClick());
+//
+//         TODO: hier wohl am falschen Ort, v.a. wegen selectedFeatures
+//         create a select interaction
+//        final Select selectFeature = new Select(selectOptions);
+//        map.addInteraction(selectFeature);
+//
+//        selectFeature.on("select", (Select.Event event) -> {
+//
+//            Feature[] selectedFeatures = event.getSelected();
+//
+//            if (selectedFeatures.length > 0) {
+//                Feature selectedFeature = selectedFeatures[0];
+//                String output = "You selected feature with id '" + selectedFeature.getId() + "'"
+//                        + " and name '" + selectedFeature.get("name") + "'"
+//                        + " and geometry name '" + selectedFeature.getGeometryName() + "'"
+//                        + ".";
+//                //Window.alert(output);
+//            }
+//
+//        });
 
         closeButton.blur();
     }
@@ -529,18 +518,23 @@ public class App implements EntryPoint {
     public final class MapSingleClickListener implements ol.event.EventListener<MapBrowserEvent> {
         @Override
         public void onEvent(MapBrowserEvent event) {
-            console.log(event.getPixel().getX());
+            //console.log(event.getPixel().getX());
             
             
             AtPixelOptions featureAtPixelOptions = new AtPixelOptions();
 
-            map.forEachFeatureAtPixel(new Pixel(100, 100), new FeatureAtPixelFunction() {
+            map.forEachFeatureAtPixel(event.getPixel(), new FeatureAtPixelFunction() {
 
+                // Wird ausgeführt, falls ein Feature gefunden wird.
                 @Override
                 public boolean call(Feature feature, Layer layer) {
                     
                     //console.log(feature.get("name"));
-                    return false;
+                    
+                    console.log(feature);
+                    
+                    // true: Beendet das Suchen nach Feature.
+                    return true;
 
                     
                 }
@@ -578,12 +572,15 @@ public class App implements EntryPoint {
         closeButton.blur();
     }
     
-    private void createHighlightVectorLayer(Feature[] features) {
+    // TODO:
+    // Beim Erstellen, vorhandene Vektor-Layer (subunit und selected) löschen?
+    // Beide Layer hier erzeugen? (subunit und selected). -> Toggle in MapSingleClickListener? -> Rename Methode createVectorLayer?
+    private void createSubunitVectorLayer(Feature[] features) {
         Style style = new Style();
         Stroke stroke = new Stroke();
         stroke.setWidth(4); 
         //stroke.setColor(new ol.color.Color(56, 142, 60, 1.0)); 
-        stroke.setColor(new ol.color.Color(78,127,217, 1.0)); // https://so.ch/fileadmin/internet/bjd/bjd-avt/pdf/Downloads/Grundlagen/AVT_CD-Manual.pdf
+        stroke.setColor(new ol.color.Color(78,127,217, 1.0)); 
         //stroke.setColor(new ol.color.Color(230, 0, 0, 0.6));
         style.setStroke(stroke);
         Fill fill = new Fill();
@@ -603,12 +600,12 @@ public class App implements EntryPoint {
         VectorLayerOptions vectorLayerOptions = OLFactory.createOptions();
         vectorLayerOptions.setSource(vectorSource);
         ol.layer.Vector vectorLayer = new ol.layer.Vector(vectorLayerOptions);
-        vectorLayer.set(ID_ATTR_NAME, HIGHLIGHT_VECTOR_LAYER_ID);
+        vectorLayer.set(ID_ATTR_NAME, SUBUNIT_VECTOR_LAYER_ID);
         map.addLayer(vectorLayer);
     }
         
-    private void removeHighlightVectorLayer() {
-        Base vlayer = getMapLayerById(HIGHLIGHT_VECTOR_LAYER_ID);
+    private void removeVectorLayer() {
+        Base vlayer = getMapLayerById(SUBUNIT_VECTOR_LAYER_ID);
         map.removeLayer(vlayer);
     }
 

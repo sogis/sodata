@@ -89,8 +89,8 @@ SELECT
 FROM 
 (
     SELECT 
-        t_id, gemeindename AS "name", ST_SnapToGrid(geometrie, 10)
+        t_id, gemeindename AS "name", bfs_gemeindenummer || '00.itf.zip' AS filename, ST_SnapToGrid(geometrie, 50)
     FROM 
-        agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze 
+        agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
 ) AS t;
 ```
