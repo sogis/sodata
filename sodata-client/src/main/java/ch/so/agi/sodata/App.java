@@ -532,9 +532,32 @@ public class App implements EntryPoint {
                     //console.log(feature.get("name"));
                     
                     console.log(feature);
+                    console.log(layer);
+                    if (layer.get(ID_ATTR_NAME).toString().equalsIgnoreCase(SUBUNIT_VECTOR_LAYER_ID)) {
+                        console.log("foo");
+                        
+                        ol.layer.Vector selectedLayer = (ol.layer.Vector) getMapLayerById(SELECTED_VECTOR_LAYER_ID);
+                        Vector selectedSource = (Vector) selectedLayer.getSource();
+//                        Stroke stroke = new Stroke();
+//                        stroke.setWidth(4);
+//                        stroke.setColor(new ol.color.Color(198, 40, 40, 1.0)); 
+//                        feature.getStyle().setStroke(stroke);
+                        Style style = new Style();
+                        Stroke stroke = new Stroke();
+                        stroke.setWidth(4); 
+                        stroke.setColor(new ol.color.Color(198, 40, 40, 1.0)); 
+                        style.setStroke(stroke);
+                        Fill fill = new Fill();
+                        fill.setColor(new ol.color.Color(255, 255, 255, 0.6));
+                        style.setFill(fill);
+                        feature.setStyle(style);
+                        
+                        selectedSource.addFeature(feature);
+                    }
+                    
                     
                     // true: Beendet das Suchen nach Feature.
-                    return true;
+                    return false;
 
                     
                 }
@@ -576,36 +599,70 @@ public class App implements EntryPoint {
     // Beim Erstellen, vorhandene Vektor-Layer (subunit und selected) löschen?
     // Beide Layer hier erzeugen? (subunit und selected). -> Toggle in MapSingleClickListener? -> Rename Methode createVectorLayer?
     private void createSubunitVectorLayer(Feature[] features) {
-        Style style = new Style();
-        Stroke stroke = new Stroke();
-        stroke.setWidth(4); 
-        //stroke.setColor(new ol.color.Color(56, 142, 60, 1.0)); 
-        stroke.setColor(new ol.color.Color(78,127,217, 1.0)); 
-        //stroke.setColor(new ol.color.Color(230, 0, 0, 0.6));
-        style.setStroke(stroke);
-        Fill fill = new Fill();
-        fill.setColor(new ol.color.Color(255, 255, 255, 0.6));
-        style.setFill(fill);
-
-        ol.Collection<Feature> featureCollection = new ol.Collection<Feature>();
-        for (Feature feature : features) {
-            feature.setStyle(style);
-            featureCollection.push(feature);
-        }
-
-        VectorOptions vectorSourceOptions = OLFactory.createOptions();
-        vectorSourceOptions.setFeatures(featureCollection);
-        Vector vectorSource = new Vector(vectorSourceOptions);
+        removeVectorLayer(SUBUNIT_VECTOR_LAYER_ID);
+        removeVectorLayer(SELECTED_VECTOR_LAYER_ID);
         
-        VectorLayerOptions vectorLayerOptions = OLFactory.createOptions();
-        vectorLayerOptions.setSource(vectorSource);
-        ol.layer.Vector vectorLayer = new ol.layer.Vector(vectorLayerOptions);
-        vectorLayer.set(ID_ATTR_NAME, SUBUNIT_VECTOR_LAYER_ID);
-        map.addLayer(vectorLayer);
+        {
+            Style style = new Style();
+            Stroke stroke = new Stroke();
+            stroke.setWidth(4); 
+            //stroke.setColor(new ol.color.Color(56, 142, 60, 1.0)); 
+            stroke.setColor(new ol.color.Color(78,127,217, 1.0)); 
+            //stroke.setColor(new ol.color.Color(230, 0, 0, 0.6));
+            style.setStroke(stroke);
+            Fill fill = new Fill();
+            fill.setColor(new ol.color.Color(255, 255, 255, 0.6));
+            style.setFill(fill);
+
+            ol.Collection<Feature> featureCollection = new ol.Collection<Feature>();
+            for (Feature feature : features) {
+                feature.setStyle(style);
+                featureCollection.push(feature);
+            }
+
+            VectorOptions vectorSourceOptions = OLFactory.createOptions();
+            vectorSourceOptions.setFeatures(featureCollection);
+            Vector vectorSource = new Vector(vectorSourceOptions);
+            
+            VectorLayerOptions vectorLayerOptions = OLFactory.createOptions();
+            vectorLayerOptions.setSource(vectorSource);
+            ol.layer.Vector vectorLayer = new ol.layer.Vector(vectorLayerOptions);
+            vectorLayer.setZIndex(100);
+            vectorLayer.set(ID_ATTR_NAME, SUBUNIT_VECTOR_LAYER_ID);
+            map.addLayer(vectorLayer);
+        }
+        
+        {
+            Style style = new Style();
+            Stroke stroke = new Stroke();
+            stroke.setWidth(4); 
+            stroke.setColor(new ol.color.Color(198, 40, 40, 1.0)); 
+            style.setStroke(stroke);
+            Fill fill = new Fill();
+            fill.setColor(new ol.color.Color(255, 255, 255, 0.6));
+            style.setFill(fill);
+
+//            ol.Collection<Feature> featureCollection = new ol.Collection<Feature>();
+//            for (Feature feature : features) {
+//                feature.setStyle(style);
+//                featureCollection.push(feature);
+//            }
+
+            VectorOptions vectorSourceOptions = OLFactory.createOptions();
+//            vectorSourceOptions.setFeatures(featureCollection);
+            Vector vectorSource = new Vector(vectorSourceOptions);
+            
+            VectorLayerOptions vectorLayerOptions = OLFactory.createOptions();
+            vectorLayerOptions.setSource(vectorSource);
+            ol.layer.Vector vectorLayer = new ol.layer.Vector(vectorLayerOptions);
+            vectorLayer.set(ID_ATTR_NAME, SELECTED_VECTOR_LAYER_ID);
+            vectorLayer.setZIndex(1000);
+            map.addLayer(vectorLayer);
+        }
     }
         
-    private void removeVectorLayer() {
-        Base vlayer = getMapLayerById(SUBUNIT_VECTOR_LAYER_ID);
+    private void removeVectorLayer(String id) {
+        Base vlayer = getMapLayerById(id);
         map.removeLayer(vlayer);
     }
 

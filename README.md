@@ -11,16 +11,19 @@
 
 
 ## Docs
-- Index beim Hochfahren. Index im Pod, nicht persistent.
-- Index: Leading wildcard ist momentan nicht umgesetzt -> Feedback abwarten. Falls notwendig, siehe "modelfinder".
+- Suchindex beim Hochfahren. Index im Pod, nicht persistent.
+- Suchindex: Leading wildcard ist momentan nicht umgesetzt -> Feedback abwarten. Falls notwendig, siehe "modelfinder".
 
 ## TODO
 - application.yml ausserhalb Pod verwenden.
 - Testing!
+- Subunit-Dateien:
+  * falls base64: Umwandeln in Datei beim Hochfahren, abspeichern auf Filesystem (nicht src/main/resource). Siehe https://www.baeldung.com/spring-mvc-static-resources / https://stackoverflow.com/questions/33153396/serving-files-using-spring-boot-and-spring-mvc-from-any-location-in-the-file-sys
+  * LiDAR etc. darf komplett statisch sein und könnte hier verwaltet/bewirtschaftet werden. Amtliche Vermessung (o.ä.) hat eine dynamische Komponente (das NF-Datum).
+
 - ~~Bug: Suchen -> backspace alle Zeichen -> nicht komplette Liste~~ Id war in yml falsch resp. doppelt. Aus diesem Grund kam es zu doppelten Einträgen.
 - ~~Bug: Firefox zeigt Aufklappen-Zeichen nicht bei Tabellen~~
 - ~~Link/Icon zu geocat.ch sollte auch beim hovern rot erscheinen.~~ Nein. War eher ungewollt, da a:hover noch im css file vorhanden war.
-
 - ilidata.xml: Gebietsauswahl adaptieren. Raster -> Verweis auf Subunits, dito bei Vektor?
 - Lucene Suche
 - Link zur Karte (siehe Mockup)
