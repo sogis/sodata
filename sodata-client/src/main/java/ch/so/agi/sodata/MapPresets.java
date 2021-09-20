@@ -85,9 +85,10 @@ public class MapPresets {
         DefaultInteractionsOptions interactionOptions = new ol.interaction.DefaultInteractionsOptions();
         interactionOptions.setPinchRotate(false);
         mapOptions.setInteractions(Interaction.defaults(interactionOptions));
-
+        
         Map map = new Map(mapOptions);
         map.addLayer(wmtsLayer);
+        map.set("renderer", "webgl");
         
         return map;
     }

@@ -20,6 +20,7 @@ public class Dataset {
     private String furtherInformation;
     private String furtherMetadata;
     private String knownWMS;
+    private String subunitsBase64;
     private String subunits;
     private List<String> fileFormats;
     private List<DatasetTable> tables;
@@ -125,6 +126,12 @@ public class Dataset {
     }
     public void setKnownWMS(String knownWMS) {
         this.knownWMS = knownWMS;
+    }
+    public String getSubunitsBase64() {
+        return subunitsBase64;
+    }
+    public void setSubunitsBase64(String subunitsBase64) {
+        this.subunitsBase64 = subunitsBase64;
     }
     public String getSubunits() {
         return subunits;

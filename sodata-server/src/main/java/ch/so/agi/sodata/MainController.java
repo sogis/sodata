@@ -1,5 +1,10 @@
 package ch.so.agi.sodata;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,10 +50,25 @@ public class MainController {
     private Map<String, Dataset> datasetMap;
     
     @PostConstruct
-    public void init() {
+    public void init() throws Exception {        
         datasetMap = new HashMap<String, Dataset>();
         for (Dataset dataset : config.getDatasets()) {
-            datasetMap.put(dataset.getId(), dataset);
+            if (dataset.getSubunitsBase64() != null) {
+                String tmpdir = System.getProperty("java.io.tmpdir");
+                String filename = dataset.getId();
+                File subunitFile = Paths.get(tmpdir, filename + ".json").toFile();
+                try (FileOutputStream fos = new FileOutputStream(subunitFile); ) {
+                    String b64 = dataset.getSubunitsBase64();
+                    byte[] decoder = Base64.getDecoder().decode(b64);
+                    fos.write(decoder);                    
+                  } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new Exception(e);
+                  }
+                dataset.setSubunits(filename + ".json");
+                dataset.setSubunitsBase64(null);
+            }            
+            datasetMap.put(dataset.getId(), dataset);            
         }
     }
     

@@ -4,6 +4,7 @@ import static elemental2.dom.DomGlobal.console;
 import static elemental2.dom.DomGlobal.fetch;
 import static org.jboss.elemento.Elements.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -386,8 +387,9 @@ public class App implements EntryPoint {
 
         selectionTab.appendChild(mapDiv);
         
+        // FIXME TODO
         String subunits = dataset.getSubunits();
-        DomGlobal.fetch("/"+subunits)
+        DomGlobal.fetch("/subunits/"+subunits)
         .then(response -> {
             if (!response.ok) {
                 DomGlobal.window.alert(response.statusText + ": " + response.body);
@@ -397,7 +399,7 @@ public class App implements EntryPoint {
         })
         .then(json -> {            
             Feature[] features = (new GeoJson()).readFeatures(json); 
-            createSubunitVectorLayer(features);
+            createVectorLayers(features);
             return null;
         }).catch_(error -> {
             console.log(error);
@@ -405,49 +407,47 @@ public class App implements EntryPoint {
             return null;
         });
 
-        
-        
-//        TableConfig<Feature> tableConfig = new TableConfig<>();
-//        tableConfig
-//            .addColumn(ColumnConfig.<Feature>create("title", "Name").setShowTooltip(false).textAlign("left")
-//                .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().get("aname"))))
-//            .addColumn(ColumnConfig.<Feature>create("lastEditingDate", "Aktualisiert").setShowTooltip(false).textAlign("left")
-//                .setCellRenderer(cell -> {
-//                    if (cell.getRecord().get("updatedatum") != null) {
-//                        Date date = DateTimeFormat.getFormat("yyyy-MM-dd'T'HH:mm:ss").parse(cell.getRecord().get("updatedatum"));
-//                        String dateString = DateTimeFormat.getFormat("dd.MM.yyyy").format(date);
-//                        return TextNode.of(dateString);
-//                    } else {
-//                        Date date = DateTimeFormat.getFormat("yyyy-MM-dd'T'HH:mm:ss").parse(cell.getRecord().get("erstellungsdatum"));
-//                        String dateString = DateTimeFormat.getFormat("dd.MM.yyyy").format(date);
-//                        return TextNode.of(dateString);
-//                    }
-//                }))
-//            .addColumn(ColumnConfig.<Feature>create("formats", "Daten herunterladen").setShowTooltip(false).textAlign("left")
-//                .setCellRenderer(cell -> {
-//                    HTMLElement badgesElement = div().element();
-//                    for (String fileStr : dataset.getFiles()) {
-//                        badgesElement.appendChild(a().css("badge-link")
-//                                .attr("href",
-//                                        "/dataset/" + cell.getRecord().getId() + "_" + fileStr + ".zip")
-//                                .add(Badge.create(formats.get(fileStr))
-//                                        .setBackground(Color.GREY_LIGHTEN_2).style()
-//                                        .setMarginRight("10px").setMarginTop("5px")
-//                                        .setMarginBottom("5px").get().element())
-//                                .element());
-//                     
-//                    }
-//                    return badgesElement;
-//                }));
-//
-//        LocalListDataStore<Feature> subunitListStore = new LocalListDataStore<>();
-//
-//        DataTable<Feature> subunitFeatureTable = new DataTable<>(tableConfig, subunitListStore);
-//        subunitFeatureTable.setId("dataset-table");
-//        subunitFeatureTable.noStripes();
-//        subunitFeatureTable.noHover();
-//        subunitFeatureTable.load();
-//        downloadTab.appendChild(subunitFeatureTable.element());
+        TableConfig<Feature> tableConfig = new TableConfig<>();
+        tableConfig
+            .addColumn(ColumnConfig.<Feature>create("title", "Name").setShowTooltip(false).textAlign("left")
+                .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().get("title"))))
+            .addColumn(ColumnConfig.<Feature>create("lastEditingDate", "Aktualisiert").setShowTooltip(false).textAlign("left")
+                .setCellRenderer(cell -> {
+                    Date date;
+                    String dateString;
+                    if (cell.getRecord().get("last_editing_date").toString().length() < 8) {
+                        date = DateTimeFormat.getFormat("yyyy-MM").parse(cell.getRecord().get("last_editing_date"));
+                        dateString = DateTimeFormat.getFormat("MMMM yyyy").format(date);
+                    } else {
+                        date = DateTimeFormat.getFormat("yyyy-MM-dd").parse(cell.getRecord().get("last_editing_date"));
+                        dateString = DateTimeFormat.getFormat("dd.MM.yyyy").format(date);
+                    }
+                    return TextNode.of(dateString);
+                }))
+            .addColumn(ColumnConfig.<Feature>create("formats", "Daten herunterladen").setShowTooltip(false).textAlign("left")
+                .setCellRenderer(cell -> {
+                    HTMLElement badgesElement = div().element();
+                    for (String fileFormatsStr : dataset.getFileFormats()) {
+                        badgesElement.appendChild(a().css("badge-link")
+                                .attr("href", "/dataset/" + cell.getRecord().getId() + "_" + fileFormatsStr + ".zip") // TODO Was kommt woher?
+                                .add(Badge.create(formatLookUp.get(fileFormatsStr))
+                                        .setBackground(Color.GREY_LIGHTEN_2).style()
+                                        .setMarginRight("10px").setMarginTop("5px")
+                                        .setMarginBottom("5px").get().element())
+                                .element());
+                     
+                    }
+                    return badgesElement;
+                }));
+
+        LocalListDataStore<Feature> subunitListStore = new LocalListDataStore<>();
+
+        DataTable<Feature> subunitFeatureTable = new DataTable<>(tableConfig, subunitListStore);
+        subunitFeatureTable.setId("dataset-table");
+        subunitFeatureTable.noStripes();
+        subunitFeatureTable.noHover();
+        subunitFeatureTable.load();
+        downloadTab.appendChild(subunitFeatureTable.element());
 
         modal.getBodyElement().appendChild(tabsPanel);
 
@@ -458,90 +458,63 @@ public class App implements EntryPoint {
         modal.appendFooterChild(closeButton);
         modal.large().open();
 
-//        downloadTab.addClickListener(new EventListener() {
-//            @Override
-//            public void handleEvent(elemental2.dom.Event evt) {
-//                Vector vectorLayer = (Vector) getMapLayerById("vector");
-//                ol.source.Vector vectorSource = vectorLayer.getSource();
-//                ol.Collection<Feature> features = vectorSource.getFeaturesCollection();
-//
-//                List<Feature> featuresList = new ArrayList<Feature>();
-//                for (int i = 0; i < features.getLength(); i++) {
-//                    Feature feature = features.item(i);
-//                    feature.set("files", dataset.getFiles());
-//                    featuresList.add(feature);
-//                }
-//                
-//                Collections.sort(featuresList, new Comparator<Feature>() {
-//                    @Override
-//                    public int compare(Feature o1, Feature o2) {
-//                        return o1.get("aname").toString().toLowerCase().compareTo(o2.get("aname").toString().toLowerCase());
-//                    }
-//                });
-//                
-//                subunitListStore.setData(featuresList);
-//            }
-//        });
+        downloadTab.addClickListener(new EventListener() {
+            @Override
+            public void handleEvent(Event evt) {
+                ol.layer.Vector vectorLayer = (ol.layer.Vector) getMapLayerById(SELECTED_VECTOR_LAYER_ID);
+                ol.source.Vector vectorSource = vectorLayer.getSource();
+                //ol.Collection<Feature> features = vectorSource.getFeaturesCollection();
+                
+                String title = vectorLayer.get(ID_ATTR_NAME);
+                console.log("title: "  + title);
+                
+                int count = vectorSource.getFeatures().length;
+                console.log(count);
+                
+                Feature[] features = vectorSource.getFeatures();
+                
+
+                List<Feature> featuresList = new ArrayList<Feature>();
+                for (int i = 0; i < features.length; i++) {
+                    Feature feature = features[i];
+                    //feature.set("files", dataset.getFileFormats()); // TODO: brauche ich das?
+                    featuresList.add(feature);
+                }
+                
+                Collections.sort(featuresList, new Comparator<Feature>() {
+                    @Override
+                    public int compare(Feature o1, Feature o2) {
+                        return o1.get("title").toString().toLowerCase().compareTo(o2.get("title").toString().toLowerCase());
+                    }
+                });
+                
+                subunitListStore.setData(featuresList);
+            }
+        });
 
         map = MapPresets.getBlakeAndWhiteMap(mapDiv.id); //, subunitsWmsLayer);
-        
-        
         map.addSingleClickListener(new MapSingleClickListener());
-
-        
-//        SelectOptions selectOptions = new SelectOptions();
-//        selectOptions.setCondition(Condition.getClick());
-//
-//         TODO: hier wohl am falschen Ort, v.a. wegen selectedFeatures
-//         create a select interaction
-//        final Select selectFeature = new Select(selectOptions);
-//        map.addInteraction(selectFeature);
-//
-//        selectFeature.on("select", (Select.Event event) -> {
-//
-//            Feature[] selectedFeatures = event.getSelected();
-//
-//            if (selectedFeatures.length > 0) {
-//                Feature selectedFeature = selectedFeatures[0];
-//                String output = "You selected feature with id '" + selectedFeature.getId() + "'"
-//                        + " and name '" + selectedFeature.get("name") + "'"
-//                        + " and geometry name '" + selectedFeature.getGeometryName() + "'"
-//                        + ".";
-//                //Window.alert(output);
-//            }
-//
-//        });
 
         closeButton.blur();
     }
     
     public final class MapSingleClickListener implements ol.event.EventListener<MapBrowserEvent> {
         @Override
-        public void onEvent(MapBrowserEvent event) {
-            //console.log(event.getPixel().getX());
-            
-            
+        public void onEvent(MapBrowserEvent event) {            
             AtPixelOptions featureAtPixelOptions = new AtPixelOptions();
-
             map.forEachFeatureAtPixel(event.getPixel(), new FeatureAtPixelFunction() {
-
-                // Wird ausgeführt, falls ein Feature gefunden wird.
                 @Override
-                public boolean call(Feature feature, Layer layer) {
-                    
-                    //console.log(feature.get("name"));
-                    
-                    console.log(feature);
-                    console.log(layer);
+                public boolean call(Feature feature, Layer layer) {                    
+                    if (layer.get(ID_ATTR_NAME).toString().equalsIgnoreCase(SELECTED_VECTOR_LAYER_ID)) {
+                        ol.layer.Vector selectedLayer = (ol.layer.Vector) getMapLayerById(SELECTED_VECTOR_LAYER_ID);
+                        Vector selectedSource = (Vector) selectedLayer.getSource();     
+                        selectedSource.removeFeature(feature);
+                        return true;
+                    }
                     if (layer.get(ID_ATTR_NAME).toString().equalsIgnoreCase(SUBUNIT_VECTOR_LAYER_ID)) {
-                        console.log("foo");
-                        
                         ol.layer.Vector selectedLayer = (ol.layer.Vector) getMapLayerById(SELECTED_VECTOR_LAYER_ID);
                         Vector selectedSource = (Vector) selectedLayer.getSource();
-//                        Stroke stroke = new Stroke();
-//                        stroke.setWidth(4);
-//                        stroke.setColor(new ol.color.Color(198, 40, 40, 1.0)); 
-//                        feature.getStyle().setStroke(stroke);
+                        
                         Style style = new Style();
                         Stroke stroke = new Stroke();
                         stroke.setWidth(4); 
@@ -550,31 +523,17 @@ public class App implements EntryPoint {
                         Fill fill = new Fill();
                         fill.setColor(new ol.color.Color(255, 255, 255, 0.6));
                         style.setFill(fill);
-                        feature.setStyle(style);
-                        
-                        selectedSource.addFeature(feature);
+                       
+                        Feature f = feature.clone();
+                        f.setStyle(style);
+                        selectedSource.addFeature(f);
                     }
-                    
-                    
-                    // true: Beendet das Suchen nach Feature.
-                    return false;
-
-                    
+                    return false;                    
                 }
-
             }, featureAtPixelOptions);
-
-            
-            
-            
         }
-
     }
 
-    
-    
-    
-    
     private void openServiceLinkDialog(Dataset dataset) {
         ModalDialog modal = ModalDialog.create("Servicelinks").setAutoClose(true);
 
@@ -595,10 +554,7 @@ public class App implements EntryPoint {
         closeButton.blur();
     }
     
-    // TODO:
-    // Beim Erstellen, vorhandene Vektor-Layer (subunit und selected) löschen?
-    // Beide Layer hier erzeugen? (subunit und selected). -> Toggle in MapSingleClickListener? -> Rename Methode createVectorLayer?
-    private void createSubunitVectorLayer(Feature[] features) {
+    private void createVectorLayers(Feature[] features) {
         removeVectorLayer(SUBUNIT_VECTOR_LAYER_ID);
         removeVectorLayer(SELECTED_VECTOR_LAYER_ID);
         
@@ -642,14 +598,7 @@ public class App implements EntryPoint {
             fill.setColor(new ol.color.Color(255, 255, 255, 0.6));
             style.setFill(fill);
 
-//            ol.Collection<Feature> featureCollection = new ol.Collection<Feature>();
-//            for (Feature feature : features) {
-//                feature.setStyle(style);
-//                featureCollection.push(feature);
-//            }
-
             VectorOptions vectorSourceOptions = OLFactory.createOptions();
-//            vectorSourceOptions.setFeatures(featureCollection);
             Vector vectorSource = new Vector(vectorSourceOptions);
             
             VectorLayerOptions vectorLayerOptions = OLFactory.createOptions();

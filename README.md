@@ -1,6 +1,7 @@
 # sodata
 
 ## to be discussed
+- YAML statt JSON (-> config generator: sollte sicher eine Java-Lib geben für)
 - Servicelinks? 
   * Nur Endpunkt? Wie sinnvoll ist das?
   * Umgang mit geodienste.ch?
@@ -8,11 +9,13 @@
   * Woher stammt der klickbare Index?
   * Welche Informationen werden benötigt? (Namen, Datum?)
 - Liefert Config den finalen Link auf den Datensatz? Wie ist das bei den Subunits?
-
+- Formate vs Links zu den Daten bei Subunits? Sind die Formate in der normalen Config oder im Subunit-Json?
+- last editing date als Attribut auch bei Subunit-Dataset. Es entspricht dem "neuesten" Datum.
 
 ## Docs
 - Suchindex beim Hochfahren. Index im Pod, nicht persistent.
 - Suchindex: Leading wildcard ist momentan nicht umgesetzt -> Feedback abwarten. Falls notwendig, siehe "modelfinder".
+- base64 to json: werden in system temp gespeichert. sämtliche json aus diesem Verzeichnis sind exponiert.
 
 ## TODO
 - application.yml ausserhalb Pod verwenden.
@@ -92,8 +95,26 @@ SELECT
 FROM 
 (
     SELECT 
-        t_id, gemeindename AS "name", bfs_gemeindenummer || '00.itf.zip' AS filename, ST_SnapToGrid(geometrie, 50)
+        t_id, gemeindename AS title, to_char( now(), 'YYYY-MM-DD') as last_editing_date, bfs_gemeindenummer || '00.itf.zip' AS filename, ST_SnapToGrid(geometrie, 0.001)
     FROM 
-        agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
+        agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze_generalisiert hgg 
+) AS t;
+
+
+SELECT 
+    json_build_object(
+        'type',
+        'FeatureCollection',
+        'features',
+        json_agg(ST_AsGeoJSON(t.*)::json)
+    ) 
+FROM 
+(
+    SELECT 
+       t_id, substring(link, 52, 15) AS title, flugdatum AS last_editing_date, link AS filename, geometrie 
+    FROM 
+        agi_lidar_pub.lidarprodukte_lidarprodukt 
+    WHERE 
+        link LIKE '%lidar_2019.dtm/%'
 ) AS t;
 ```
