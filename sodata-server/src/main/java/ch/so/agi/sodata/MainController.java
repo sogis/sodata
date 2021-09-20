@@ -53,6 +53,12 @@ public class MainController {
     public void init() throws Exception {        
         datasetMap = new HashMap<String, Dataset>();
         for (Dataset dataset : config.getDatasets()) {
+            
+            // TODO: lokal vorhandene Subunit-Json müssen in das tmp-Verzeichnis kopiert werden,
+            // da im Client davon ausgegangen wird, dass bei subunit!=null die Datei unter .../subunits/...
+            // verfügbar ist. 
+            // Oder eleganter?
+            
             if (dataset.getSubunitsBase64() != null) {
                 String tmpdir = System.getProperty("java.io.tmpdir");
                 String filename = dataset.getId();
