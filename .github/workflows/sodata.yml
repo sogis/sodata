@@ -24,7 +24,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - name: Build with maven 
+      - name: Build with Maven 
         run: |
           ./mvnw -e -B -q -Penv-prod clean package
           ls -la sodata-server/target

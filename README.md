@@ -28,7 +28,7 @@
 - ~~Bug: Firefox zeigt Aufklappen-Zeichen nicht bei Tabellen~~
 - ~~Link/Icon zu geocat.ch sollte auch beim hovern rot erscheinen.~~ Nein. War eher ungewollt, da a:hover noch im css file vorhanden war.
 - ilidata.xml: Gebietsauswahl adaptieren. Raster -> Verweis auf Subunits, dito bei Vektor?
-- Lucene Suche
+- ~~Lucene Suche~~
 - Link zur Karte (siehe Mockup)
 - versionierte Datensätze?
 - ...
@@ -69,7 +69,7 @@ docker build -t sogis/sodata:latest -f sodata-server/src/main/docker/Dockerfile.
 ## Run
 ```
 java -jar sodata-server/target/sodata.jar --spring.profiles.active=prod
-SPRING_PROFILES_ACTIVE=prod java -jar sodata-server/target/sodata.jar  --spring.config.location=classpath:/application.yml,optional:file:/Users/stefan/tmp/application-prod.yml
+SPRING_PROFILES_ACTIVE=prod java -jar sodata-server/target/sodata.jar --spring.config.location=classpath:/application.yml,optional:file:/Users/stefan/tmp/application-prod.yml
 ```
 
 ```
