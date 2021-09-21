@@ -3,7 +3,10 @@ package ch.so.agi.sodata;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +20,10 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,12 +58,17 @@ public class MainController {
     public void init() throws Exception {        
         datasetMap = new HashMap<String, Dataset>();
         for (Dataset dataset : config.getDatasets()) {
-            // Mir ist nicht ganz klar, warum statische Resourcen, die im public-Ordner liegen
-            // auch via subunits-Pfad sichtbar sind. 
+            String tmpdir = System.getProperty("java.io.tmpdir");
+            String filename = dataset.getId();
+            File subunitFile = Paths.get(tmpdir, filename + ".json").toFile();
+
+            if (dataset.getSubunits() != null) {
+                InputStream resource = new ClassPathResource("public/"+filename+".json").getInputStream();
+                Files.copy(resource, subunitFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                dataset.setSubunits(filename + ".json");
+            }
+            
             if (dataset.getSubunitsBase64() != null) {
-                String tmpdir = System.getProperty("java.io.tmpdir");
-                String filename = dataset.getId();
-                File subunitFile = Paths.get(tmpdir, filename + ".json").toFile();
                 try (FileOutputStream fos = new FileOutputStream(subunitFile); ) {
                     String b64 = dataset.getSubunitsBase64();
                     byte[] decoder = Base64.getDecoder().decode(b64);
@@ -68,7 +78,7 @@ public class MainController {
                     throw new Exception(e);
                   }
                 dataset.setSubunits(filename + ".json");
-                dataset.setSubunitsBase64(null); // Soll nicht in den Client transferiert werden.
+                dataset.setSubunitsBase64(null); // Base64 soll nicht zum Client geschickt werden.
             }            
             datasetMap.put(dataset.getId(), dataset);            
         }

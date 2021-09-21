@@ -31,7 +31,7 @@ app:
           lastEditingDate: 2020-08-29
           title: Administrative Einteilungen der amtlichen Vermessung und des Grundbuchs
           shortDescription: Administrative Einteilungen der amtlichen Vermessung (Nummerierungsbereiche, Adressen der Nachführungsgeometer, etc.) und des Grundbuchs (Grundbuchkreise, Adressen der Grundbuchämter, etc.).
-          keywords: Amtliche Vermessung,Grundbuch,Grundbuchamt,Nachführungsgeometer,Geometer,AGI,AS
+          keywords: Amtliche Vermessung,Grundbuch,Grundbuchamt,Nachführungsgeometer,Geometer,AGI,AS,AV
           provider: Amt für Geoinformation (AGI)
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
@@ -58,7 +58,7 @@ app:
           lastEditingDate: 2020-08-29
           title: Dummy Dataset
           shortDescription: Administrative Einteilungen der amtlichen Vermessung (Nummerierungsbereiche, Adressen der Nachführungsgeometer, ...) und des Grundbuchs (Grundbuchkreise, Adressen der Grundbuchämter, ...).
-          keywords: Amtliche Vermessung,Grundbuch,Grundbuchamt,Nachführungsgeometer,Geometer,AGI,AS
+          keywords: Amtliche Vermessung,Grundbuch,Grundbuchamt,Nachführungsgeometer,Geometer,AGI,AS,AV
           provider: Amt für Geoinformation (AGI)
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
@@ -235,7 +235,7 @@ app:
           lastEditingDate: 2020-09-23
           title: Daten der amtlichen Vermessung (ganzer Kanton)
           shortDescription: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-          keywords: Amtliche Vermessung,AV,Bodenbedeckung,Gebäude,Grundstücke,Parzelle,Liegenschaften,Baurecht,Fixpunkt,AGI
+          keywords: Amtliche Vermessung,AV,Bodenbedeckung,Gebäude,Grundstücke,Parzelle,Liegenschaften,Baurecht,Fixpunkt,AGI,AV
           provider: Amt für Geoinformation (AGI)             
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch

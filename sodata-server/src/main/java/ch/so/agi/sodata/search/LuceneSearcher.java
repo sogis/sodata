@@ -108,7 +108,7 @@ public class LuceneSearcher {
             reader = DirectoryReader.open(memoryIndex);
             indexSearcher = new IndexSearcher(reader);
             queryParser = new QueryParser("title", analyzer); // 'title' is default field if we don't prefix search string
-            //queryParser.setAllowLeadingWildcard(true); // Feedback first
+            //queryParser.setAllowLeadingWildcard(true); // TODO: Feedback der Benutzer abwarten.
             
             String luceneQueryString = "";
             String[] splitedQuery = queryString.split("\\s+");
@@ -116,7 +116,7 @@ public class LuceneSearcher {
                 String token = splitedQuery[i];
                 // Das Feld, welches bestimmend sein soll (also in der Suche zuoberst gelistet), bekommt
                 // einen sehr hohen Boost.
-                luceneQueryString += "(id:" + token + "*^100 OR title:" + token + "*^10 OR shortdescription:" + token + "*)";
+                luceneQueryString += "(id:" + token + "*^100 OR title:" + token + "*^10 OR shortdescription:" + token + "* OR keywords:" + token + "*)";
                 if (i<splitedQuery.length-1) {
                     luceneQueryString += " AND ";
                 }

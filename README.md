@@ -18,10 +18,10 @@
 - base64 to json: werden in system temp gespeichert. sämtliche json aus diesem Verzeichnis sind exponiert.
 
 ## TODO
+- Testing!!!
 - application.yml ausserhalb Pod verwenden.
-- Testing!
 - Subunit-Dateien:
-  * falls base64: Umwandeln in Datei beim Hochfahren, abspeichern auf Filesystem (nicht src/main/resource). Siehe https://www.baeldung.com/spring-mvc-static-resources / https://stackoverflow.com/questions/33153396/serving-files-using-spring-boot-and-spring-mvc-from-any-location-in-the-file-sys
+  ~~* falls base64: Umwandeln in Datei beim Hochfahren, abspeichern auf Filesystem (nicht src/main/resource). Siehe https://www.baeldung.com/spring-mvc-static-resources / https://stackoverflow.com/questions/33153396/serving-files-using-spring-boot-and-spring-mvc-from-any-location-in-the-file-sys~~
   * LiDAR etc. darf komplett statisch sein und könnte hier verwaltet/bewirtschaftet werden. Amtliche Vermessung (o.ä.) hat eine dynamische Komponente (das NF-Datum).
 
 - ~~Bug: Suchen -> backspace alle Zeichen -> nicht komplette Liste~~ Id war in yml falsch resp. doppelt. Aus diesem Grund kam es zu doppelten Einträgen.
@@ -56,11 +56,24 @@ GITHUB_RUN_NUMBER=9999 mvn clean package
 ```
 
 ## Build
-- foo
+
+```
+
+```
+
+```
+docker build -t sogis/sodata:latest -f sodata-server/src/main/docker/Dockerfile.jvm .
+```
+
 
 ## Run
 ```
 java -jar sodata-server/target/sodata.jar --spring.profiles.active=prod
+SPRING_PROFILES_ACTIVE=prod java -jar sodata-server/target/sodata.jar  --spring.config.location=classpath:/application.yml,optional:file:/Users/stefan/tmp/application-prod.yml
+```
+
+```
+docker run -p8080:8080 -e SPRING_PROFILES_ACTIVE=prod -v /Users/stefan/tmp:/config sogis/sodata:latest
 ```
 
 ## Testrequests

@@ -6,6 +6,7 @@ RUN java -Djarmode=layertools -jar /home/app/application.jar extract
 
 FROM bellsoft/liberica-openjre-alpine:11.0.12-7
 EXPOSE 8080
+#COPY sodata-server/src/main/resources/application-prod.yml /config/application-prod.yml
 WORKDIR /home/app
 COPY --from=builder /home/app/dependencies/ ./
 COPY --from=builder /home/app/spring-boot-loader/ ./
@@ -15,5 +16,5 @@ COPY --from=builder /home/app/application/ ./
 RUN chown -R 1001:0 /home/app && \
     chmod -R g=u /home/app
 USER 1001
-ENTRYPOINT ["java" ,"-XX:MaxRAMPercentage=80.0", "-noverify", "-XX:TieredStopAtLevel=1", "org.springframework.boot.loader.JarLauncher"]
+ENTRYPOINT ["java" ,"-XX:MaxRAMPercentage=80.0", "-noverify", "-XX:TieredStopAtLevel=1", "org.springframework.boot.loader.JarLauncher", "--spring.config.location=classpath:/application.yml,optional:file:/config/application-prod.yml"]
 

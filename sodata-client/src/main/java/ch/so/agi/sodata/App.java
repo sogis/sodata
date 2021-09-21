@@ -285,8 +285,8 @@ public class App implements EntryPoint {
                             } else {
                                 for (String fileStr : cell.getRecord().getFileFormats()) {
                                     badgesElement.appendChild(a().css("badge-link")
-                                            .attr("href",
-                                                    "/dataset/" + cell.getRecord().getId() + "_" + fileStr + ".zip")
+                                            .attr("href", "/dataset/" + cell.getRecord().getId() + "_" + fileStr + ".zip")
+                                            .attr("target", "_blank")
                                             .add(Badge.create(formatLookUp.get(fileStr))
                                                     .setBackground(Color.GREY_LIGHTEN_2).style()
                                                     .setMarginRight("10px").setMarginTop("5px")
@@ -420,6 +420,7 @@ public class App implements EntryPoint {
                     for (String fileFormatsStr : dataset.getFileFormats()) {
                         badgesElement.appendChild(a().css("badge-link")
                                 .attr("href", "/dataset/" + cell.getRecord().getId() + "_" + fileFormatsStr + ".zip") // TODO Was kommt woher?
+                                .attr("target", "_blank")
                                 .add(Badge.create(formatLookUp.get(fileFormatsStr))
                                         .setBackground(Color.GREY_LIGHTEN_2).style()
                                         .setMarginRight("10px").setMarginTop("5px")
