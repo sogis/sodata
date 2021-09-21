@@ -88,7 +88,6 @@ public class MapPresets {
         
         Map map = new Map(mapOptions);
         map.addLayer(wmtsLayer);
-        map.set("renderer", "webgl");
         
         return map;
     }

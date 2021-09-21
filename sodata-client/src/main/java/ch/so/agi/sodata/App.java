@@ -262,7 +262,6 @@ public class App implements EntryPoint {
                             metadataLinkElement.addEventListener("click", new EventListener() {
                                 @Override
                                 public void handleEvent(Event evt) {
-                                    console.log("****");
                                     openMetadataDialog(cell.getRecord());
                                 }
                             });
@@ -319,16 +318,7 @@ public class App implements EntryPoint {
         datasetTable.noHover();
         datasetTable.load();
 
-        topLevelContent.appendChild(datasetTable.element());
-        
-        // Add the Openlayers map (element) to the body.
-        /*
-        HTMLElement mapElement = div().id(MAP_DIV_ID).element();
-        body().add(mapElement);
-        map = MapPresets.getColorMap(MAP_DIV_ID);
-        */
-        
-        console.log("fubar");
+        topLevelContent.appendChild(datasetTable.element());        
 	}
 	
     private void openMetadataDialog(Dataset dataset) {
@@ -462,22 +452,12 @@ public class App implements EntryPoint {
             @Override
             public void handleEvent(Event evt) {
                 ol.layer.Vector vectorLayer = (ol.layer.Vector) getMapLayerById(SELECTED_VECTOR_LAYER_ID);
-                ol.source.Vector vectorSource = vectorLayer.getSource();
-                //ol.Collection<Feature> features = vectorSource.getFeaturesCollection();
-                
-                String title = vectorLayer.get(ID_ATTR_NAME);
-                console.log("title: "  + title);
-                
-                int count = vectorSource.getFeatures().length;
-                console.log(count);
-                
+                ol.source.Vector vectorSource = vectorLayer.getSource();                                
                 Feature[] features = vectorSource.getFeatures();
-                
 
                 List<Feature> featuresList = new ArrayList<Feature>();
                 for (int i = 0; i < features.length; i++) {
                     Feature feature = features[i];
-                    //feature.set("files", dataset.getFileFormats()); // TODO: brauche ich das?
                     featuresList.add(feature);
                 }
                 
