@@ -42,13 +42,13 @@ jobs:
           docker build -t $DOCKER_ACCOUNT/$DOCKER_REPO:latest -f sodata-server/src/main/docker/Dockerfile.native .
           docker tag $DOCKER_ACCOUNT/$DOCKER_REPO:latest $DOCKER_ACCOUNT/$DOCKER_REPO:0.0.$BUILD_NUMBER
       - name: Push Docker Images
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ github.ref == 'refs/heads/master' }}
         run: |
           echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
           docker images
           docker push $DOCKER_ACCOUNT/$DOCKER_REPO:latest
           docker push $DOCKER_ACCOUNT/$DOCKER_REPO:0.0.$BUILD_NUMBER
       - name: Deploy to Digital Ocean App Platform
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ github.ref == 'refs/heads/master' }}
         run: |
           curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $DIGITALOCEAN_TOKEN" "https://api.digitalocean.com/v2/apps/b259346a-0364-40b0-a221-6e62798f4c22/deployments"
