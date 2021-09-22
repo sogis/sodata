@@ -111,7 +111,8 @@ public class App implements EntryPoint {
     private Map map;
 
 	public void onModuleLoad() {
-	    formatLookUp.put("xtf", "INTERLIS");
+        formatLookUp.put("xtf", "INTERLIS");
+        formatLookUp.put("itf", "INTERLIS");
 	    formatLookUp.put("shp", "Shapefile");
 	    formatLookUp.put("dxf", "DXF");
 	    formatLookUp.put("gpkg", "GeoPackage");
