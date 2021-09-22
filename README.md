@@ -59,7 +59,7 @@ Or without downloading all the snapshots again:
 docker build -t sogis/sodata-jvm:latest -f sodata-server/src/main/docker/Dockerfile.jvm .
 ```
 
-Siehe Dockerfile: Die Datensatz-Konfiguration wird unter `/config/datasets.yml` erwartet. Ohne diese Datei bleibt die Tabelle im Browser leer. Siehe Kapitel "Betrieb" für zusätzliche Informationen.
+Siehe Dockerfile: Die Datensatz-Konfiguration wird unter `/config/datasets.yml` erwartet. Ohne diese Datei bleibt die Tabelle im Browser leer. Siehe Kapitel "Konfiguration" für zusätzliche Informationen.
 
 ### Native
 ```
@@ -85,31 +85,28 @@ docker run -p8080:8080 -v /Users/stefan/tmp:/config sogis/sodata-jvm:latest
 ```
 
 ### Native
-
-## Betrieb
-
-
-## Testrequests
-- Alle Datensätze: http://localhost:8080/datasets
-- Suche: http://localhost:8080/datasets?query=admin
-
-## WMS
-### QGIS server
 ```
-docker-compose build
+./sodata-server/target/sodata-server --spring.config.location=classpath:/application.yml,optional:file:/Users/stefan/tmp/datasets.yml
 ```
 
 ```
-http://localhost:8083/wms/subunits?SERVICE=WMS&REQUEST=GetCapabilities
+docker run -p8080:8080 -v /Users/stefan/tmp:/config sogis/sodata:latest
 ```
 
+## Konfiguration
+Es gibt zwei Konfigurationsdateien: 
 
-### Geoserver
-```
-docker run --rm --name sogis-geoserver -p 8080:8080 -v ~/sources/sodata/geoserver/data_dir:/var/local/geoserver sogis/geoserver:2.18.0
-```
+- `application.yml`: Steuert die Anwendung im Allgemeinen, z.B. Loglevel oder Anzahl Suchresultate.
+- `datasets.yml`: Beinhaltet die Datensätze, die angeboten werden und in der Tabelle im Browserfenster angezeigt werden. 
 
-## Subunit Layer
+In der Annahme, dass die Applikations-Konfiguration eher statisch ist, ist sie in der Anwendung gespeichert. Einige Werte können bereits jetzt mittels ENV-Variable überschrieben werden. Auch kann mittels Profilen (`application-<PROFIL>.yml`) zusätzliche Konfiguration übermittelt werden. In diesem Fall muss das Profil gesetzt werden und die YAML-Datei dem Container oder der Jar-Datei verfügbar gemacht werden.
+
+Die Datensatz-Konfiguration ist eher dynamisch, d.h. sie ändert häufig. Aus diesem Grund wird sie nicht in das Image oder in die Jar-Datei "gebrannt" und muss immer beim Starten der Anwendung mitangegeben werden. Der Docker-Container erwartet unter `/config/datasets.yml` die Datensatzkonfigurationsdatei. Der Container startet auch ohne diese Datei. In diesem Fall bleibt die Tabelle mit den Datensätzen leer.
+
+## Varia
+
+### SQL-Queries für Subunit-Geojson
+
 ```
 SELECT 
     json_build_object(

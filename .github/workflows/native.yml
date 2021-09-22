@@ -1,0 +1,48 @@
+name: CI/CD (Native Image)
+
+on: [push]
+
+jobs:
+  build:
+    env:
+      DOCKER_ACCOUNT: sogis
+      DOCKER_REPO: sodata
+      DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}} 
+      BUILD_NUMBER: ${{ github.run_number }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Setup Java 11'
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: 'Setup GraalVM Environment'
+        uses: DeLaGuardo/setup-graalvm@4.0
+        with:
+          graalvm: '21.2.0'
+          java: 'java11'
+      - name: 'Install Native Image Plugin'
+        run: |
+          gu install native-image
+      - name: 'Build native image'
+        run: |
+          ./mvnw -e -B -q -Penv-prod,native clean package
+          ls -la sodata-server/target
+      - name: Create Docker Image
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+          docker build -t $DOCKER_ACCOUNT/$DOCKER_REPO:latest -f sodata-server/src/main/docker/Dockerfile.native .
+          docker tag $DOCKER_ACCOUNT/$DOCKER_REPO:latest $DOCKER_ACCOUNT/$DOCKER_REPO:0.0.$BUILD_NUMBER
+      - name: Push Docker Images
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+          docker images
+          docker push $DOCKER_ACCOUNT/$DOCKER_REPO:latest
+          docker push $DOCKER_ACCOUNT/$DOCKER_REPO:0.0.$BUILD_NUMBER
