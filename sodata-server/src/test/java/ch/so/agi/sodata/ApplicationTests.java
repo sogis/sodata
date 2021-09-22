@@ -27,5 +27,12 @@ class ApplicationTests {
         assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/index.html", String.class))
                 .contains("Datenbezug • Kanton Solothurn");
     }
+    
+    // Dummy für Graal, damit Lucene verwendet wird.
+    // TODO: inkl. Datasets
+    @Test
+    public void query_Ok() throws Exception {
+        this.restTemplate.getForObject("http://localhost:" + port + "/datasets?query=av", String.class);
+    }
 
 }

@@ -7,7 +7,7 @@ jobs:
   build:
     env:
       DOCKER_ACCOUNT: sogis
-      DOCKER_REPO: sodata
+      DOCKER_REPO: sodata-jvm
       DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}      
       BUILD_NUMBER: ${{ github.run_number }}      

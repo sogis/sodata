@@ -19,11 +19,9 @@
 
 ## TODO
 - Testing!!!
-- application.yml ausserhalb Pod verwenden.
-- Subunit-Dateien:
-  ~~* falls base64: Umwandeln in Datei beim Hochfahren, abspeichern auf Filesystem (nicht src/main/resource). Siehe https://www.baeldung.com/spring-mvc-static-resources / https://stackoverflow.com/questions/33153396/serving-files-using-spring-boot-and-spring-mvc-from-any-location-in-the-file-sys~~
-  * LiDAR etc. darf komplett statisch sein und könnte hier verwaltet/bewirtschaftet werden. Amtliche Vermessung (o.ä.) hat eine dynamische Komponente (das NF-Datum).
-
+ * https://stackoverflow.com/questions/39690094/spring-boot-default-profile-for-integration-tests/56442693
+- ~~application.yml ausserhalb Pod verwenden.~~
+- LiDAR-Vektorlayer ist leicht käsig -> Abklären, ob WebGL-Renderer funktioniert und vorhanden ist oder mit VectorImageSource (o.ä.).
 - ~~Bug: Suchen -> backspace alle Zeichen -> nicht komplette Liste~~ Id war in yml falsch resp. doppelt. Aus diesem Grund kam es zu doppelten Einträgen.
 - ~~Bug: Firefox zeigt Aufklappen-Zeichen nicht bei Tabellen~~
 - ~~Link/Icon zu geocat.ch sollte auch beim hovern rot erscheinen.~~ Nein. War eher ungewollt, da a:hover noch im css file vorhanden war.
@@ -37,7 +35,7 @@
 
 First Terminal:
 ```
-./mvnw spring-boot:run -Penv-dev -pl *-server -am (-Dspring-boot.run.profiles=XXXX)
+./mvnw spring-boot:run -Penv-dev -pl *-server -am -Dspring-boot.run.profiles=dev
 ```
 
 Second Terminal:
@@ -50,31 +48,46 @@ Or without downloading all the snapshots again:
 ./mvnw gwt:codeserver -pl *-client -am -nsu 
 ```
 
-Build fat jar and docker image:
-```
-GITHUB_RUN_NUMBER=9999 mvn clean package
-```
-
 ## Build
 
+### JVM
+```
+./mvnw -Penv-prod clean package
 ```
 
 ```
+docker build -t sogis/sodata-jvm:latest -f sodata-server/src/main/docker/Dockerfile.jvm .
+```
+
+Siehe Dockerfile: Die Datensatz-Konfiguration wird unter `/config/datasets.yml` erwartet. Ohne diese Datei bleibt die Tabelle im Browser leer. Siehe Kapitel "Betrieb" für zusätzliche Informationen.
+
+### Native
+```
+./mvnw -Penv-prod,native clean package
+```
 
 ```
-docker build -t sogis/sodata:latest -f sodata-server/src/main/docker/Dockerfile.jvm .
+docker build -t sogis/sodata:latest -f sodata-server/src/main/docker/Dockerfile.native .
 ```
+
+In diesem Fall muss das native image auf Linux gebuildet werden.
 
 
 ## Run
+
+### JVM
 ```
-java -jar sodata-server/target/sodata.jar --spring.profiles.active=prod
-SPRING_PROFILES_ACTIVE=prod java -jar sodata-server/target/sodata.jar --spring.config.location=classpath:/application.yml,optional:file:/Users/stefan/tmp/application-prod.yml
+java -jar sodata-server/target/sodata.jar --spring.config.location=classpath:/application.yml,optional:file:/Users/stefan/tmp/datasets.yml
 ```
 
 ```
-docker run -p8080:8080 -e SPRING_PROFILES_ACTIVE=prod -v /Users/stefan/tmp:/config sogis/sodata:latest
+docker run -p8080:8080 -v /Users/stefan/tmp:/config sogis/sodata-jvm:latest
 ```
+
+### Native
+
+## Betrieb
+
 
 ## Testrequests
 - Alle Datensätze: http://localhost:8080/datasets
