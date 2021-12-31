@@ -246,6 +246,7 @@ public class App implements EntryPoint {
 
         TableConfig<Dataset> tableConfig = new TableConfig<>();
         tableConfig
+                .setFixed(true)
                 .addColumn(ColumnConfig.<Dataset>create("title", "Name").setShowTooltip(false).textAlign("left")
                         .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getTitle())))
                 .addColumn(ColumnConfig.<Dataset>create("lastEditingDate", "Aktualisiert").setShowTooltip(false)
@@ -316,7 +317,7 @@ public class App implements EntryPoint {
         datasetTable = new DataTable<>(tableConfig, listStore);
         datasetTable.setId("dataset-table");
         datasetTable.noStripes();
-        datasetTable.noHover();
+        //datasetTable.noHover();
         datasetTable.load();
 
         topLevelContent.appendChild(datasetTable.element());        
