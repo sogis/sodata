@@ -246,7 +246,7 @@ public class App implements EntryPoint {
 
         TableConfig<Dataset> tableConfig = new TableConfig<>();
         tableConfig
-                .setFixed(true)
+                //.setFixed(true)
                 .addColumn(ColumnConfig.<Dataset>create("title", "Name").setShowTooltip(false).textAlign("left")
                         .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getTitle())))
                 .addColumn(ColumnConfig.<Dataset>create("lastEditingDate", "Aktualisiert").setShowTooltip(false)
