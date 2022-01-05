@@ -1,7 +1,9 @@
   
 name: CI/CD (JVM)
 
-on: [push]
+on:
+  workflow_dispatch:
+  push:
 
 jobs:
   build:
