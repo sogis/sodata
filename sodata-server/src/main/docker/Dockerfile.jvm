@@ -1,11 +1,11 @@
-FROM bellsoft/liberica-openjre-alpine:11.0.12-7 as builder
+FROM bellsoft/liberica-openjdk-alpine-musl:11.0.13-8 as builder
 WORKDIR /home/app
 ARG JAR_FILE=sodata-server/target/sodata.jar
 COPY ${JAR_FILE} /home/app/application.jar
 RUN java -Djarmode=layertools -jar /home/app/application.jar extract
 
-#FROM bellsoft/liberica-openjdk-alpine-musl:11.0.13-8
-FROM eclipse-temurin:17.0.1_12-jre-focal
+FROM bellsoft/liberica-openjdk-alpine-musl:11.0.13-8
+#FROM eclipse-temurin:17.0.1_12-jre-focal
 EXPOSE 8080
 
 WORKDIR /home/app
