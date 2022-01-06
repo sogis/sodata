@@ -4,7 +4,7 @@ ARG JAR_FILE=sodata-server/target/sodata.jar
 COPY ${JAR_FILE} /home/app/application.jar
 RUN java -Djarmode=layertools -jar /home/app/application.jar extract
 
-FROM bellsoft/liberica-openjre-alpine:11.0.12-7
+FROM bellsoft/liberica-openjdk-alpine-musl:11.0.13-8
 EXPOSE 8080
 
 WORKDIR /home/app
