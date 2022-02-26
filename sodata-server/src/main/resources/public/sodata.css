@@ -89,7 +89,8 @@ a.default-link:visited {
 }
 
 .bg-l-2-grey {
-    color: #333333 !important;
+    color: #FFFFFF !important;
+    background-color: #c62828 !important;
     font-weight: 300 !important;
 }
 
