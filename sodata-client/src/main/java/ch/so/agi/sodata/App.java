@@ -275,7 +275,7 @@ public class App implements EntryPoint {
 
                             if (cell.getRecord().getSubunits() != null) {
                                 HTMLElement regionSelectionElement = a().css("default-link")
-                                        .textContent("Gebietsauswahl nötig").element();
+                                        .textContent("Gebietsauswahl notwendig").element();
                                 regionSelectionElement.addEventListener("click", new EventListener() {
                                     @Override
                                     public void handleEvent(Event evt) {
