@@ -17,8 +17,11 @@ logging:
     org.springframework: ${LOG_LEVEL:INFO} 
 
 spring:
+  web:
     resources:
         static-locations: classpath:/launcherDir/,classpath:/public/
+    #resources:
+     #   static-locations: classpath:/launcherDir/,classpath:/public/
     devtools:
         restart:
             additional-exclude: launcherDir/**

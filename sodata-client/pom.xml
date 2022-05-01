@@ -13,20 +13,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>sodata-shared</artifactId>
-      <version>${project.version}</version>
-      <type>gwt-lib</type>
-    </dependency>
-   
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>sodata-shared</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
-    
-    <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
     </dependency>
@@ -34,6 +20,19 @@
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>sodata-shared</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>sodata-shared</artifactId>
+      <version>${project.version}</version>
+      <classifier>sources</classifier>
+    </dependency>
+    
     <dependency>
       <groupId>org.dominokit</groupId>
       <artifactId>domino-ui</artifactId>
@@ -56,27 +55,8 @@
       <artifactId>gwt-jackson</artifactId>
       <version>0.15.4</version>
     </dependency>
-  </dependencies>
 
-  <repositories>
-    <repository>
-      <id>sonatype-snapshots-repo</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <snapshots>
-        <updatePolicy>always</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>vertispan-snapshots</id>
-      <name>Vertispan Snapshots</name>
-      <url>https://repo.vertispan.com/gwt-snapshot/</url>
-      <snapshots>
-        <updatePolicy>always</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-    </repository>
-  </repositories>
+  </dependencies>
 
   <build>
     <plugins>
@@ -86,8 +66,10 @@
         <configuration>
           <moduleName>ch.so.agi.sodata.App</moduleName>
           <moduleShortName>app</moduleShortName>
+          <workDir>${basedir}/target/gwt/workDir</workDir>
           <compilerArgs>
-            <!-- fetch() in Safari does not work without disable cast checking. -->
+            <arg>-gen</arg>
+            <arg>${basedir}/target/gwt/gen</arg>
             <compilerArg>-XdisableCastChecking</compilerArg>
             <compilerArg>-XnoclassMetadata</compilerArg>
           </compilerArgs>
