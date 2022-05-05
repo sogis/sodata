@@ -99,8 +99,10 @@
     </pluginManagement>
   </build>
   <modules>  
+  <!-- 
     <module>sodata-client</module>
     <module>sodata-shared</module>
+ -->
     <module>sodata-server</module>
   </modules>
 </project>
