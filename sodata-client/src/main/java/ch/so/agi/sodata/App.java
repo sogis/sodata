@@ -77,10 +77,9 @@ import proj4.Proj4;
  */
 public class App implements EntryPoint {
 
-	public void onModuleLoad() {
-        Element container = div().id("container").textContent("fubar").element();
-        body().add(container);
-       
-
-	}
+        public void onModuleLoad() {
+                GWT.log("fubar");
+                Element container = div().id("container").textContent("fubar").element();
+                body().add(container);
+        }
 }

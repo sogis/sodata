@@ -32,7 +32,7 @@
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
-    
+
     <dependency>
       <groupId>org.dominokit</groupId>
       <artifactId>domino-ui</artifactId>
@@ -68,15 +68,11 @@
           <moduleShortName>app</moduleShortName>
           <workDir>${basedir}/target/gwt/workDir</workDir>
           <compilerArgs>
-            <arg>-gen</arg>
-            <arg>${basedir}/target/gwt/gen</arg>
             <compilerArg>-XdisableCastChecking</compilerArg>
             <compilerArg>-XnoclassMetadata</compilerArg>
+            <arg>-gen</arg>
+            <arg>${basedir}/target/gwt/gen</arg>
           </compilerArgs>
-          <codeserverArgs>
-            <codeserverArg>-style</codeserverArg>
-            <codeserverArg>PRETTY</codeserverArg>
-          </codeserverArgs>
         </configuration>
       </plugin>
     </plugins>
