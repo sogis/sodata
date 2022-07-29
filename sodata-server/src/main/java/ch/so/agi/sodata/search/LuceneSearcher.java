@@ -47,7 +47,7 @@ public class LuceneSearcher {
     @Autowired
     private AppProperties config;
 
-    private Directory memoryIndex;
+    private Directory fsIndex;
     private StandardAnalyzer analyzer;
     private QueryParser queryParser;
 
@@ -61,10 +61,10 @@ public class LuceneSearcher {
         Path tempDirWithPrefix = Files.createTempDirectory(Paths.get(System.getProperty("java.io.tmpdir")), "sodata_idx");
         log.info("Index folder: " + tempDirWithPrefix);
         
-        memoryIndex = new NIOFSDirectory(tempDirWithPrefix);
+        fsIndex = new NIOFSDirectory(tempDirWithPrefix);
         analyzer = new StandardAnalyzer();
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
-        IndexWriter writer = new IndexWriter(memoryIndex, indexWriterConfig);
+        IndexWriter writer = new IndexWriter(fsIndex, indexWriterConfig);
         
         List<Dataset> datasets = config.getDatasets();
         for (Dataset dataset : datasets) {
@@ -83,7 +83,7 @@ public class LuceneSearcher {
     @PreDestroy
     private void close() {
         try {
-            memoryIndex.close();
+            fsIndex.close();
             log.info("Lucene Index closed");
         } catch (IOException e) {
             log.warn("Issue closing Lucene Index: " + e.getMessage());
@@ -107,7 +107,7 @@ public class LuceneSearcher {
         TopDocs documents;
         TotalHitCountCollector collector = null;
         try {
-            reader = DirectoryReader.open(memoryIndex);
+            reader = DirectoryReader.open(fsIndex);
             indexSearcher = new IndexSearcher(reader);
             queryParser = new QueryParser("title", analyzer); // 'title' is default field if we don't prefix search string
             //queryParser.setAllowLeadingWildcard(true); // TODO: Feedback der Benutzer abwarten.
