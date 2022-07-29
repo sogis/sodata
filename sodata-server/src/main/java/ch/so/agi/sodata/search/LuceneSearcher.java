@@ -56,7 +56,7 @@ public class LuceneSearcher {
     // Falls der Index im PostConstruct erzeugt wird, ist die Anwendung nicht live.
     @PostConstruct
     public void init() throws IOException {
-        log.info("Building index in memory...");
+        log.info("Building index...");
         
         Path tempDirWithPrefix = Files.createTempDirectory(Paths.get(System.getProperty("java.io.tmpdir")), "sodata_idx");
         log.info("Index folder: " + tempDirWithPrefix);
@@ -76,6 +76,8 @@ public class LuceneSearcher {
             writer.addDocument(document);
         }
         writer.close();
+        
+        log.info("Building index done.");
     }
 
     @PreDestroy
