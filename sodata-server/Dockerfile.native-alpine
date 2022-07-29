@@ -1,0 +1,17 @@
+FROM alpine:3.16
+
+ARG UID=1001
+RUN adduser -S sodata -u $UID
+
+ENV HOME=/work
+WORKDIR $HOME
+
+COPY target/sodata-server ./application
+RUN chown $UID:0 . && \
+    chmod 0775 . && \
+    ls -la
+
+USER $UID
+EXPOSE 8080
+ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true
+CMD ["./application"]
