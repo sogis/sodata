@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>ch.so.agi</groupId>
     <artifactId>sodata</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-
   <artifactId>sodata-client</artifactId>
   <packaging>gwt-app</packaging>
-
   <dependencies>
     <dependency>
       <groupId>com.google.gwt</groupId>
@@ -20,7 +17,6 @@
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
     </dependency>
-
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>sodata-shared</artifactId>
@@ -33,7 +29,6 @@
       <classifier>sources</classifier>
       <!-- Wenn ich hier <type>gwt-lib</type> verwende, kompiliert es nicht mehr, da dieser Artefakt nicht gefunden wird.-->
     </dependency>
-
     <dependency>
       <groupId>org.dominokit</groupId>
       <artifactId>domino-ui</artifactId>
@@ -56,9 +51,7 @@
       <artifactId>gwt-jackson</artifactId>
       <version>0.15.4</version>
     </dependency>
-
   </dependencies>
-
   <build>
     <plugins>
       <plugin>
