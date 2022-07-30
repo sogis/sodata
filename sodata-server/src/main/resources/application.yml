@@ -12,10 +12,6 @@ server:
 # ========================
 # SPRING
 # ========================
-logging:
-  level:
-    org.springframework: ${LOG_LEVEL:INFO} 
-
 spring:
   web:
     resources:
@@ -34,13 +30,14 @@ management:
         health: 
             show-details: always
 
-# spring:
-#     profiles:
-#         active: test 
-
 # ========================
 # APPLICATION
 # ========================   
+logging:
+  level:
+    org.springframework: ${LOG_LEVEL_SPRING:INFO} 
+    ch.so.agi: ${LOG_LEVEL_APP:INFO} 
+
 lucene:
     queryDefaultRecords: ${LUCENE_QUERY_DEFAULT_RECORDS:10}
     queryMaxRecords: ${LUCENE_QUERY_MAX_RECORDS:50}

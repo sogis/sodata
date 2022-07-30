@@ -96,6 +96,10 @@ public class MainController {
         return new ResponseEntity<String>("sodata", HttpStatus.OK);
     }
 
+    // TODO: LuceneSearcher / Result unter die Lupe nehmen:
+    // - brauche ich totalGugus?
+    // - Was macht genau Result?
+    
     @GetMapping("/datasets")
     public List<Dataset> searchDatasets(@RequestParam(value="query", required=false) String queryString) {
         if (queryString == null) {
