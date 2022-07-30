@@ -74,6 +74,8 @@ import proj4.Proj4;
 import ch.so.agi.sodata.Dataset;
 
 public class App implements EntryPoint {
+    // Internationalization
+    private MyMessages messages = GWT.create(MyMessages.class);
 
     // Application settings
     private String myVar;
@@ -356,33 +358,14 @@ public class App implements EntryPoint {
 	}
 	
     private void openMetadataDialog(Dataset dataset) {
-        ModalDialog modal = ModalDialog.create("Metadaten: " + dataset.getTitle()).setAutoClose(true);
+        ModalDialog modal = ModalDialog.create(dataset.getTitle()).setAutoClose(true);
         modal.css("modal-object");
-
-        modal.appendChild(h(4, "Beschreibung"));
-        modal.appendChild(p().css("modal-paragraph").textContent(dataset.getShortDescription()));
-
-        if (dataset.getTables() != null) {
-            modal.appendChild(h(4, "Inhalt"));
-
-            HTMLElement tables = div().element();
-
-            for (DatasetTable datasetTable : dataset.getTables()) {
-                HTMLElement details = (HTMLElement) DomGlobal.document.createElement("details");
-                details.className = "modal-meta-details";
-                HTMLElement summary = (HTMLElement) DomGlobal.document.createElement("summary");
-                summary.className = "modal-meta-summary";
-                summary.textContent = datasetTable.getTitle();
-                HTMLElement p = p().css("modal-meta-paragraph").textContent(datasetTable.getDescription()).element();
-                details.appendChild(summary);
-                details.appendChild(p);
-                tables.appendChild(details);
-            }
-
-            modal.appendChild(p().css("modal-paragraph").add(tables)); 
-        }
-
-        Button closeButton = Button.create("SCHLIESSEN").linkify();
+        
+        MetadataElement metaDataElement = new MetadataElement(dataset);
+        modal.add(metaDataElement);
+        
+        Button closeButton = Button.create(messages.close().toUpperCase()).linkify();
+        closeButton.removeWaves();
         closeButton.setBackground(Color.RED_DARKEN_3);
         EventListener closeModalListener = (evt) -> modal.close();
         closeButton.addClickListener(closeModalListener);
@@ -477,6 +460,7 @@ public class App implements EntryPoint {
         modal.getBodyElement().appendChild(tabsPanel);
 
         Button closeButton = Button.create("SCHLIESSEN").linkify();
+        closeButton.removeWaves();
         closeButton.setBackground(Color.RED_DARKEN_3);
         EventListener closeModalListener = (evt) -> modal.close();
         closeButton.addClickListener(closeModalListener);
@@ -560,6 +544,7 @@ public class App implements EntryPoint {
                         .setIconBackground(Color.RED_DARKEN_3));
 
         Button closeButton = Button.create("SCHLIESSEN").linkify();
+        closeButton.removeWaves();
         closeButton.setBackground(Color.RED_DARKEN_3);
         EventListener closeModalListener = (evt) -> modal.close();
         closeButton.addClickListener(closeModalListener);

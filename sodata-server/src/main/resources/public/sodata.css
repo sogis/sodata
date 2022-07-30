@@ -83,6 +83,8 @@ a.default-link:visited {
     margin-bottom: 30px;
 }
 
+/* Wird das benötigt? Nur die l-2 für die Badges?*/
+/*
 .bg-l-4-grey {
     color: #999999 !important;
     font-weight: 300 !important;
@@ -92,6 +94,7 @@ a.default-link:visited {
     color: #666666 !important;
     font-weight: 300 !important;
 }
+*/
 
 .bg-l-2-grey {
     color: #333333 !important;
@@ -140,19 +143,24 @@ h4, .h4 {
     font-size: 16px !important;
 }
 
-.modal-paragraph {
+.meta-dataset-description-paragraph {
     padding-bottom: 20px;
 }
 
-.modal-meta-details {
+.meta-details {
 	padding-bottom: 5px;
 }
 
-.modal-meta-summary {
+.meta-summary {
 	display: list-item; /* firefox only */
 }
 
-.modal-meta-paragraph {
+.meta-table-description-paragraph {
 	padding-top: 5px;
 	padding-bottom: 5px;
+	padding-left: 15px;
+}
+
+.meta-tables-paragraph {
+    padding-bottom: 20px;
 }
