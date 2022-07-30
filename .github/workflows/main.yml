@@ -8,7 +8,7 @@ jobs:
   build-native:
     env:
       DOCKER_ACCOUNT: sogis
-      DOCKER_REPO: sodata
+      DOCKER_REPO: sodata-base
       DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}} 
       #DIGITALOCEAN_TOKEN: ${{secrets.DIGITALOCEAN_TOKEN}}
