@@ -76,7 +76,8 @@ jobs:
         with:
           platforms: linux/amd64
           context: sodata-server
-          file: sodata-server/Dockerfile.native-alpine
+          #file: sodata-server/Dockerfile.native-alpine
+          file: sodata-server/Dockerfile.native-micro
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           pull: true
