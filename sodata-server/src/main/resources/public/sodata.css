@@ -2,6 +2,11 @@ body {
     margin: 0px;
     padding: 0px;
     background: #FFFFFF; 
+    /*
+    font-smooth: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    */
 }
 
 body, div {

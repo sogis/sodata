@@ -1,31 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>ch.so.agi</groupId>
     <artifactId>sodata</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-
   <artifactId>sodata-client</artifactId>
   <packaging>gwt-app</packaging>
-
   <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>sodata-shared</artifactId>
-      <version>${project.version}</version>
-      <type>gwt-lib</type>
-    </dependency>
-   
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>sodata-shared</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
-    
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
@@ -35,14 +18,26 @@
       <artifactId>gwt-dev</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.dominokit</groupId>
-      <artifactId>domino-ui</artifactId>
-      <version>1.0.0-RC6</version>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>sodata-shared</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>sodata-shared</artifactId>
+      <version>${project.version}</version>
+      <classifier>sources</classifier>
+      <!-- Wenn ich hier <type>gwt-lib</type> verwende, kompiliert es nicht mehr, da dieser Artefakt nicht gefunden wird.-->
     </dependency>
     <dependency>
       <groupId>org.dominokit</groupId>
       <artifactId>domino-ui</artifactId>
-      <version>1.0.0-RC6</version>
+      <version>1.0.0-RC13</version>
+    </dependency>
+    <dependency>
+      <groupId>org.dominokit</groupId>
+      <artifactId>domino-ui</artifactId>
+      <version>1.0.0-RC13</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
@@ -57,27 +52,6 @@
       <version>0.15.4</version>
     </dependency>
   </dependencies>
-
-  <repositories>
-    <repository>
-      <id>sonatype-snapshots-repo</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <snapshots>
-        <updatePolicy>always</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>vertispan-snapshots</id>
-      <name>Vertispan Snapshots</name>
-      <url>https://repo.vertispan.com/gwt-snapshot/</url>
-      <snapshots>
-        <updatePolicy>always</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-    </repository>
-  </repositories>
-
   <build>
     <plugins>
       <plugin>
@@ -86,15 +60,13 @@
         <configuration>
           <moduleName>ch.so.agi.sodata.App</moduleName>
           <moduleShortName>app</moduleShortName>
+          <workDir>${basedir}/target/gwt/workDir</workDir>
           <compilerArgs>
-            <!-- fetch() in Safari does not work without disable cast checking. -->
             <compilerArg>-XdisableCastChecking</compilerArg>
             <compilerArg>-XnoclassMetadata</compilerArg>
+            <arg>-gen</arg>
+            <arg>${basedir}/target/gwt/gen</arg>
           </compilerArgs>
-          <codeserverArgs>
-            <codeserverArg>-style</codeserverArg>
-            <codeserverArg>PRETTY</codeserverArg>
-          </codeserverArgs>
         </configuration>
       </plugin>
     </plugins>

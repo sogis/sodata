@@ -63,7 +63,8 @@ Siehe Dockerfile: Die Datensatz-Konfiguration wird unter `/config/datasets.yml` 
 
 ### Native
 ```
-./mvnw -Penv-prod,native clean package
+./mvnw clean test
+./mvnw -DskipTests -Penv-prod,native package
 ```
 
 ```

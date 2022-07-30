@@ -82,6 +82,9 @@ public class App implements EntryPoint {
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
     private NumberFormat fmtPercent = NumberFormat.getFormat("#0.0");
 
+    Location location;
+    String pathname;
+
     private HTMLElement container;
     private HTMLElement topLevelContent;
     private HTMLElement datasetContent;
@@ -120,6 +123,15 @@ public class App implements EntryPoint {
 
 	    mapper = GWT.create(DatasetMapper.class);   
 
+        // Get url from browser (client) to find out the correct location of resources.
+        location = DomGlobal.window.location;
+        pathname = location.pathname;
+        
+        if (pathname.contains("index.html")) {
+            pathname = pathname.replace("index.html", "");
+        }
+
+        // Get datasets json from server and initialize the site.
         DomGlobal.fetch("/datasets")
         .then(response -> {
             if (!response.ok) {
@@ -166,13 +178,10 @@ public class App implements EntryPoint {
         Theme theme = new Theme(ColorScheme.RED);
         theme.apply();
 
+        // Add our "root" container
         container = div().id("container").element();
         body().add(container);
-        
-        Location location = DomGlobal.window.location;
-        if (location.pathname.length() > 1) {
-            location.pathname += "/"; 
-        }
+                
         HTMLElement logoDiv = div().css("logo")
                 .add(div()
                         .add(img().attr("src", location.protocol + "//" + location.host + location.pathname + "Logo.png").attr("alt", "Logo Kanton")).element()).element();
@@ -247,69 +256,92 @@ public class App implements EntryPoint {
         TableConfig<Dataset> tableConfig = new TableConfig<>();
         tableConfig
                 //.setFixed(true)
-                .addColumn(ColumnConfig.<Dataset>create("title", "Name").setShowTooltip(false).textAlign("left")
-                        .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getTitle())))
-                .addColumn(ColumnConfig.<Dataset>create("lastEditingDate", "Aktualisiert").setShowTooltip(false)
-                        .textAlign("left").setCellRenderer(cell -> {
-                            Date date = DateTimeFormat.getFormat("yyyy-MM-dd")
-                                    .parse(cell.getTableRow().getRecord().getLastEditingDate());
-                            String dateString = DateTimeFormat.getFormat("dd.MM.yyyy").format(date);
-                            return TextNode.of(dateString);
+                .addColumn(
+                        ColumnConfig.<Dataset>create("title", "Name")
+                            .setShowTooltip(false)
+                            .textAlign("left")
+                            //.asHeader()
+                            .setCellRenderer(
+                                    cell -> TextNode.of(cell.getTableRow().getRecord().getTitle()))
+                        )
+                .addColumn(
+                        ColumnConfig.<Dataset>create("lastEditingDate", "Aktualisiert")
+                            .setShowTooltip(false)
+                            .textAlign("left")
+                            .setCellRenderer(
+                                    cell -> {
+                                        Date date = DateTimeFormat.getFormat("yyyy-MM-dd")
+                                                .parse(cell.getTableRow().getRecord().getLastEditingDate());
+                                        String dateString = DateTimeFormat.getFormat("dd.MM.yyyy").format(date);
+                                        return TextNode.of(dateString);
+                                    })
+                        )
+                .addColumn(
+                        ColumnConfig.<Dataset>create("metadata", "Metadaten")
+                            .setShowTooltip(false)
+                            .textAlign("center")
+                            .setCellRenderer(
+                                    cell -> {
+                                        HTMLElement metadataLinkElement = div()
+                                                .add(Icons.ALL.information_outline_mdi().style().setCursor("pointer")).element();
+                                        metadataLinkElement.addEventListener("click", new EventListener() {
+                                            @Override
+                                            public void handleEvent(Event evt) {
+                                                openMetadataDialog(cell.getRecord());
+                                            }
+                                        });
+                                        return metadataLinkElement;
+                                    })
+                        )
+                .addColumn(
+                        ColumnConfig.<Dataset>create("formats", "Daten herunterladen")
+                            .setShowTooltip(false)
+                            .textAlign("left")
+                            .setCellRenderer(
+                                    cell -> {
+                                        HTMLElement badgesElement = div().element();
 
-                        }))
-                .addColumn(ColumnConfig.<Dataset>create("metadata", "Metadaten").setShowTooltip(false)
-                        .textAlign("center").setCellRenderer(cell -> {
-                            HTMLElement metadataLinkElement = div()
-                                    .add(Icons.ALL.information_outline_mdi().style().setCursor("pointer")).element();
-                            metadataLinkElement.addEventListener("click", new EventListener() {
-                                @Override
-                                public void handleEvent(Event evt) {
-                                    openMetadataDialog(cell.getRecord());
-                                }
-                            });
-                            return metadataLinkElement;
-                        }))
-                .addColumn(ColumnConfig.<Dataset>create("formats", "Daten herunterladen").setShowTooltip(false)
-                        .textAlign("left").setCellRenderer(cell -> {
-                            HTMLElement badgesElement = div().element();
-
-                            if (cell.getRecord().getSubunits() != null) {
-                                HTMLElement regionSelectionElement = a().css("default-link")
-                                        .textContent("Gebietsauswahl notwendig").element();
-                                regionSelectionElement.addEventListener("click", new EventListener() {
-                                    @Override
-                                    public void handleEvent(Event evt) {
-                                        openRegionSelectionDialog(cell.getRecord());
-                                    }
-
-                                });
-                                return regionSelectionElement;
-                            } else {
-                                for (String fileStr : cell.getRecord().getFileFormats()) {
-                                    badgesElement.appendChild(a().css("badge-link")
-                                            .attr("href", "/dataset/" + cell.getRecord().getId() + "_" + fileStr + ".zip")
-                                            .attr("target", "_blank")
-                                            .add(Badge.create(formatLookUp.get(fileStr))
-                                                    .setBackground(Color.GREY_LIGHTEN_2).style()
-                                                    .setMarginRight("10px").setMarginTop("5px")
-                                                    .setMarginBottom("5px").get().element())
-                                            .element());
-                                }
-                                return badgesElement;
-                            }
-                        }))
-                .addColumn(ColumnConfig.<Dataset>create("services", "Servicelinks").setShowTooltip(false)
-                        .textAlign("center").setCellRenderer(cell -> {
-                            HTMLElement serviceLinkElement = div()
-                                    .add(Icons.ALL.information_outline_mdi().style().setCursor("pointer")).element();
-                            serviceLinkElement.addEventListener("click", new EventListener() {
-                                @Override
-                                public void handleEvent(Event evt) {
-                                    openServiceLinkDialog(cell.getRecord());
-                                }
-                            });
-                            return serviceLinkElement;
-                        }));
+                                        if (cell.getRecord().getSubunits() != null) {
+                                            HTMLElement regionSelectionElement = a().css("default-link")
+                                                    .textContent("Gebietsauswahl notwendig").element();
+                                            regionSelectionElement.addEventListener("click", new EventListener() {
+                                                @Override
+                                                public void handleEvent(Event evt) {
+                                                    openRegionSelectionDialog(cell.getRecord());
+                                                }
+                                            });
+                                            return regionSelectionElement;
+                                        } else {
+                                            for (String fileStr : cell.getRecord().getFileFormats()) {
+                                                badgesElement.appendChild(a().css("badge-link")
+                                                        .attr("href", "/dataset/" + cell.getRecord().getId() + "_" + fileStr + ".zip")
+                                                        .attr("target", "_blank")
+                                                        .add(Badge.create(formatLookUp.get(fileStr))
+                                                                .setBackground(Color.GREY_LIGHTEN_2).style()
+                                                                .setMarginRight("10px").setMarginTop("5px")
+                                                                .setMarginBottom("5px").get().element())
+                                                        .element());
+                                            }
+                                            return badgesElement;
+                                        }
+                                    })
+                        )
+                .addColumn(
+                        ColumnConfig.<Dataset>create("services", "Servicelinks")
+                            .setShowTooltip(false)
+                            .textAlign("center").setCellRenderer(
+                                    cell -> {
+                                        HTMLElement serviceLinkElement = div()
+                                                .add(Icons.ALL.information_outline_mdi().style().setCursor("pointer")).element();
+                                        serviceLinkElement.addEventListener("click", new EventListener() {
+                                            @Override
+                                            public void handleEvent(Event evt) {
+                                                openServiceLinkDialog(cell.getRecord());
+                                            }
+                                        });
+                                        return serviceLinkElement;
+                                    })
+                        );
 
         listStore = new LocalListDataStore<>();
         listStore.setData(datasets);

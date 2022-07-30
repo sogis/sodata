@@ -54,6 +54,13 @@ public class MainController {
     
     private Map<String, Dataset> datasetMap;
     
+    // TODO
+    
+    // Absoluter Pfad zu themepublicatins.xml in application.properties als ENV mit Default.
+    // XmlThemePublication -> GwtThemePublication Mapper
+    
+    // Eigenes Properties-Package falls mehrere Klassen? 
+    
     @PostConstruct
     public void init() throws Exception {        
         datasetMap = new HashMap<String, Dataset>();
