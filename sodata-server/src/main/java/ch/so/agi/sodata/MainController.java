@@ -100,7 +100,6 @@ public class MainController {
     public List<Dataset> searchDatasets(@RequestParam(value="query", required=false) String queryString) {
         if (queryString == null) {
             return config.getDatasets();
-
         } else {
             Result results = null;
             try {
