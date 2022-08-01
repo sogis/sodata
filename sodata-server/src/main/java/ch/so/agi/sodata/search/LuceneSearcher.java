@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttribute;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,7 +29,6 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.TotalHitCountCollector;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.MMapDirectory;
 import org.apache.lucene.store.NIOFSDirectory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,12 +95,11 @@ public class LuceneSearcher {
      * Search Lucene Index for records matching querystring
      * @param querystring - human written query string from e.g. a search form
      * @param numRecords - number of requested records 
-     * @param showAvailable - check for number of matching available records 
-     * @return Top Lucene query results as a Result object
+     * @return Lucene query results as a List of Maps object
      * @throws LuceneSearcherException 
      * @throws InvalidLuceneQueryException 
      */
-    public Result searchIndex(String queryString, int numRecords, boolean showAvailable)
+    public List<Map<String, String>> searchIndex(String queryString, int numRecords)
             throws LuceneSearcherException, InvalidLuceneQueryException {
         IndexReader reader = null;
         IndexSearcher indexSearcher = null;
@@ -118,9 +115,10 @@ public class LuceneSearcher {
             String luceneQueryString = "";
             String[] splitedQuery = queryString.split("\\s+");
             for (int i=0; i<splitedQuery.length; i++) {
-                String token = splitedQuery[i];
+                String token = QueryParser.escape(splitedQuery[i]);
                 // Das Feld, welches bestimmend sein soll (also in der Suche zuoberst gelistet), bekommt
-                // einen sehr hohen Boost.
+                // einen sehr hohen Boost. Wobei wir im GUI wieder alphabetisch sortieren. Es sorgt aber
+                // auch dafür, dass Objekte gefunden werden, die wir für passender halten.
                 luceneQueryString += "(id:" + token + "*^100 OR title:" + token + "*^10 OR shortdescription:" + token + "* OR keywords:" + token + "*)";
                 if (i<splitedQuery.length-1) {
                     luceneQueryString += " AND ";
@@ -128,12 +126,8 @@ public class LuceneSearcher {
             }
                         
             query = queryParser.parse(luceneQueryString);
-            log.info("'" + luceneQueryString + "' ==> '" + query.toString() + "'");
+            log.debug("'" + luceneQueryString + "' ==> '" + query.toString() + "'");
             
-            if (showAvailable) {
-                collector = new TotalHitCountCollector();
-                indexSearcher.search(query, collector);
-            }
             documents = indexSearcher.search(query, numRecords);
             List<Map<String, String>> mapList = new LinkedList<Map<String, String>>();
             for (ScoreDoc scoreDoc : documents.scoreDocs) {
@@ -145,9 +139,7 @@ public class LuceneSearcher {
                 }
                 mapList.add(docMap);
             }
-            Result result = new Result(mapList, mapList.size(),
-                    collector == null ? (mapList.size() < numRecords ? mapList.size() : -1) : collector.getTotalHits());
-            return result;
+            return mapList;
         } catch (ParseException e) {
             e.printStackTrace();            
             throw new InvalidLuceneQueryException(e.getMessage());

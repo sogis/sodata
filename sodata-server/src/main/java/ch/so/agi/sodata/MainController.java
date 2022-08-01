@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,14 +30,10 @@ import org.springframework.web.bind.annotation.RestController;
 import ch.so.agi.sodata.search.InvalidLuceneQueryException;
 import ch.so.agi.sodata.search.LuceneSearcher;
 import ch.so.agi.sodata.search.LuceneSearcherException;
-import ch.so.agi.sodata.search.Result;
 
 @RestController
 public class MainController {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    @Value("${lucene.queryDefaultRecords}")
-    private Integer QUERY_DEFAULT_RECORDS;
 
     @Value("${lucene.queryMaxRecords}")
     private Integer QUERY_MAX_RECORDS;   
@@ -95,28 +90,21 @@ public class MainController {
     public ResponseEntity<String> ping() {
         return new ResponseEntity<String>("sodata", HttpStatus.OK);
     }
-
-    // TODO: LuceneSearcher / Result unter die Lupe nehmen:
-    // - brauche ich totalGugus?
-    // - Was macht genau Result?
     
-    
-    // Dito modelfinder: "exakte" Suche by Id (hoher Boost)
     @GetMapping("/datasets")
     public List<Dataset> searchDatasets(@RequestParam(value="query", required=false) String queryString) {
         if (queryString == null) {
             return config.getDatasets();
         } else {
-            Result results = null;
+            List<Map<String, String>> results = null;
             try {
-                results = indexSearcher.searchIndex(queryString, QUERY_DEFAULT_RECORDS, false);
-                log.info("Search for '" + queryString +"' found " + results.getAvailable() + " and retrieved " + results.getRetrieved() + " records");            
+                results = indexSearcher.searchIndex(queryString, QUERY_MAX_RECORDS);
+                log.debug("Search for '" + queryString +"' found " + results.size() + " records");            
             } catch (LuceneSearcherException | InvalidLuceneQueryException e) {
                 throw new IllegalStateException(e);
             }
 
-            List<Map<String, String>> records = results.getRecords();
-            List<Dataset> resultList = records.stream()
+            List<Dataset> resultList = results.stream()
                     .map(r -> {
                         return datasetMap.get(r.get("id"));
                     })
