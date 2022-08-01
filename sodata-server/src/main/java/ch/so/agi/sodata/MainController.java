@@ -165,7 +165,6 @@ public class MainController {
         return new ResponseEntity<JsonNode>(suggestions, HttpStatus.OK);
     }
 
-    
     private String getHost() {
         return ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
     }
