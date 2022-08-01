@@ -100,6 +100,8 @@ public class MainController {
     // - brauche ich totalGugus?
     // - Was macht genau Result?
     
+    
+    // Dito modelfinder: "exakte" Suche by Id (hoher Boost)
     @GetMapping("/datasets")
     public List<Dataset> searchDatasets(@RequestParam(value="query", required=false) String queryString) {
         if (queryString == null) {

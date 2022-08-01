@@ -46,7 +46,10 @@ import elemental2.dom.Event;
 import elemental2.dom.EventListener;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.KeyboardEvent;
 import elemental2.dom.Location;
+import elemental2.dom.URL;
+import elemental2.dom.URLSearchParams;
 import ol.AtPixelOptions;
 import ol.Extent;
 import ol.Map;
@@ -84,8 +87,12 @@ public class App implements EntryPoint {
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
     private NumberFormat fmtPercent = NumberFormat.getFormat("#0.0");
 
-    Location location;
-    String pathname;
+    private Location location;
+    private String pathname;
+    private String query = null;
+//    private String ident = null;
+    private String QUERY_PARAM_KEY = "query";
+//    private String IDENT_PARAM_KEY = "ident";
 
     private HTMLElement container;
     private HTMLElement topLevelContent;
@@ -124,6 +131,10 @@ public class App implements EntryPoint {
 	    formatLookUp.put("gtiff", "GeoTIFF");
 
 	    mapper = GWT.create(DatasetMapper.class);   
+
+        // Change Domino UI color scheme.
+        Theme theme = new Theme(ColorScheme.RED);
+        theme.apply();
 
         // Get url from browser (client) to find out the correct location of resources.
         location = DomGlobal.window.location;
@@ -176,26 +187,38 @@ public class App implements EntryPoint {
         Projection.addProjection(projection);
         */
 	    
-        // Change Domino UI color scheme.
-        Theme theme = new Theme(ColorScheme.RED);
-        theme.apply();
+        // Get search params to control some parts of the gui.
+        URLSearchParams searchParams = new URLSearchParams(location.search);
+                
+        if (searchParams.has(QUERY_PARAM_KEY)) {
+            query = searchParams.get(QUERY_PARAM_KEY);            
+        }
+
+//        if (searchParams.has(IDENT_PARAM_KEY)) {
+//            ident = searchParams.get(IDENT_PARAM_KEY);            
+//        }
 
         // Add our "root" container
         container = div().id("container").element();
         body().add(container);
-                
+
+        // Add logo
         HTMLElement logoDiv = div().css("logo")
                 .add(div()
                         .add(img().attr("src", location.protocol + "//" + location.host + location.pathname + "Logo.png").attr("alt", "Logo Kanton")).element()).element();
         container.appendChild(logoDiv);
 
+        // Create a top level content div for everything except the logo.
+        // Not sure why this was done this way. Or if it is necessary.
         topLevelContent = div().id("top-level-content").element();
         container.appendChild(topLevelContent);
 
-        Breadcrumb breadcrumb = Breadcrumb.create().appendChild(Icons.ALL.home(), " Home ", (evt) -> {
-            DomGlobal.window.open("https://geo.so.ch/", "_self");
-        }).appendChild(" Geodaten ", (evt) -> {
-        });
+        // Add breadcrumb
+        Breadcrumb breadcrumb = Breadcrumb.create()
+                .appendChild(Icons.ALL.home(), " Home ", (evt) -> {
+                    DomGlobal.window.open("https://geo.so.ch/", "_self");
+                })
+                .appendChild(" Geodaten ", (evt) -> {});
         topLevelContent.appendChild(breadcrumb.element());
 
         topLevelContent.appendChild(div().css("sodata-title").textContent("Geodaten Kanton Solothurn").element());
@@ -220,13 +243,19 @@ public class App implements EntryPoint {
             public void handleEvent(Event evt) {
                 textBox.clear();
                 listStore.setData(datasets);
+                
+                removeQueryParam(QUERY_PARAM_KEY);
+                //removeQueryParam(IDENT_PARAM_KEY);
             }
         });
         textBox.addRightAddOn(resetIcon);
 
-        textBox.addEventListener("keyup", event -> {
+        textBox.addEventListener("keyup", event -> {         
+            // Ident-Parameter wird entfernt, sobald es ein Interagieren seitens Benutzer gibt.
+            //removeQueryParam(IDENT_PARAM_KEY);
+
             if (textBox.getValue().trim().length() == 0) {
-                listStore.setData(datasets);
+                listStore.setData(datasets);                
                 return;
             }
 
@@ -246,6 +275,10 @@ public class App implements EntryPoint {
                 });
 
                 listStore.setData(filteredDatasets);
+                
+                //if (ident == null) {
+                updateUrlLocation(QUERY_PARAM_KEY, textBox.getValue().trim());
+                //}
                 
                 return null;
             }).catch_(error -> {
@@ -354,7 +387,19 @@ public class App implements EntryPoint {
         //datasetTable.noHover();
         datasetTable.load();
 
-        topLevelContent.appendChild(datasetTable.element());        
+        topLevelContent.appendChild(datasetTable.element()); 
+        
+//        if (ident != null && ident.trim().length() > 0) {
+//            textBox.setValue(ident);
+//            textBox.element().dispatchEvent(new KeyboardEvent("keyup"));
+//            
+//            ident = null;
+//            removeQueryParam(QUERY_PARAM_KEY);
+//        } else 
+        if (query != null && query.trim().length() > 0) {
+            textBox.setValue(query);
+            textBox.element().dispatchEvent(new KeyboardEvent("keyup"));
+        }
 	}
 	
     private void openMetadataDialog(Dataset dataset) {
@@ -634,4 +679,34 @@ public class App implements EntryPoint {
         }
         return null;
     }
+    
+    private void removeQueryParam(String key) {
+        URL url = new URL(DomGlobal.location.href);
+        String host = url.host;
+        String protocol = url.protocol;
+        String pathname = url.pathname;
+        URLSearchParams params = url.searchParams;
+        params.delete(key);
+        
+        String newUrl = protocol + "//" + host + pathname + "?" + params.toString(); 
+        updateUrlWithoutReloading(newUrl);
+    }
+    
+    private void updateUrlLocation(String key, String value) {
+        URL url = new URL(DomGlobal.location.href);
+        String host = url.host;
+        String protocol = url.protocol;
+        String pathname = url.pathname;
+        URLSearchParams params = url.searchParams;
+        params.set(key, value);
+        
+        String newUrl = protocol + "//" + host + pathname + "?" + params.toString(); 
+        
+        updateUrlWithoutReloading(newUrl);
+    }
+    
+    // Update the URL in the browser without reloading the page.
+    private static native void updateUrlWithoutReloading(String newUrl) /*-{
+        $wnd.history.pushState(newUrl, "", newUrl);
+    }-*/;
 }
