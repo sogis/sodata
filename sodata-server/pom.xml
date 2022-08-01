@@ -9,7 +9,7 @@
   <artifactId>sodata-server</artifactId>
   <!--<packaging>war</packaging>-->
   <properties>
-    <java.version>11</java.version>
+    <java.version>17</java.version>
     <repackage.classifier/>
     <spring-native.version>0.11.4</spring-native.version>
   </properties>
