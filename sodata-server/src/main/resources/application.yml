@@ -36,7 +36,7 @@ management:
 logging:
   level:
     org.springframework: ${LOG_LEVEL_SPRING:INFO} 
-    ch.so.agi: ${LOG_LEVEL_APP:INFO} 
+    ch.so.agi: ${LOG_LEVEL_APP:DEBUG} 
 
 lucene:
     queryDefaultRecords: ${LUCENE_QUERY_DEFAULT_RECORDS:10}

@@ -75,8 +75,11 @@ public class LuceneSearcher {
             document.add(new TextField("keywords", dataset.getKeywords(), Store.YES));
             writer.addDocument(document);
         }
+        
+        IndexWriter.DocStats docStats = writer.getDocStats();
         writer.close();
         
+        log.info("{} files indexed.", docStats.numDocs);
         log.info("Building index done.");
     }
 
