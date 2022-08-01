@@ -130,7 +130,7 @@ public class MainController {
   <ShortName>Geodaten Kanton Solothurn</ShortName>
   <Url type="text/html" method="get" template="%s?query={searchTerms}"/>
   <Url type="application/x-suggestions+json" method="get" template="%s/search/suggestions?q={searchTerms}"/>
-  <LongName>Geodaten Kanton Solothurn</LongName>
+  <LongName>Datenbezug • Kanton Solothurn</LongName>
   <Image height="16" width="16" type="image/x-icon">data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAACmAAAApgHdff84AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAARdJREFUOI3tj7FKw1AUhv/orY0R08nFBwhIlgqXLMEX6OxsW9w6BKvo5uxqH8JXEHGsBLUWh0SHDtZAM4kheHMrRjHXwRICLdK7+4/nnO/7OQoAbG9Wb2mJVCERH4p/1rujBAD0sqo1tPKSjOD4PV0FgAUZaFb+BQABgA9VTZZrNSnw8/wiyQVc1yP94FBKwG96ETB5QUihv8myLMsFCWNjGVgIgYTzcS4IguDa87zveQWu64q3OL4szlYazeaDmDM79foAQAkAFieCrzRNOSFki1Kq/dV+2unEV93ufhiG/tTSNM3WXrv9zBibao2iSDiOM7Isa7fIKDNK1m3bPjEMY0OvVNYAgDH2+jQcPt73+0ec85fi8Q+aXZsh3ERCggAAAABJRU5ErkJggg==</Image>
 </OpenSearchDescription>   
         """.formatted(getHost(), getHost());
