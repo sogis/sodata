@@ -42,9 +42,11 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 
 import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.Element;
 import elemental2.dom.Event;
 import elemental2.dom.EventListener;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLDocument;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.KeyboardEvent;
 import elemental2.dom.Location;
@@ -186,6 +188,23 @@ public class App implements EntryPoint {
         projection = new Projection(projectionOptions);
         Projection.addProjection(projection);
         */
+	    
+        // HTML document: used for creating html elements that are not
+        // available in elemento (e.g. summary, details).
+        HTMLDocument document = DomGlobal.document;
+
+        // This cannot be done in index.html since href depends
+        // on the url.
+        Element head = document.getElementsByTagName("head").getAt(0);
+        HTMLElement opensearchdescription = (HTMLElement) document.createElement("link");
+        opensearchdescription.setAttribute("rel", "search");
+        opensearchdescription.setAttribute("type", "application/opensearchdescription+xml");
+        
+        String host = location.host;
+        String protocol = location.protocol;
+        opensearchdescription.setAttribute("href", protocol + "//" + host + pathname + "opensearchdescription.xml");
+        opensearchdescription.setAttribute("title", "Geodaten Kanton Solothurn");
+        head.appendChild(opensearchdescription);
 	    
         // Get search params to control some parts of the gui.
         URLSearchParams searchParams = new URLSearchParams(location.search);
