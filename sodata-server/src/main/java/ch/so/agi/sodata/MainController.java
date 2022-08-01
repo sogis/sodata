@@ -102,6 +102,9 @@ public class MainController {
     
     @GetMapping("/datasets")
     public List<Dataset> searchDatasets(@RequestParam(value="query", required=false) String searchTerms) {
+        
+        // TODO: ggf https://github.com/sogis/modelfinder/blob/main/modelfinder-server/src/main/java/ch/so/agi/search/LuceneSearcher.java#L247
+        // Entscheiden beim Refactoring.
         if (searchTerms == null) {
             return config.getDatasets();
         } else {

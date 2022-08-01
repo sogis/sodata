@@ -40,6 +40,7 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
+import elemental2.dom.AbortController;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
@@ -50,6 +51,7 @@ import elemental2.dom.HTMLDocument;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.KeyboardEvent;
 import elemental2.dom.Location;
+import elemental2.dom.RequestInit;
 import elemental2.dom.URL;
 import elemental2.dom.URLSearchParams;
 import ol.AtPixelOptions;
@@ -113,6 +115,7 @@ public class App implements EntryPoint {
     private String SELECTED_VECTOR_LAYER_ID = "selected_vector_layer";
     private String SELECTED_VECTOR_FEATURE_ID = "selected_fid";
 
+    private AbortController abortController = null;
 
     // Projection
     //private static final String EPSG_2056 = "EPSG:2056";
@@ -277,34 +280,56 @@ public class App implements EntryPoint {
                 listStore.setData(datasets);                
                 return;
             }
+            
+            if (abortController != null) {
+                abortController.abort();
+            }
+            
+            abortController = new AbortController();
+            final RequestInit init = RequestInit.create();
+            init.setSignal(abortController.signal);
 
-            DomGlobal.fetch("/datasets?query=" + textBox.getValue().toLowerCase()).then(response -> {
-                if (!response.ok) {
-                    return null;
-                }
-                return response.text();
-            }).then(json -> {
-                List<Dataset> filteredDatasets = mapper.read(json);
-                
-                Collections.sort(filteredDatasets, new Comparator<Dataset>() {
-                    @Override
-                    public int compare(Dataset o1, Dataset o2) {
-                        return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
-                    }
-                });
+            DomGlobal.fetch("/datasets?query=" + textBox.getValue().toLowerCase(), init)
+                .then(
+                        response -> {
+                                if (!response.ok) {
+                                    return null;
+                                }
+                                return response.text();
+                            }
+                        )
+                .then(
+                        json -> {
+                                List<Dataset> filteredDatasets = mapper.read(json);
+                    
+                                Collections.sort(
+                                        filteredDatasets, new Comparator<Dataset>() {
+                                                @Override
+                                                public int compare(Dataset o1, Dataset o2) {
+                                                    return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
+                                                }
+                                            }
+                                        );
+                                
+                                listStore.setData(filteredDatasets);
+                    
+                                //if (ident == null) {
+                                updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
+                                //}
+                    
+                                abortController = null;
 
-                listStore.setData(filteredDatasets);
-                
-                //if (ident == null) {
-                updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
-                //}
-                
-                return null;
-            }).catch_(error -> {
-                console.log(error);
-                return null;
-            });
-        });
+                                return null;
+                            }
+                        )
+                .catch_(
+                        error -> {
+                                console.log(error);
+                                return null;
+                            }
+                        );
+            }
+        );
         topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(textBox)).element());
 
         TableConfig<Dataset> tableConfig = new TableConfig<>();
