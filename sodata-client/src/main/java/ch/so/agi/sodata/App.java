@@ -89,9 +89,9 @@ public class App implements EntryPoint {
 
     private Location location;
     private String pathname;
-    private String query = null;
+    private String filter = null;
 //    private String ident = null;
-    private String QUERY_PARAM_KEY = "query";
+    private String FILTER_PARAM_KEY = "filter";
 //    private String IDENT_PARAM_KEY = "ident";
 
     private HTMLElement container;
@@ -190,8 +190,8 @@ public class App implements EntryPoint {
         // Get search params to control some parts of the gui.
         URLSearchParams searchParams = new URLSearchParams(location.search);
                 
-        if (searchParams.has(QUERY_PARAM_KEY)) {
-            query = searchParams.get(QUERY_PARAM_KEY);            
+        if (searchParams.has(FILTER_PARAM_KEY)) {
+            filter = searchParams.get(FILTER_PARAM_KEY);            
         }
 
 //        if (searchParams.has(IDENT_PARAM_KEY)) {
@@ -244,7 +244,7 @@ public class App implements EntryPoint {
                 textBox.clear();
                 listStore.setData(datasets);
                 
-                removeQueryParam(QUERY_PARAM_KEY);
+                removeQueryParam(FILTER_PARAM_KEY);
                 //removeQueryParam(IDENT_PARAM_KEY);
             }
         });
@@ -277,7 +277,7 @@ public class App implements EntryPoint {
                 listStore.setData(filteredDatasets);
                 
                 //if (ident == null) {
-                updateUrlLocation(QUERY_PARAM_KEY, textBox.getValue().trim());
+                updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
                 //}
                 
                 return null;
@@ -396,8 +396,8 @@ public class App implements EntryPoint {
 //            ident = null;
 //            removeQueryParam(QUERY_PARAM_KEY);
 //        } else 
-        if (query != null && query.trim().length() > 0) {
-            textBox.setValue(query);
+        if (filter != null && filter.trim().length() > 0) {
+            textBox.setValue(filter);
             textBox.element().dispatchEvent(new KeyboardEvent("keyup"));
         }
 	}
