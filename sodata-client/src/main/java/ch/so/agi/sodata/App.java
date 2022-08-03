@@ -341,7 +341,10 @@ public class App implements EntryPoint {
             //removeQueryParam(IDENT_PARAM_KEY);
 
             if (textBox.getValue().trim().length() == 0) {
-                listStore.setData(datasets);                
+                listStore.setData(datasets);     
+                
+                removeQueryParam(FILTER_PARAM_KEY);
+
                 return;
             }
             
