@@ -11,7 +11,7 @@ jobs:
       DOCKER_REPO: sodata-preview-base
       DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}} 
-      #DIGITALOCEAN_TOKEN: ${{secrets.DIGITALOCEAN_TOKEN}}
+      DIGITALOCEAN_TOKEN: ${{secrets.DIGITALOCEAN_TOKEN}}
       BUILD_NUMBER: ${{ github.run_number }}
       VERSION: 0.0.${{ github.run_number }}
 
@@ -81,7 +81,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           pull: true
-        if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/legacy') && (github.event_name != 'pull_request') && !env.ACT }}
+          push: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/legacy') && (github.event_name != 'pull_request') && !env.ACT }}
 
       # Will be deployed with some sample dataset config with https://github.com/edigonzales/sodata-pipeline/
       # - name: Deploy to Digital Ocean App Platform
@@ -147,7 +147,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-        if: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
+        if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/legacy') && (github.event_name != 'pull_request') && !env.ACT }}
 
       - name: Multi-platform build and push
         uses: docker/build-push-action@a66e35b9cbcf4ad0ea91ffcaf7bbad63ad9e0229  # v2.7.0 (2021-10-22)
@@ -158,4 +158,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           pull: true
-          push: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
+          push: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/legacy') && (github.event_name != 'pull_request') && !env.ACT }}
