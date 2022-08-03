@@ -6,6 +6,7 @@ public class Dataset {
     private String id;
     private String version;
     private String owner;
+    private String ownerUrl;
     private String model;
     private String epsgCode;
     private String resolutionScope;
@@ -42,6 +43,12 @@ public class Dataset {
     }
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+    public String getOwnerUrl() {
+        return ownerUrl;
+    }
+    public void setOwnerUrl(String ownerUrl) {
+        this.ownerUrl = ownerUrl;
     }
     public String getModel() {
         return model;

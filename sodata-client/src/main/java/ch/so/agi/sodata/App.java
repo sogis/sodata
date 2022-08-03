@@ -5,6 +5,7 @@ import static elemental2.dom.DomGlobal.fetch;
 import static org.jboss.elemento.Elements.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -32,6 +33,12 @@ import org.dominokit.domino.ui.themes.Theme;
 import org.dominokit.domino.ui.utils.TextNode;
 
 import com.google.gwt.core.client.GWT;
+
+import org.gwtproject.http.client.Request;
+import org.gwtproject.http.client.RequestBuilder;
+import org.gwtproject.http.client.RequestCallback;
+import org.gwtproject.http.client.RequestException;
+import org.gwtproject.http.client.Response;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 
 import com.github.nmorel.gwtjackson.client.ObjectMapper;
@@ -40,6 +47,7 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
+import elemental2.core.Global;
 import elemental2.dom.AbortController;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
@@ -54,6 +62,11 @@ import elemental2.dom.Location;
 import elemental2.dom.RequestInit;
 import elemental2.dom.URL;
 import elemental2.dom.URLSearchParams;
+import elemental2.dom.XMLHttpRequest;
+import elemental2.core.JsString;
+import elemental2.core.JsObject;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import ol.AtPixelOptions;
 import ol.Extent;
 import ol.Map;
@@ -86,6 +99,7 @@ public class App implements EntryPoint {
 
     // Application settings
     private String myVar;
+    private String DATA_BASE_URL;
 
     // Format settings
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
@@ -143,11 +157,61 @@ public class App implements EntryPoint {
 
         // Get url from browser (client) to find out the correct location of resources.
         location = DomGlobal.window.location;
+        String host = location.host;
+        String protocol = location.protocol;
         pathname = location.pathname;
         
         if (pathname.contains("index.html")) {
             pathname = pathname.replace("index.html", "");
         }
+        
+        // Get settings with a synchronous request.
+        XMLHttpRequest httpRequest = new XMLHttpRequest();
+        httpRequest.open("GET", pathname + "settings", false);
+        httpRequest.onload = event -> {
+            if (Arrays.asList(200, 201, 204).contains(httpRequest.status)) {
+                String responseText = httpRequest.responseText;
+                try {
+                    JsPropertyMap<Object> propertiesMap = Js.asPropertyMap(Global.JSON.parse(responseText));
+                    DATA_BASE_URL = propertiesMap.getAsAny("dataBaseUrl").asString();
+                    
+                } catch (Exception e) {
+                    DomGlobal.window.alert("Error loading settings!");
+                    DomGlobal.console.error("Error loading settings!", e);
+                }
+            } else {
+                DomGlobal.window.alert("Error loading settings!" + httpRequest.status);
+            }
+
+        };
+        
+        httpRequest.addEventListener("error", event -> {
+            DomGlobal.window.alert("Error loading settings! Error: " + httpRequest.status + " " + httpRequest.statusText);
+        });
+
+        httpRequest.send();
+        
+        // Get settings
+//        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, protocol + "//" + host + pathname + "settings");
+//        try {
+//            Request request = builder.sendRequest(null, new RequestCallback() {
+//                @Override
+//                public void onResponseReceived(Request request, Response response) {
+//                    console.log(response.getText());
+//                    
+//                }
+//
+//                @Override
+//                public void onError(Request request, Throwable exception) {
+//                    console.log("Request was canceled - no timeout should occur");
+//                }
+//            });
+//            //request.cancel();
+//
+//        } catch (RequestException e) {
+//            console.log(e.getMessage());
+//        }
+
 
         // Get datasets json from server and initialize the site.
         DomGlobal.fetch("/datasets")
@@ -343,33 +407,53 @@ public class App implements EntryPoint {
                             .setCellRenderer(
                                     cell -> TextNode.of(cell.getTableRow().getRecord().getTitle()))
                         )
+//                .addColumn(
+//                        ColumnConfig.<Dataset>create("owner", "Zuständige Stelle")
+//                            .setShowTooltip(false)
+//                            .textAlign("left")
+//                            .setCellRenderer(
+//                                   cell -> {                                       
+//                                       HTMLElement regionSelectionElement = a()
+//                                               .css("black-link")
+//                                               .textContent(cell.getRecord().getProvider())
+//                                               .attr("href", cell.getRecord().getOwnerUrl())
+//                                               .attr("target", "_blank")
+//                                               .element();
+//    
+//                                       return regionSelectionElement;
+//
+//                                  })
+//                        )
+
+//                .addColumn(
+//                        ColumnConfig.<Dataset>create("lastEditingDate", "Aktualisiert")
+//                            .setShowTooltip(false)
+//                            .textAlign("left")
+//                            .setCellRenderer(
+//                                    cell -> {
+//                                        Date date = DateTimeFormat.getFormat("yyyy-MM-dd")
+//                                                .parse(cell.getTableRow().getRecord().getLastEditingDate());
+//                                        String dateString = DateTimeFormat.getFormat("dd.MM.yyyy").format(date);
+//                                        return TextNode.of(dateString);
+//                                    })
+//                        )
                 .addColumn(
-                        ColumnConfig.<Dataset>create("lastEditingDate", "Aktualisiert")
-                            .setShowTooltip(false)
-                            .textAlign("left")
-                            .setCellRenderer(
-                                    cell -> {
-                                        Date date = DateTimeFormat.getFormat("yyyy-MM-dd")
-                                                .parse(cell.getTableRow().getRecord().getLastEditingDate());
-                                        String dateString = DateTimeFormat.getFormat("dd.MM.yyyy").format(date);
-                                        return TextNode.of(dateString);
-                                    })
-                        )
-                .addColumn(
-                        ColumnConfig.<Dataset>create("metadata", "Metadaten")
+                        ColumnConfig.<Dataset>create("model", "Datenmodell")
                             .setShowTooltip(false)
                             .textAlign("center")
                             .setCellRenderer(
                                     cell -> {
-                                        HTMLElement metadataLinkElement = div()
-                                                .add(Icons.ALL.information_outline_mdi().style().setCursor("pointer")).element();
-                                        metadataLinkElement.addEventListener("click", new EventListener() {
-                                            @Override
-                                            public void handleEvent(Event evt) {
-                                                openMetadataDialog(cell.getRecord());
-                                            }
-                                        });
-                                        return metadataLinkElement;
+                                        if(cell.getRecord().getModel() != null && cell.getRecord().getModel().length() > 0) {
+                                            HTMLElement modelLinkElement = div()
+                                                    .add(Icons.ALL.launch_mdi().style().setCursor("pointer")).element();
+                                            HTMLElement modelLink = a()
+                                                    .attr("class", "icon-link")
+                                                    .attr("href", "https://geo.so.ch/modelfinder/?expanded=true&query="+cell.getRecord().getModel())
+                                                    .attr("target", "_blank").add(modelLinkElement).element();
+
+                                            return modelLink;
+                                        } 
+                                        return span().element();
                                     })
                         )
                 .addColumn(
@@ -382,18 +466,15 @@ public class App implements EntryPoint {
 
                                         if (cell.getRecord().getSubunits() != null) {
                                             HTMLElement regionSelectionElement = a().css("default-link")
-                                                    .textContent("Gebietsauswahl notwendig").element();
-                                            regionSelectionElement.addEventListener("click", new EventListener() {
-                                                @Override
-                                                public void handleEvent(Event evt) {
-                                                    openRegionSelectionDialog(cell.getRecord());
-                                                }
-                                            });
+                                                    .textContent("Gebietsauswahl notwendig")
+                                                    .attr("href", cell.getRecord().getSubunits())
+                                                    .attr("target", "_blank")
+                                                    .element();
                                             return regionSelectionElement;
                                         } else {
                                             for (String fileStr : cell.getRecord().getFileFormats()) {
                                                 badgesElement.appendChild(a().css("badge-link")
-                                                        .attr("href", "/dataset/" + cell.getRecord().getId() + "_" + fileStr + ".zip")
+                                                        .attr("href", DATA_BASE_URL + cell.getRecord().getId() + "_" + fileStr + ".zip")
                                                         .attr("target", "_blank")
                                                         .add(Badge.create(formatLookUp.get(fileStr))
                                                                 .setBackground(Color.GREY_LIGHTEN_2).style()
@@ -404,23 +485,23 @@ public class App implements EntryPoint {
                                             return badgesElement;
                                         }
                                     })
-                        )
-                .addColumn(
-                        ColumnConfig.<Dataset>create("services", "Servicelinks")
-                            .setShowTooltip(false)
-                            .textAlign("center").setCellRenderer(
-                                    cell -> {
-                                        HTMLElement serviceLinkElement = div()
-                                                .add(Icons.ALL.information_outline_mdi().style().setCursor("pointer")).element();
-                                        serviceLinkElement.addEventListener("click", new EventListener() {
-                                            @Override
-                                            public void handleEvent(Event evt) {
-                                                openServiceLinkDialog(cell.getRecord());
-                                            }
-                                        });
-                                        return serviceLinkElement;
-                                    })
                         );
+//                .addColumn(
+//                        ColumnConfig.<Dataset>create("services", "Servicelinks")
+//                            .setShowTooltip(false)
+//                            .textAlign("center").setCellRenderer(
+//                                    cell -> {
+//                                        HTMLElement serviceLinkElement = div()
+//                                                .add(Icons.ALL.information_outline_mdi().style().setCursor("pointer")).element();
+//                                        serviceLinkElement.addEventListener("click", new EventListener() {
+//                                            @Override
+//                                            public void handleEvent(Event evt) {
+//                                                openServiceLinkDialog(cell.getRecord());
+//                                            }
+//                                        });
+//                                        return serviceLinkElement;
+//                                    })
+//                        );
 
         listStore = new LocalListDataStore<>();
         listStore.setData(datasets);

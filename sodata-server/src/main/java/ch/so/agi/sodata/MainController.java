@@ -73,24 +73,24 @@ public class MainController {
             String filename = dataset.getId();
             File subunitFile = Paths.get(tmpdir, filename + ".json").toFile();
 
-            if (dataset.getSubunits() != null) {
-                InputStream resource = new ClassPathResource("public/"+filename+".json").getInputStream();
-                Files.copy(resource, subunitFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                dataset.setSubunits(filename + ".json");
-            }
-            
-            if (dataset.getSubunitsBase64() != null) {
-                try (FileOutputStream fos = new FileOutputStream(subunitFile); ) {
-                    String b64 = dataset.getSubunitsBase64();
-                    byte[] decoder = Base64.getDecoder().decode(b64);
-                    fos.write(decoder);                    
-                  } catch (IOException e) {
-                    e.printStackTrace();
-                    throw new Exception(e);
-                  }
-                dataset.setSubunits(filename + ".json");
-                dataset.setSubunitsBase64(null); // Base64 soll nicht zum Client geschickt werden.
-            }            
+//            if (dataset.getSubunits() != null) {
+//                InputStream resource = new ClassPathResource("public/"+filename+".json").getInputStream();
+//                Files.copy(resource, subunitFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+//                dataset.setSubunits(filename + ".json");
+//            }
+//            
+//            if (dataset.getSubunitsBase64() != null) {
+//                try (FileOutputStream fos = new FileOutputStream(subunitFile); ) {
+//                    String b64 = dataset.getSubunitsBase64();
+//                    byte[] decoder = Base64.getDecoder().decode(b64);
+//                    fos.write(decoder);                    
+//                  } catch (IOException e) {
+//                    e.printStackTrace();
+//                    throw new Exception(e);
+//                  }
+//                dataset.setSubunits(filename + ".json");
+//                dataset.setSubunitsBase64(null); // Base64 soll nicht zum Client geschickt werden.
+//            }            
             datasetMap.put(dataset.getId(), dataset);            
         }
     }
@@ -99,6 +99,12 @@ public class MainController {
     public ResponseEntity<String> ping() {
         return new ResponseEntity<String>("sodata", HttpStatus.OK);
     }
+    
+    @GetMapping("/settings")
+    public Settings settings() {
+        return settings;
+    }
+    
     
     @GetMapping("/datasets")
     public List<Dataset> searchDatasets(@RequestParam(value="query", required=false) String searchTerms) {

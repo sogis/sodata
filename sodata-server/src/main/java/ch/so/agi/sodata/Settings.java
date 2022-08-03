@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "app")
 public class Settings {
     private String myVar;
+    
+    private String dataBaseUrl;
 
     public String getMyVar() {
         return myVar;
@@ -16,5 +18,13 @@ public class Settings {
 
     public void setMyVar(String myVar) {
         this.myVar = myVar;
+    }
+
+    public String getDataBaseUrl() {
+        return dataBaseUrl;
+    }
+
+    public void setDataBaseUrl(String dataBaseUrl) {
+        this.dataBaseUrl = dataBaseUrl;
     }
 }

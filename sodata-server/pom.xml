@@ -183,14 +183,10 @@
             <artifactId>native-maven-plugin</artifactId>
             <version>${native-buildtools.version}</version>
             <configuration>
-            <!-- 
-            Musl läuft momentan mit Github Action nicht, wohl irgend ein DNS Problem. 104.232.42.245 zeigt auf http://more.musl.cc/10/x86_64-linux-musl/.
-            Es wird ein Quarkus Micro Base Image verwendet.
               <buildArgs>
-                <buildArg>-****-static</buildArg>
-                <buildArg>-****-libc=musl</buildArg>
+                <buildArg>--static</buildArg>
+                <buildArg>--libc=musl</buildArg>
               </buildArgs>
-             -->  
             </configuration>
             <extensions>true</extensions>
             <executions>

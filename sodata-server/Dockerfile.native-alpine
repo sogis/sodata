@@ -14,4 +14,4 @@ RUN chown $UID:0 . && \
 USER $UID
 EXPOSE 8080
 ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true
-CMD ["./application"]
+CMD ["./application", "--spring.profiles.active=dev]

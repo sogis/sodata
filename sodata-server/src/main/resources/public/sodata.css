@@ -76,8 +76,41 @@ a.default-link:hover {
 a.default-link:visited {
     color: #c62828; 
     text-decoration: underline !important;
+}
+
+.black-link {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #333333; 
+}
+
+a.black-link:hover {
+    color: #333333;
+    text-decoration: underline !important;
 }  
 
+a.black-link:visited {
+    color: #333333; 
+    text-decoration: underline !important;
+}  
+
+a.icon-link {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #333333; 
+    text-decoration: none !important;
+}
+
+a.icon-link:hover {
+    color: #333333;
+    text-decoration: none !important;
+}  
+
+a.icon-link:visited {
+    color: #333333; 
+    text-decoration: none !important;
+}  
+  
 #search-panel {
     margin-top: 40px;
     margin-bottom: 30px;
