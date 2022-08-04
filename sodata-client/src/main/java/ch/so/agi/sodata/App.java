@@ -4,6 +4,7 @@ import static elemental2.dom.DomGlobal.console;
 import static elemental2.dom.DomGlobal.fetch;
 import static org.jboss.elemento.Elements.*;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,6 +12,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import org.dominokit.domino.ui.badges.Badge;
 import org.dominokit.domino.ui.breadcrumbs.Breadcrumb;
@@ -231,6 +233,7 @@ public class App implements EntryPoint {
                     return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
                 }
             });
+//            Collections.sort(datasets,Collator.getInstance(Locale.GERMANY));
             
             init();
             

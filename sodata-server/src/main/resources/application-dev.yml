@@ -322,8 +322,142 @@ app:
             - gpkg
             - shp
             - dxf
-
-            
+        - id: ch.so.afu.schadstoffbelastete_boeden
+          version: current
+          owner: mailto:afu@bd.so.ch
+          model: SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_Publikation_20200701
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Verzeichnis schadstoffbelastete Böden
+          shortDescription: 
+          keywords: Schadstoff,schadstoffbelastet,Boden,Böden,AFU
+          provider: Amt für Umwelt
+          ownerUrl: https://afu.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.afu.wasserbewirtschaftung
+          version: current
+          owner: mailto:afu@bd.so.ch
+          model: SO_AfU_Wasserbewirtschaftung_Publikation_20220202
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Wasserbewirtschaftung
+          shortDescription: 
+          keywords: Wasser,Wasserbewirtschaftung,AFU
+          provider: Amt für Umwelt
+          ownerUrl: https://afu.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.agi.av_gb_administrative_einteilungen
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Administrative Einteilungen amtliche Vermessung und Grundbuch
+          shortDescription: 
+          keywords: Einteilung,AV,Grundbuch,AS,AGI
+          provider: Amt für Geoinformation
+          ownerUrl: https://agi.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.agi.amtliche_vermessung
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: 
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Amtliche Vermessung
+          shortDescription: 
+          keywords: AV,AGI
+          provider: Amt für Geoinformation (AGI)
+          ownerUrl: https://agi.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_Lidarprodukte_Publikation_20180202.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          subunits: 'https://geo.so.ch/av_datenabgabe'
+          fileFormats:
+            - gtiff
+        - id: ch.so.agi.hoheitsgrenzen
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_Hoheitsgrenzen_Publikation_20170626
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Hoheitsgrenzen (Gemeinde,Bezirk,Kanton)
+          shortDescription: 
+          keywords: Gemeindegrenzen,Bezirksgrenzen,Kantonsgrenze,AGI
+          provider: Amt für Geoinformation
+          ownerUrl: https://agi.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.agi.inventar_hoheitsgrenzen
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AGI_Inventar_Hoheitsgrenzen_Publikation_20191129
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Inventar Hoheitsgrenzen
+          shortDescription: 
+          keywords: AGI
+          provider: Amt für Geoinformation
+          ownerUrl: https://agi.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
         - id: ch.so.agi.lidar
           version: current
           owner: mailto:agi@bd.so.ch
@@ -366,3 +500,553 @@ app:
           subunits: 'https://geo.so.ch/geodata/'
           fileFormats:
             - gtiff
+        - id: ch.so.alw.fruchtfolgeflaechen_latest
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_ALW_Fruchtfolgeflaechen_Publikation_20220110
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Fruchtfolgeflächen
+          shortDescription: 
+          keywords: FFF,ALW
+          provider: Amt für Landwirtschaft
+          ownerUrl: https://alw.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+        - id: ch.so.alw.landwirtschaft_tierhaltung
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_ALW_Landwirtschaft_Tierhaltung_Publikation_20211019
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Landwirtschaft Tierhaltung
+          shortDescription: 
+          keywords: GELAN,ALW
+          provider: Amt für Landwirtschaft
+          ownerUrl: https://alw.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.alw.strukturverbesserungen
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_ALW_Strukturverbesserungen_Publikation_20190905
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Strukturverbesserungen
+          shortDescription: 
+          keywords: ALW
+          provider: Amt für Landwirtschaft
+          ownerUrl: https://alw.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.alw.tiergesundheit_massnahmen
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_ALW_Tiergesundheit_Massnahmen_20210426
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Tiergesundheit Massnahmen
+          shortDescription: 
+          keywords: ALW
+          provider: Amt für Landwirtschaft
+          ownerUrl: https://alw.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.ags.religionsgemeinschaften
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AGS_Religionsgemeinschaften_Publikation_20220427
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Religionsgemeinschaften
+          shortDescription: 
+          keywords: ALW
+          provider: Amt für Gesellschaft und Soziales
+          ownerUrl: https://alw.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.arp.agglomerationsprogramme
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_Agglomerationsprogramme_Publikation_20200813
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Agglomerationsprogramme
+          shortDescription: 
+          keywords: Aggloprogram,ARP
+          provider: Amt für Raumplanung
+          ownerUrl: https://arp.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.arp.naturreservate
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_ARP_Naturreservate_Publikation_20200609
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Naturreservate
+          shortDescription: 
+          keywords: Reservate,Natur,ARP
+          provider: Amt für Raumplanung
+          ownerUrl: https://arp.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.arp.naturschutzobjekte
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_ARP_Naturschutzobjekte_Publikation_20210727
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Naturschutzobjekte
+          shortDescription: 
+          keywords: Natur,ARP
+          provider: Amt für Raumplanung
+          ownerUrl: https://arp.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.amb.notfalltreffpunkte
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AMB_Notfalltreffpunkte_Publikation_20180822
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Notfalltreffpunkte
+          shortDescription: 
+          keywords: AMB
+          provider: Amt für Milität und Bevölkerungsschutz
+          ownerUrl: https://amb.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.avt.groblaermkataster
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AVT_Groblaermkataster_20190709
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Groblärmkataster
+          shortDescription: 
+          keywords: Lärm,AVT
+          provider: Amt für Verkehr und Tiefbau
+          ownerUrl: https://avt.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.avt.kantonsstrassen
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AVT_Kantonsstrassen_Publikation_20200707
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Kantonsstrassen
+          shortDescription: 
+          keywords: Strassen,Kantonsstrassen,Logo,AVT
+          provider: Amt für Verkehr und Tiefbau
+          ownerUrl: https://avt.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.avt.kunstbauten
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AVT_Kunstbauten_Publikation_20220207
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Kunstbauten
+          shortDescription: 
+          keywords: Kuba,AVT
+          provider: Amt für Verkehr und Tiefbau
+          ownerUrl: https://avt.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.avt.oeffentlicher_verkehr
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AVT_Oeffentlicher_Verkehr_20210205
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Öffentlicher Verkehr
+          shortDescription: 
+          keywords: OeV,ÖV,AVT
+          provider: Amt für Verkehr und Tiefbau
+          ownerUrl: https://avt.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.avt.oev_gueteklassen
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AVT_Oev_Gueteklassen_20220120
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: ÖV-Güteklassen
+          shortDescription: 
+          keywords: OeV,ÖV,Güteklasse,AVT
+          provider: Amt für Verkehr und Tiefbau
+          ownerUrl: https://avt.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.avt.verkehrszaehlstellen
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AVT_Verkehrszaehlstellen_Publikation_20190206
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Verkehrszählstellen
+          shortDescription: 
+          keywords: Zählstellen,Verkehr,AVT
+          provider: Amt für Verkehr und Tiefbau
+          ownerUrl: https://avt.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.awa.stromversorgungssicherheit
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AWA_Stromversorgungssicherheit_Publikation_20210629
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Stromversorgungssicherheit
+          shortDescription: 
+          keywords: Strom,Versorungssicherheit,AWA
+          provider: Amt für Wirtschaft und Arbeit
+          ownerUrl: https://awa.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.awjf.forstreviere
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_Forstreviere_Publikation_20170428
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Forstreviere und Forstkreise
+          shortDescription: 
+          keywords: AWJF
+          provider: Amt für Wald, Jagd und Fischerei
+          ownerUrl: https://awjf.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.awjf.jagdreviere_jagdbanngebiete
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AWJF_Jagdreviere_Jagdbanngebiete_Publikation_202000804
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Jagdreviere und Jagdbanngebiete
+          shortDescription: 
+          keywords: AWJF
+          provider: Amt für Wald, Jagd und Fischerei
+          ownerUrl: https://awjf.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.awjf.naturgefahrenhinweiskarte
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AWJF_Naturgefahrenhinweiskarte_Publikation_20220125
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Naturgefahrenhinweiskarte
+          shortDescription: 
+          keywords: Naturgefahren,Gefahren,AWJF
+          provider: Amt für Wald, Jagd und Fischerei
+          ownerUrl: https://awjf.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.awjf.programm_biodiversitaet
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AWJF_Programm_Biodiversitaet_Wald_Publikation_20220224
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Programm Biodiversität Wald
+          shortDescription: 
+          keywords: AWJF
+          provider: Amt für Wald, Jagd und Fischerei
+          ownerUrl: https://awjf.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.awjf.schutzwald
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AWJF_Schutzwald_Publikation_20220617
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Schutzwald
+          shortDescription: 
+          keywords: AWJF
+          provider: Amt für Wald, Jagd und Fischerei
+          ownerUrl: https://awjf.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.awjf.seltene_baeume
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AWJF_Seltene_Baumarten_Publikation_20191015
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Seltene Baumarten
+          shortDescription: 
+          keywords: AWJF
+          provider: Amt für Wald, Jagd und Fischerei
+          ownerUrl: https://awjf.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.awjf.waldstandorte
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AWJF_Waldstandorte_Publikation_20211027
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Waldstandorte
+          shortDescription: 
+          keywords: AWJF
+          provider: Amt für Wald, Jagd und Fischerei
+          ownerUrl: https://awjf.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
+        - id: ch.so.awjf.wildtierkorridore
+          version: current
+          owner: mailto:agi@bd.so.ch
+          model: SO_AWJF_Wildtierkorridore_20210831
+          #epsgCode: 2056
+          #resolutionScope: 500
+          #publishingDate: 2020-08-29
+          #lastEditingDate: 2020-08-29
+          title: Wildtierkorridore
+          shortDescription: 
+          keywords: Korridor,Tier,AWJF
+          provider: Amt für Wald, Jagd und Fischerei
+          ownerUrl: https://awjf.so.ch
+          servicer: https://agi.so.ch
+          technicalContact: mailto:agi@bd.so.ch
+          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+          fileFormats:
+            - xtf
+            - gpkg
+            - shp
+            - dxf
