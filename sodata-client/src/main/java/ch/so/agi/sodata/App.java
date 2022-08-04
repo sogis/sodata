@@ -228,12 +228,26 @@ public class App implements EntryPoint {
             datasets = mapper.read(json);
             
             Collections.sort(datasets, new Comparator<Dataset>() {
+//                @Override
+//                public int compare(Dataset o1, Dataset o2) {
+//                    return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
+//                }
+                
+                // GWT does not know Locale.GERMAN hence the Collator approach cannot be used.
                 @Override
                 public int compare(Dataset o1, Dataset o2) {
-                    return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
+                    String string0 = o1.getTitle().toLowerCase();
+                    String string1 = o2.getTitle().toLowerCase();
+                    string0 = string0.replace("ä", "a");
+                    string0 = string0.replace("ö", "o");
+                    string0 = string0.replace("ü", "u");
+                    string1 = string1.replace("ä", "a");
+                    string1 = string1.replace("ö", "o");
+                    string1 = string1.replace("ü", "u");
+                    return string0.compareTo(string1);
                 }
+
             });
-//            Collections.sort(datasets,Collator.getInstance(Locale.GERMANY));
             
             init();
             
