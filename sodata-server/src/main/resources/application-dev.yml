@@ -210,7 +210,7 @@ app:
           #lastEditingDate: 2020-08-29
           title: Gewässer Ökomorphologie
           shortDescription: 
-          keywords: Gewässer,Ökomorphologie,AFU
+          keywords: Gewässer,Wasser,Ökomorphologie,AFU
           provider: Amt für Umwelt
           ownerUrl: https://afu.so.ch
           servicer: https://agi.so.ch
@@ -231,7 +231,7 @@ app:
           #lastEditingDate: 2020-08-29
           title: Gewässer Revitalisierung
           shortDescription: 
-          keywords: Gewässer,Revitalisierung,AFU
+          keywords: Gewässer,Wasser,Revitalisierung,AFU
           provider: Amt für Umwelt
           ownerUrl: https://afu.so.ch
           servicer: https://agi.so.ch
@@ -254,7 +254,7 @@ app:
           #lastEditingDate: 2020-08-29
           title: Gewässerschutz
           shortDescription: 
-          keywords: Gewässerschutz,AFU
+          keywords: Gewässerschutz,Wasser,AFU
           provider: Amt für Umwelt
           ownerUrl: https://afu.so.ch
           servicer: https://agi.so.ch
