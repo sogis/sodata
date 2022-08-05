@@ -44,4 +44,4 @@ lucene:
 
 app:
     myVar: ${VAR:defaultValue}
-    dataBaseUrl: ${DATA_BASE_URL:https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-dev/}
+    dataBaseUrl: ${DATA_BASE_URL:https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata/}
