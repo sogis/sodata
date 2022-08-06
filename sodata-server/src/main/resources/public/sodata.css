@@ -51,7 +51,7 @@ body, div {
 }
 
 .sodata-title {
-    margin-top: 120px;
+    margin-top: 80px;
     font-size: 40px;
     font-weight: 700;
 }
@@ -60,6 +60,11 @@ body, div {
     margin-top: 30px;
     font-size: 16px;
     font-style: normal;
+}
+
+.radio-option:not(.checked) label, .radio-option.checked label {
+    font-family: Frutiger, 'Fira Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+    font-size: 16px !important;   	
 }
 
 .default-link {

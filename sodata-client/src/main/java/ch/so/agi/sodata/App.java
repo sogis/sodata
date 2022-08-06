@@ -21,6 +21,8 @@ import org.dominokit.domino.ui.datatable.ColumnConfig;
 import org.dominokit.domino.ui.datatable.DataTable;
 import org.dominokit.domino.ui.datatable.TableConfig;
 import org.dominokit.domino.ui.datatable.store.LocalListDataStore;
+import org.dominokit.domino.ui.forms.Radio;
+import org.dominokit.domino.ui.forms.RadioGroup;
 import org.dominokit.domino.ui.forms.TextBox;
 import org.dominokit.domino.ui.grid.Column;
 import org.dominokit.domino.ui.grid.Row;
@@ -110,14 +112,14 @@ public class App implements EntryPoint {
     private Location location;
     private String pathname;
     private String filter = null;
-//    private String ident = null;
+    //    private String ident = null;
     private String FILTER_PARAM_KEY = "filter";
 //    private String IDENT_PARAM_KEY = "ident";
 
     private HTMLElement container;
     private HTMLElement topLevelContent;
     private HTMLElement datasetContent;
-    
+
     private DatasetMapper mapper;
     private List<Dataset> datasets;
     private LocalListDataStore<Dataset> listStore;
@@ -138,20 +140,21 @@ public class App implements EntryPoint {
     //private static final String EPSG_4326 = "EPSG:4326"; 
     //private Projection projection;
 
-    public static interface DatasetMapper extends ObjectMapper<List<Dataset>> {}
+    public static interface DatasetMapper extends ObjectMapper<List<Dataset>> {
+    }
 
     private String MAP_DIV_ID = "map";
     private Map map;
 
-	public void onModuleLoad() {
+    public void onModuleLoad() {
         formatLookUp.put("xtf", "INTERLIS");
         formatLookUp.put("itf", "INTERLIS");
-	    formatLookUp.put("shp", "Shapefile");
-	    formatLookUp.put("dxf", "DXF");
-	    formatLookUp.put("gpkg", "GeoPackage");
-	    formatLookUp.put("gtiff", "GeoTIFF");
+        formatLookUp.put("shp", "Shapefile");
+        formatLookUp.put("dxf", "DXF");
+        formatLookUp.put("gpkg", "GeoPackage");
+        formatLookUp.put("gtiff", "GeoTIFF");
 
-	    mapper = GWT.create(DatasetMapper.class);   
+        mapper = GWT.create(DatasetMapper.class);
 
         // Change Domino UI color scheme.
         Theme theme = new Theme(ColorScheme.RED);
@@ -162,11 +165,11 @@ public class App implements EntryPoint {
         String host = location.host;
         String protocol = location.protocol;
         pathname = location.pathname;
-        
+
         if (pathname.contains("index.html")) {
             pathname = pathname.replace("index.html", "");
         }
-        
+
         // Get settings with a synchronous request.
         XMLHttpRequest httpRequest = new XMLHttpRequest();
         httpRequest.open("GET", pathname + "settings", false);
@@ -176,7 +179,7 @@ public class App implements EntryPoint {
                 try {
                     JsPropertyMap<Object> propertiesMap = Js.asPropertyMap(Global.JSON.parse(responseText));
                     DATA_BASE_URL = propertiesMap.getAsAny("dataBaseUrl").asString();
-                    
+
                 } catch (Exception e) {
                     DomGlobal.window.alert("Error loading settings!");
                     DomGlobal.console.error("Error loading settings!", e);
@@ -186,13 +189,13 @@ public class App implements EntryPoint {
             }
 
         };
-        
+
         httpRequest.addEventListener("error", event -> {
             DomGlobal.window.alert("Error loading settings! Error: " + httpRequest.status + " " + httpRequest.statusText);
         });
 
         httpRequest.send();
-        
+
         // Get settings
 //        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, protocol + "//" + host + pathname + "settings");
 //        try {
@@ -217,49 +220,49 @@ public class App implements EntryPoint {
 
         // Get datasets json from server and initialize the site.
         DomGlobal.fetch("/datasets")
-        .then(response -> {
-            if (!response.ok) {
-                DomGlobal.window.alert(response.statusText + ": " + response.body);
-                return null;
-            }
-            return response.text();
-        })
-        .then(json -> {
-            datasets = mapper.read(json);
-            
-            Collections.sort(datasets, new Comparator<Dataset>() {
+                .then(response -> {
+                    if (!response.ok) {
+                        DomGlobal.window.alert(response.statusText + ": " + response.body);
+                        return null;
+                    }
+                    return response.text();
+                })
+                .then(json -> {
+                    datasets = mapper.read(json);
+
+                    Collections.sort(datasets, new Comparator<Dataset>() {
 //                @Override
 //                public int compare(Dataset o1, Dataset o2) {
 //                    return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
 //                }
-                
-                // GWT does not know Locale.GERMAN hence the Collator approach cannot be used.
-                @Override
-                public int compare(Dataset o1, Dataset o2) {
-                    String string0 = o1.getTitle().toLowerCase();
-                    String string1 = o2.getTitle().toLowerCase();
-                    string0 = string0.replace("ä", "a");
-                    string0 = string0.replace("ö", "o");
-                    string0 = string0.replace("ü", "u");
-                    string1 = string1.replace("ä", "a");
-                    string1 = string1.replace("ö", "o");
-                    string1 = string1.replace("ü", "u");
-                    return string0.compareTo(string1);
-                }
 
-            });
-            
-            init();
-            
-            return null;
-        }).catch_(error -> {
-            console.log(error);
-            DomGlobal.window.alert(error.toString());
-            return null;
-        });
+                        // GWT does not know Locale.GERMAN hence the Collator approach cannot be used.
+                        @Override
+                        public int compare(Dataset o1, Dataset o2) {
+                            String string0 = o1.getTitle().toLowerCase();
+                            String string1 = o2.getTitle().toLowerCase();
+                            string0 = string0.replace("ä", "a");
+                            string0 = string0.replace("ö", "o");
+                            string0 = string0.replace("ü", "u");
+                            string1 = string1.replace("ä", "a");
+                            string1 = string1.replace("ö", "o");
+                            string1 = string1.replace("ü", "u");
+                            return string0.compareTo(string1);
+                        }
+
+                    });
+
+                    init();
+
+                    return null;
+                }).catch_(error -> {
+                    console.log(error);
+                    DomGlobal.window.alert(error.toString());
+                    return null;
+                });
     }
-	
-	public void init() {
+
+    public void init() {
 	    /*
 	    // Registering EPSG:2056 / LV95 reference frame.
         Proj4.defs(EPSG_2056, "+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs");
@@ -272,7 +275,7 @@ public class App implements EntryPoint {
         projection = new Projection(projectionOptions);
         Projection.addProjection(projection);
         */
-	    
+
         // HTML document: used for creating html elements that are not
         // available in elemento (e.g. summary, details).
         HTMLDocument document = DomGlobal.document;
@@ -283,18 +286,18 @@ public class App implements EntryPoint {
         HTMLElement opensearchdescription = (HTMLElement) document.createElement("link");
         opensearchdescription.setAttribute("rel", "search");
         opensearchdescription.setAttribute("type", "application/opensearchdescription+xml");
-        
+
         String host = location.host;
         String protocol = location.protocol;
         opensearchdescription.setAttribute("href", protocol + "//" + host + pathname + "opensearchdescription.xml");
-        opensearchdescription.setAttribute("title", "Geodaten Kanton Solothurn");
+        opensearchdescription.setAttribute("title", "Karten, Dienste und Daten Kanton Solothurn");
         head.appendChild(opensearchdescription);
-	    
+
         // Get search params to control some parts of the gui.
         URLSearchParams searchParams = new URLSearchParams(location.search);
-                
+
         if (searchParams.has(FILTER_PARAM_KEY)) {
-            filter = searchParams.get(FILTER_PARAM_KEY);            
+            filter = searchParams.get(FILTER_PARAM_KEY);
         }
 
 //        if (searchParams.has(IDENT_PARAM_KEY)) {
@@ -308,7 +311,10 @@ public class App implements EntryPoint {
         // Add logo
         HTMLElement logoDiv = div().css("logo")
                 .add(div()
-                        .add(img().attr("src", location.protocol + "//" + location.host + location.pathname + "Logo.png").attr("alt", "Logo Kanton")).element()).element();
+                        .add(img()
+                                .attr("src", location.protocol + "//" + location.host + location.pathname + "Logo.png")
+                                .attr("alt", "Logo Kanton")))
+                .element();
         container.appendChild(logoDiv);
 
         // Create a top level content div for everything except the logo.
@@ -321,19 +327,32 @@ public class App implements EntryPoint {
                 .appendChild(Icons.ALL.home(), " Home ", (evt) -> {
                     DomGlobal.window.open("https://geo.so.ch/", "_self");
                 })
-                .appendChild(" Geodaten ", (evt) -> {});
+                .appendChild(" Karten, Dienste und Daten ", (evt) -> {
+                });
         topLevelContent.appendChild(breadcrumb.element());
 
-        topLevelContent.appendChild(div().css("sodata-title").textContent("Geodaten Kanton Solothurn").element());
+        topLevelContent.appendChild(div().css("sodata-title").textContent("Karten, Dienste und Daten Kanton Solothurn").element());
 
         String infoString = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
-              + "<a class='default-link' href='https://geoweb.so.ch/geodaten/index.php' target='_blank'>https://geoweb.so.ch/geodaten/index.php</a> eirmod "
-              + "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et "
-              + "justo <a class='default-link' href='https://geo.so.ch/geodata' target='_blank'>https://geo.so.ch/geodata</a> "
-              + "duo dolores et ea rebum. Stet clita kasd gubergren <a class='default-link' href='ftp://geo.so.ch/' target='_blank'>ftp://geo.so.ch/</a>, "
-              + "no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+                + "<a class='default-link' href='https://geoweb.so.ch/geodaten/index.php' target='_blank'>https://geoweb.so.ch/geodaten/index.php</a> eirmod "
+                + "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et "
+                + "justo <a class='default-link' href='https://geo.so.ch/geodata' target='_blank'>https://geo.so.ch/geodata</a> "
+                + "duo dolores et ea rebum. Stet clita kasd gubergren <a class='default-link' href='ftp://geo.so.ch/' target='_blank'>ftp://geo.so.ch/</a>, "
+                + "no sea takimata sanctus est Lorem ipsum dolor sit amet.";
         topLevelContent.appendChild(div().css("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
 
+        Radio<String> radio1 = Radio.create("radio1", "Karten und Dienste").setColor(Color.RED_DARKEN_3).withGap().check();
+        Radio<String> radio2 = Radio.create("radio2", "Daten").setColor(Color.RED_DARKEN_3).withGap();
+
+        RadioGroup<String> horizontalRadioGroup =
+                RadioGroup.<String>create("searchToggleRadio", "Suche nach Karten und Dienste oder Daten").setPaddingLeft("0px").setMarginTop("40px", true).setMarginBottom("0px", true)
+                    //.setHelperText("Suche nach Karten und Dienste oder Daten")
+                    .appendChild(radio1)
+                    .appendChild(radio2)
+                    .horizontal();
+        
+        topLevelContent.appendChild(horizontalRadioGroup.element());
+        
         TextBox textBox = TextBox.create().setLabel("Suchbegriff");
         textBox.addLeftAddOn(Icons.ALL.search());
         textBox.setFocusColor(Color.RED_DARKEN_3);
@@ -346,73 +365,73 @@ public class App implements EntryPoint {
             public void handleEvent(Event evt) {
                 textBox.clear();
                 listStore.setData(datasets);
-                
+
                 removeQueryParam(FILTER_PARAM_KEY);
                 //removeQueryParam(IDENT_PARAM_KEY);
             }
         });
         textBox.addRightAddOn(resetIcon);
 
-        textBox.addEventListener("keyup", event -> {         
-            // Ident-Parameter wird entfernt, sobald es ein Interagieren seitens Benutzer gibt.
-            //removeQueryParam(IDENT_PARAM_KEY);
+        textBox.addEventListener("keyup", event -> {
+                    // Ident-Parameter wird entfernt, sobald es ein Interagieren seitens Benutzer gibt.
+                    //removeQueryParam(IDENT_PARAM_KEY);
 
-            if (textBox.getValue().trim().length() == 0) {
-                listStore.setData(datasets);     
-                
-                removeQueryParam(FILTER_PARAM_KEY);
+                    if (textBox.getValue().trim().length() == 0) {
+                        listStore.setData(datasets);
 
-                return;
-            }
-            
-            if (abortController != null) {
-                abortController.abort();
-            }
-            
-            abortController = new AbortController();
-            final RequestInit init = RequestInit.create();
-            init.setSignal(abortController.signal);
+                        removeQueryParam(FILTER_PARAM_KEY);
 
-            DomGlobal.fetch("/datasets?query=" + textBox.getValue().toLowerCase(), init)
-                .then(
-                        response -> {
-                                if (!response.ok) {
-                                    return null;
-                                }
-                                return response.text();
-                            }
-                        )
-                .then(
-                        json -> {
-                                List<Dataset> filteredDatasets = mapper.read(json);
-                    
-                                Collections.sort(
-                                        filteredDatasets, new Comparator<Dataset>() {
-                                                @Override
-                                                public int compare(Dataset o1, Dataset o2) {
-                                                    return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
+                        return;
+                    }
+
+                    if (abortController != null) {
+                        abortController.abort();
+                    }
+
+                    abortController = new AbortController();
+                    final RequestInit init = RequestInit.create();
+                    init.setSignal(abortController.signal);
+
+                    DomGlobal.fetch("/datasets?query=" + textBox.getValue().toLowerCase(), init)
+                            .then(
+                                    response -> {
+                                        if (!response.ok) {
+                                            return null;
+                                        }
+                                        return response.text();
+                                    }
+                            )
+                            .then(
+                                    json -> {
+                                        List<Dataset> filteredDatasets = mapper.read(json);
+
+                                        Collections.sort(
+                                                filteredDatasets, new Comparator<Dataset>() {
+                                                    @Override
+                                                    public int compare(Dataset o1, Dataset o2) {
+                                                        return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
+                                                    }
                                                 }
-                                            }
                                         );
-                                
-                                listStore.setData(filteredDatasets);
-                    
-                                //if (ident == null) {
-                                updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
-                                //}
-                    
-                                abortController = null;
 
-                                return null;
-                            }
-                        )
-                .catch_(
-                        error -> {
-                                console.log(error);
-                                return null;
-                            }
-                        );
-            }
+                                        listStore.setData(filteredDatasets);
+
+                                        //if (ident == null) {
+                                        updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
+                                        //}
+
+                                        abortController = null;
+
+                                        return null;
+                                    }
+                            )
+                            .catch_(
+                                    error -> {
+                                        console.log(error);
+                                        return null;
+                                    }
+                            );
+                }
         );
         topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(textBox)).element());
 
@@ -421,12 +440,12 @@ public class App implements EntryPoint {
                 //.setFixed(true)
                 .addColumn(
                         ColumnConfig.<Dataset>create("title", "Name")
-                            .setShowTooltip(false)
-                            .textAlign("left")
-                            //.asHeader()
-                            .setCellRenderer(
-                                    cell -> TextNode.of(cell.getTableRow().getRecord().getTitle()))
-                        )
+                                .setShowTooltip(false)
+                                .textAlign("left")
+                                //.asHeader()
+                                .setCellRenderer(
+                                        cell -> TextNode.of(cell.getTableRow().getRecord().getTitle()))
+                )
 //                .addColumn(
 //                        ColumnConfig.<Dataset>create("owner", "Zuständige Stelle")
 //                            .setShowTooltip(false)
@@ -459,53 +478,53 @@ public class App implements EntryPoint {
 //                        )
                 .addColumn(
                         ColumnConfig.<Dataset>create("model", "Datenmodell")
-                            .setShowTooltip(false)
-                            .textAlign("center")
-                            .setCellRenderer(
-                                    cell -> {
-                                        if(cell.getRecord().getModel() != null && cell.getRecord().getModel().length() > 0) {
-                                            HTMLElement modelLinkElement = div()
-                                                    .add(Icons.ALL.launch_mdi().style().setCursor("pointer")).element();
-                                            HTMLElement modelLink = a()
-                                                    .attr("class", "icon-link")
-                                                    .attr("href", "https://geo.so.ch/modelfinder/?expanded=true&query="+cell.getRecord().getModel())
-                                                    .attr("target", "_blank").add(modelLinkElement).element();
+                                .setShowTooltip(false)
+                                .textAlign("center")
+                                .setCellRenderer(
+                                        cell -> {
+                                            if (cell.getRecord().getModel() != null && cell.getRecord().getModel().length() > 0) {
+                                                HTMLElement modelLinkElement = div()
+                                                        .add(Icons.ALL.launch_mdi().style().setCursor("pointer")).element();
+                                                HTMLElement modelLink = a()
+                                                        .attr("class", "icon-link")
+                                                        .attr("href", "https://geo.so.ch/modelfinder/?expanded=true&query=" + cell.getRecord().getModel())
+                                                        .attr("target", "_blank").add(modelLinkElement).element();
 
-                                            return modelLink;
-                                        } 
-                                        return span().element();
-                                    })
-                        )
+                                                return modelLink;
+                                            }
+                                            return span().element();
+                                        })
+                )
                 .addColumn(
                         ColumnConfig.<Dataset>create("formats", "Daten herunterladen")
-                            .setShowTooltip(false)
-                            .textAlign("left")
-                            .setCellRenderer(
-                                    cell -> {
-                                        HTMLElement badgesElement = div().element();
+                                .setShowTooltip(false)
+                                .textAlign("left")
+                                .setCellRenderer(
+                                        cell -> {
+                                            HTMLElement badgesElement = div().element();
 
-                                        if (cell.getRecord().getSubunits() != null) {
-                                            HTMLElement regionSelectionElement = a().css("default-link")
-                                                    .textContent("Gebietsauswahl notwendig")
-                                                    .attr("href", cell.getRecord().getSubunits())
-                                                    .attr("target", "_blank")
-                                                    .element();
-                                            return regionSelectionElement;
-                                        } else {
-                                            for (String fileStr : cell.getRecord().getFileFormats()) {
-                                                badgesElement.appendChild(a().css("badge-link")
-                                                        .attr("href", DATA_BASE_URL + cell.getRecord().getId() + "_" + fileStr + ".zip")
+                                            if (cell.getRecord().getSubunits() != null) {
+                                                HTMLElement regionSelectionElement = a().css("default-link")
+                                                        .textContent("Gebietsauswahl notwendig")
+                                                        .attr("href", cell.getRecord().getSubunits())
                                                         .attr("target", "_blank")
-                                                        .add(Badge.create(formatLookUp.get(fileStr))
-                                                                .setBackground(Color.GREY_LIGHTEN_2).style()
-                                                                .setMarginRight("10px").setMarginTop("5px")
-                                                                .setMarginBottom("5px").get().element())
-                                                        .element());
+                                                        .element();
+                                                return regionSelectionElement;
+                                            } else {
+                                                for (String fileStr : cell.getRecord().getFileFormats()) {
+                                                    badgesElement.appendChild(a().css("badge-link")
+                                                            .attr("href", DATA_BASE_URL + cell.getRecord().getId() + "_" + fileStr + ".zip")
+                                                            .attr("target", "_blank")
+                                                            .add(Badge.create(formatLookUp.get(fileStr))
+                                                                    .setBackground(Color.GREY_LIGHTEN_2).style()
+                                                                    .setMarginRight("10px").setMarginTop("5px")
+                                                                    .setMarginBottom("5px").get().element())
+                                                            .element());
+                                                }
+                                                return badgesElement;
                                             }
-                                            return badgesElement;
-                                        }
-                                    })
-                        );
+                                        })
+                );
 //                .addColumn(
 //                        ColumnConfig.<Dataset>create("services", "Servicelinks")
 //                            .setShowTooltip(false)
@@ -532,8 +551,8 @@ public class App implements EntryPoint {
         //datasetTable.noHover();
         datasetTable.load();
 
-        topLevelContent.appendChild(datasetTable.element()); 
-        
+        topLevelContent.appendChild(datasetTable.element());
+
 //        if (ident != null && ident.trim().length() > 0) {
 //            textBox.setValue(ident);
 //            textBox.element().dispatchEvent(new KeyboardEvent("keyup"));
@@ -545,15 +564,15 @@ public class App implements EntryPoint {
             textBox.setValue(filter);
             textBox.element().dispatchEvent(new KeyboardEvent("keyup"));
         }
-	}
-	
+    }
+
     private void openMetadataDialog(Dataset dataset) {
         ModalDialog modal = ModalDialog.create(dataset.getTitle()).setAutoClose(true);
         modal.css("modal-object");
-        
+
         MetadataElement metaDataElement = new MetadataElement(dataset);
         modal.add(metaDataElement);
-        
+
         Button closeButton = Button.create(messages.close().toUpperCase()).linkify();
         closeButton.removeWaves();
         closeButton.setBackground(Color.RED_DARKEN_3);
@@ -564,7 +583,7 @@ public class App implements EntryPoint {
 
         closeButton.blur();
     }
-    
+
     private void openRegionSelectionDialog(Dataset dataset) {
         ModalDialog modal = ModalDialog.create("Gebietsauswahl: " + dataset.getTitle()).setAutoClose(true);
         modal.css("modal-object");
@@ -583,60 +602,60 @@ public class App implements EntryPoint {
                         + "invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et."));
 
         selectionTab.appendChild(mapDiv);
-        
+
         // FIXME TODO
         String subunits = dataset.getSubunits();
-        DomGlobal.fetch("/subunits/"+subunits)
-        .then(response -> {
-            if (!response.ok) {
-                DomGlobal.window.alert(response.statusText + ": " + response.body);
-                return null;
-            }
-            return response.text();
-        })
-        .then(json -> {            
-            Feature[] features = (new GeoJson()).readFeatures(json); 
-            createVectorLayers(features);
-            return null;
-        }).catch_(error -> {
-            console.log(error);
-            DomGlobal.window.alert(error.toString());
-            return null;
-        });
+        DomGlobal.fetch("/subunits/" + subunits)
+                .then(response -> {
+                    if (!response.ok) {
+                        DomGlobal.window.alert(response.statusText + ": " + response.body);
+                        return null;
+                    }
+                    return response.text();
+                })
+                .then(json -> {
+                    Feature[] features = (new GeoJson()).readFeatures(json);
+                    createVectorLayers(features);
+                    return null;
+                }).catch_(error -> {
+                    console.log(error);
+                    DomGlobal.window.alert(error.toString());
+                    return null;
+                });
 
         TableConfig<Feature> tableConfig = new TableConfig<>();
         tableConfig
-            .addColumn(ColumnConfig.<Feature>create("title", "Name").setShowTooltip(false).textAlign("left")
-                .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().get("title"))))
-            .addColumn(ColumnConfig.<Feature>create("lastEditingDate", "Aktualisiert").setShowTooltip(false).textAlign("left")
-                .setCellRenderer(cell -> {
-                    Date date;
-                    String dateString;
-                    if (cell.getRecord().get("last_editing_date").toString().length() < 8) {
-                        date = DateTimeFormat.getFormat("yyyy-MM").parse(cell.getRecord().get("last_editing_date"));
-                        dateString = DateTimeFormat.getFormat("MMMM yyyy").format(date);
-                    } else {
-                        date = DateTimeFormat.getFormat("yyyy-MM-dd").parse(cell.getRecord().get("last_editing_date"));
-                        dateString = DateTimeFormat.getFormat("dd.MM.yyyy").format(date);
-                    }
-                    return TextNode.of(dateString);
-                }))
-            .addColumn(ColumnConfig.<Feature>create("formats", "Daten herunterladen").setShowTooltip(false).textAlign("left")
-                .setCellRenderer(cell -> {
-                    HTMLElement badgesElement = div().element();
-                    for (String fileFormatsStr : dataset.getFileFormats()) {
-                        badgesElement.appendChild(a().css("badge-link")
-                                .attr("href", "/dataset/" + cell.getRecord().getId() + "_" + fileFormatsStr + ".zip") // TODO Was kommt woher?
-                                .attr("target", "_blank")
-                                .add(Badge.create(formatLookUp.get(fileFormatsStr))
-                                        .setBackground(Color.GREY_LIGHTEN_2).style()
-                                        .setMarginRight("10px").setMarginTop("5px")
-                                        .setMarginBottom("5px").get().element())
-                                .element());
-                     
-                    }
-                    return badgesElement;
-                }));
+                .addColumn(ColumnConfig.<Feature>create("title", "Name").setShowTooltip(false).textAlign("left")
+                        .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().get("title"))))
+                .addColumn(ColumnConfig.<Feature>create("lastEditingDate", "Aktualisiert").setShowTooltip(false).textAlign("left")
+                        .setCellRenderer(cell -> {
+                            Date date;
+                            String dateString;
+                            if (cell.getRecord().get("last_editing_date").toString().length() < 8) {
+                                date = DateTimeFormat.getFormat("yyyy-MM").parse(cell.getRecord().get("last_editing_date"));
+                                dateString = DateTimeFormat.getFormat("MMMM yyyy").format(date);
+                            } else {
+                                date = DateTimeFormat.getFormat("yyyy-MM-dd").parse(cell.getRecord().get("last_editing_date"));
+                                dateString = DateTimeFormat.getFormat("dd.MM.yyyy").format(date);
+                            }
+                            return TextNode.of(dateString);
+                        }))
+                .addColumn(ColumnConfig.<Feature>create("formats", "Daten herunterladen").setShowTooltip(false).textAlign("left")
+                        .setCellRenderer(cell -> {
+                            HTMLElement badgesElement = div().element();
+                            for (String fileFormatsStr : dataset.getFileFormats()) {
+                                badgesElement.appendChild(a().css("badge-link")
+                                        .attr("href", "/dataset/" + cell.getRecord().getId() + "_" + fileFormatsStr + ".zip") // TODO Was kommt woher?
+                                        .attr("target", "_blank")
+                                        .add(Badge.create(formatLookUp.get(fileFormatsStr))
+                                                .setBackground(Color.GREY_LIGHTEN_2).style()
+                                                .setMarginRight("10px").setMarginTop("5px")
+                                                .setMarginBottom("5px").get().element())
+                                        .element());
+
+                            }
+                            return badgesElement;
+                        }));
 
         LocalListDataStore<Feature> subunitListStore = new LocalListDataStore<>();
 
@@ -661,7 +680,7 @@ public class App implements EntryPoint {
             @Override
             public void handleEvent(Event evt) {
                 ol.layer.Vector vectorLayer = (ol.layer.Vector) getMapLayerById(SELECTED_VECTOR_LAYER_ID);
-                ol.source.Vector vectorSource = vectorLayer.getSource();                                
+                ol.source.Vector vectorSource = vectorLayer.getSource();
                 Feature[] features = vectorSource.getFeatures();
 
                 List<Feature> featuresList = new ArrayList<Feature>();
@@ -669,14 +688,14 @@ public class App implements EntryPoint {
                     Feature feature = features[i];
                     featuresList.add(feature);
                 }
-                
+
                 Collections.sort(featuresList, new Comparator<Feature>() {
                     @Override
                     public int compare(Feature o1, Feature o2) {
                         return o1.get("title").toString().toLowerCase().compareTo(o2.get("title").toString().toLowerCase());
                     }
                 });
-                
+
                 subunitListStore.setData(featuresList);
             }
         });
@@ -686,38 +705,38 @@ public class App implements EntryPoint {
 
         closeButton.blur();
     }
-    
+
     public final class MapSingleClickListener implements ol.event.EventListener<MapBrowserEvent> {
         @Override
-        public void onEvent(MapBrowserEvent event) {            
+        public void onEvent(MapBrowserEvent event) {
             AtPixelOptions featureAtPixelOptions = new AtPixelOptions();
             map.forEachFeatureAtPixel(event.getPixel(), new FeatureAtPixelFunction() {
                 @Override
-                public boolean call(Feature feature, Layer layer) {                    
+                public boolean call(Feature feature, Layer layer) {
                     if (layer.get(ID_ATTR_NAME).toString().equalsIgnoreCase(SELECTED_VECTOR_LAYER_ID)) {
                         ol.layer.Vector selectedLayer = (ol.layer.Vector) getMapLayerById(SELECTED_VECTOR_LAYER_ID);
-                        Vector selectedSource = (Vector) selectedLayer.getSource();     
+                        Vector selectedSource = (Vector) selectedLayer.getSource();
                         selectedSource.removeFeature(feature);
                         return true;
                     }
                     if (layer.get(ID_ATTR_NAME).toString().equalsIgnoreCase(SUBUNIT_VECTOR_LAYER_ID)) {
                         ol.layer.Vector selectedLayer = (ol.layer.Vector) getMapLayerById(SELECTED_VECTOR_LAYER_ID);
                         Vector selectedSource = (Vector) selectedLayer.getSource();
-                        
+
                         Style style = new Style();
                         Stroke stroke = new Stroke();
-                        stroke.setWidth(4); 
-                        stroke.setColor(new ol.color.Color(198, 40, 40, 1.0)); 
+                        stroke.setWidth(4);
+                        stroke.setColor(new ol.color.Color(198, 40, 40, 1.0));
                         style.setStroke(stroke);
                         Fill fill = new Fill();
                         fill.setColor(new ol.color.Color(255, 255, 255, 0.6));
                         style.setFill(fill);
-                       
+
                         Feature f = feature.clone();
                         f.setStyle(style);
                         selectedSource.addFeature(f);
                     }
-                    return false;                    
+                    return false;
                 }
             }, featureAtPixelOptions);
         }
@@ -743,17 +762,17 @@ public class App implements EntryPoint {
 
         closeButton.blur();
     }
-    
+
     private void createVectorLayers(Feature[] features) {
         removeVectorLayer(SUBUNIT_VECTOR_LAYER_ID);
         removeVectorLayer(SELECTED_VECTOR_LAYER_ID);
-        
+
         {
             Style style = new Style();
             Stroke stroke = new Stroke();
-            stroke.setWidth(4); 
+            stroke.setWidth(4);
             //stroke.setColor(new ol.color.Color(56, 142, 60, 1.0)); 
-            stroke.setColor(new ol.color.Color(78,127,217, 1.0)); 
+            stroke.setColor(new ol.color.Color(78, 127, 217, 1.0));
             //stroke.setColor(new ol.color.Color(230, 0, 0, 0.6));
             style.setStroke(stroke);
             Fill fill = new Fill();
@@ -769,7 +788,7 @@ public class App implements EntryPoint {
             VectorOptions vectorSourceOptions = OLFactory.createOptions();
             vectorSourceOptions.setFeatures(featureCollection);
             Vector vectorSource = new Vector(vectorSourceOptions);
-            
+
             VectorLayerOptions vectorLayerOptions = OLFactory.createOptions();
             vectorLayerOptions.setSource(vectorSource);
             ol.layer.Vector vectorLayer = new ol.layer.Vector(vectorLayerOptions);
@@ -777,12 +796,12 @@ public class App implements EntryPoint {
             vectorLayer.set(ID_ATTR_NAME, SUBUNIT_VECTOR_LAYER_ID);
             map.addLayer(vectorLayer);
         }
-        
+
         {
             Style style = new Style();
             Stroke stroke = new Stroke();
-            stroke.setWidth(4); 
-            stroke.setColor(new ol.color.Color(198, 40, 40, 1.0)); 
+            stroke.setWidth(4);
+            stroke.setColor(new ol.color.Color(198, 40, 40, 1.0));
             style.setStroke(stroke);
             Fill fill = new Fill();
             fill.setColor(new ol.color.Color(255, 255, 255, 0.6));
@@ -790,7 +809,7 @@ public class App implements EntryPoint {
 
             VectorOptions vectorSourceOptions = OLFactory.createOptions();
             Vector vectorSource = new Vector(vectorSourceOptions);
-            
+
             VectorLayerOptions vectorLayerOptions = OLFactory.createOptions();
             vectorLayerOptions.setSource(vectorSource);
             ol.layer.Vector vectorLayer = new ol.layer.Vector(vectorLayerOptions);
@@ -799,7 +818,7 @@ public class App implements EntryPoint {
             map.addLayer(vectorLayer);
         }
     }
-        
+
     private void removeVectorLayer(String id) {
         Base vlayer = getMapLayerById(id);
         map.removeLayer(vlayer);
@@ -824,7 +843,7 @@ public class App implements EntryPoint {
         }
         return null;
     }
-    
+
     private void removeQueryParam(String key) {
         URL url = new URL(DomGlobal.location.href);
         String host = url.host;
@@ -832,11 +851,11 @@ public class App implements EntryPoint {
         String pathname = url.pathname;
         URLSearchParams params = url.searchParams;
         params.delete(key);
-        
-        String newUrl = protocol + "//" + host + pathname + "?" + params.toString(); 
+
+        String newUrl = protocol + "//" + host + pathname + "?" + params.toString();
         updateUrlWithoutReloading(newUrl);
     }
-    
+
     private void updateUrlLocation(String key, String value) {
         URL url = new URL(DomGlobal.location.href);
         String host = url.host;
@@ -844,12 +863,12 @@ public class App implements EntryPoint {
         String pathname = url.pathname;
         URLSearchParams params = url.searchParams;
         params.set(key, value);
-        
-        String newUrl = protocol + "//" + host + pathname + "?" + params.toString(); 
-        
+
+        String newUrl = protocol + "//" + host + pathname + "?" + params.toString();
+
         updateUrlWithoutReloading(newUrl);
     }
-    
+
     // Update the URL in the browser without reloading the page.
     private static native void updateUrlWithoutReloading(String newUrl) /*-{
         $wnd.history.pushState(newUrl, "", newUrl);
