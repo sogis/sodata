@@ -62,6 +62,25 @@ body, div {
     font-style: normal;
 }
 
+.filter-text-box {
+	margin-top: 40px;
+}
+
+.dataset-table {
+    margin-top: 40px;
+    font-size: 16px;
+}
+
+.nav.nav-tabs li .flex-layout {
+    justify-content: center;
+}
+
+/* Oder eigene Klasse: 
+.centered-tabs .nav.nav-tabs li .flex-layout {
+    justify-content: center;
+}
+*/
+
 .radio-option:not(.checked) label, .radio-option.checked label {
     font-family: Frutiger, 'Fira Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
     font-size: 16px !important;   	
@@ -152,10 +171,6 @@ a.badge-link:hover {
 a.badge-link:visited {
     color: #333333;  
     text-decoration: none !important;              
-}
-
-#dataset-table {
-    font-size: 16px;
 }
 
 .modal-object {

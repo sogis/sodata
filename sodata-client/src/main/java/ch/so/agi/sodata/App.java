@@ -196,28 +196,6 @@ public class App implements EntryPoint {
 
         httpRequest.send();
 
-        // Get settings
-//        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, protocol + "//" + host + pathname + "settings");
-//        try {
-//            Request request = builder.sendRequest(null, new RequestCallback() {
-//                @Override
-//                public void onResponseReceived(Request request, Response response) {
-//                    console.log(response.getText());
-//                    
-//                }
-//
-//                @Override
-//                public void onError(Request request, Throwable exception) {
-//                    console.log("Request was canceled - no timeout should occur");
-//                }
-//            });
-//            //request.cancel();
-//
-//        } catch (RequestException e) {
-//            console.log(e.getMessage());
-//        }
-
-
         // Get datasets json from server and initialize the site.
         DomGlobal.fetch("/datasets")
                 .then(response -> {
@@ -229,31 +207,8 @@ public class App implements EntryPoint {
                 })
                 .then(json -> {
                     datasets = mapper.read(json);
-
-                    Collections.sort(datasets, new Comparator<Dataset>() {
-//                @Override
-//                public int compare(Dataset o1, Dataset o2) {
-//                    return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
-//                }
-
-                        // GWT does not know Locale.GERMAN hence the Collator approach cannot be used.
-                        @Override
-                        public int compare(Dataset o1, Dataset o2) {
-                            String string0 = o1.getTitle().toLowerCase();
-                            String string1 = o2.getTitle().toLowerCase();
-                            string0 = string0.replace("ä", "a");
-                            string0 = string0.replace("ö", "o");
-                            string0 = string0.replace("ü", "u");
-                            string1 = string1.replace("ä", "a");
-                            string1 = string1.replace("ö", "o");
-                            string1 = string1.replace("ü", "u");
-                            return string0.compareTo(string1);
-                        }
-
-                    });
-
+                    Collections.sort(datasets, new UmlautComparator());
                     init();
-
                     return null;
                 }).catch_(error -> {
                     console.log(error);
@@ -290,7 +245,7 @@ public class App implements EntryPoint {
         String host = location.host;
         String protocol = location.protocol;
         opensearchdescription.setAttribute("href", protocol + "//" + host + pathname + "opensearchdescription.xml");
-        opensearchdescription.setAttribute("title", "Karten, Dienste und Daten Kanton Solothurn");
+        opensearchdescription.setAttribute("title", "Datenkatalog Kanton Solothurn");
         head.appendChild(opensearchdescription);
 
         // Get search params to control some parts of the gui.
@@ -327,11 +282,12 @@ public class App implements EntryPoint {
                 .appendChild(Icons.ALL.home(), " Home ", (evt) -> {
                     DomGlobal.window.open("https://geo.so.ch/", "_self");
                 })
-                .appendChild(" Karten, Dienste und Daten ", (evt) -> {
+                .appendChild(" Datenkatalog ", (evt) -> {
                 });
         topLevelContent.appendChild(breadcrumb.element());
 
-        topLevelContent.appendChild(div().css("sodata-title").textContent("Karten, Dienste und Daten Kanton Solothurn").element());
+        // Add title and description
+        topLevelContent.appendChild(div().css("sodata-title").textContent("Datenkatalog Kanton Solothurn").element());
 
         String infoString = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
                 + "<a class='default-link' href='https://geoweb.so.ch/geodaten/index.php' target='_blank'>https://geoweb.so.ch/geodaten/index.php</a> eirmod "
@@ -341,217 +297,21 @@ public class App implements EntryPoint {
                 + "no sea takimata sanctus est Lorem ipsum dolor sit amet.";
         topLevelContent.appendChild(div().css("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
 
-        Radio<String> radio1 = Radio.create("radio1", "Karten und Dienste").setColor(Color.RED_DARKEN_3).withGap().check();
-        Radio<String> radio2 = Radio.create("radio2", "Daten").setColor(Color.RED_DARKEN_3).withGap();
-
-        RadioGroup<String> horizontalRadioGroup =
-                RadioGroup.<String>create("searchToggleRadio", "Suche nach Karten und Dienste oder Daten").setPaddingLeft("0px").setMarginTop("40px", true).setMarginBottom("0px", true)
-                    //.setHelperText("Suche nach Karten und Dienste oder Daten")
-                    .appendChild(radio1)
-                    .appendChild(radio2)
-                    .horizontal();
+        // Add tabs
+        TabsPanel tabsPanel = TabsPanel.create().setColor(Color.RED_DARKEN_3).setMarginTop("30px");
+        Tab mapsTab = Tab.create(Icons.ALL.map_outline_mdi(), "KARTEN").setWidth("180px");
+        Tab dataTab = Tab.create(Icons.ALL.file_download_outline_mdi(), "DATEN").setWidth("180px");
+        Tab modelsTab = Tab.create(Icons.ALL.information_outline_mdi(), "DATENMODELLE").setWidth("180px");
+        tabsPanel.appendChild(mapsTab);
+        tabsPanel.appendChild(dataTab);
+        tabsPanel.appendChild(modelsTab);
         
-        topLevelContent.appendChild(horizontalRadioGroup.element());
+        dataTab.appendChild(new DataElement(DATA_BASE_URL).element());
         
-        TextBox textBox = TextBox.create().setLabel("Suchbegriff");
-        textBox.addLeftAddOn(Icons.ALL.search());
-        textBox.setFocusColor(Color.RED_DARKEN_3);
-        textBox.getInputElement().setAttribute("autocomplete", "off");
-        textBox.getInputElement().setAttribute("spellcheck", "false");
+        topLevelContent.appendChild(tabsPanel.element());
+        
 
-        HTMLElement resetIcon = Icons.ALL.close().style().setCursor("pointer").get().element();
-        resetIcon.addEventListener("click", new EventListener() {
-            @Override
-            public void handleEvent(Event evt) {
-                textBox.clear();
-                listStore.setData(datasets);
-
-                removeQueryParam(FILTER_PARAM_KEY);
-                //removeQueryParam(IDENT_PARAM_KEY);
-            }
-        });
-        textBox.addRightAddOn(resetIcon);
-
-        textBox.addEventListener("keyup", event -> {
-                    // Ident-Parameter wird entfernt, sobald es ein Interagieren seitens Benutzer gibt.
-                    //removeQueryParam(IDENT_PARAM_KEY);
-
-                    if (textBox.getValue().trim().length() == 0) {
-                        listStore.setData(datasets);
-
-                        removeQueryParam(FILTER_PARAM_KEY);
-
-                        return;
-                    }
-
-                    if (abortController != null) {
-                        abortController.abort();
-                    }
-
-                    abortController = new AbortController();
-                    final RequestInit init = RequestInit.create();
-                    init.setSignal(abortController.signal);
-
-                    DomGlobal.fetch("/datasets?query=" + textBox.getValue().toLowerCase(), init)
-                            .then(
-                                    response -> {
-                                        if (!response.ok) {
-                                            return null;
-                                        }
-                                        return response.text();
-                                    }
-                            )
-                            .then(
-                                    json -> {
-                                        List<Dataset> filteredDatasets = mapper.read(json);
-
-                                        Collections.sort(
-                                                filteredDatasets, new Comparator<Dataset>() {
-                                                    @Override
-                                                    public int compare(Dataset o1, Dataset o2) {
-                                                        return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
-                                                    }
-                                                }
-                                        );
-
-                                        listStore.setData(filteredDatasets);
-
-                                        //if (ident == null) {
-                                        updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
-                                        //}
-
-                                        abortController = null;
-
-                                        return null;
-                                    }
-                            )
-                            .catch_(
-                                    error -> {
-                                        console.log(error);
-                                        return null;
-                                    }
-                            );
-                }
-        );
-        topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(textBox)).element());
-
-        TableConfig<Dataset> tableConfig = new TableConfig<>();
-        tableConfig
-                //.setFixed(true)
-                .addColumn(
-                        ColumnConfig.<Dataset>create("title", "Name")
-                                .setShowTooltip(false)
-                                .textAlign("left")
-                                //.asHeader()
-                                .setCellRenderer(
-                                        cell -> TextNode.of(cell.getTableRow().getRecord().getTitle()))
-                )
-//                .addColumn(
-//                        ColumnConfig.<Dataset>create("owner", "Zuständige Stelle")
-//                            .setShowTooltip(false)
-//                            .textAlign("left")
-//                            .setCellRenderer(
-//                                   cell -> {                                       
-//                                       HTMLElement regionSelectionElement = a()
-//                                               .css("black-link")
-//                                               .textContent(cell.getRecord().getProvider())
-//                                               .attr("href", cell.getRecord().getOwnerUrl())
-//                                               .attr("target", "_blank")
-//                                               .element();
-//    
-//                                       return regionSelectionElement;
-//
-//                                  })
-//                        )
-
-//                .addColumn(
-//                        ColumnConfig.<Dataset>create("lastEditingDate", "Aktualisiert")
-//                            .setShowTooltip(false)
-//                            .textAlign("left")
-//                            .setCellRenderer(
-//                                    cell -> {
-//                                        Date date = DateTimeFormat.getFormat("yyyy-MM-dd")
-//                                                .parse(cell.getTableRow().getRecord().getLastEditingDate());
-//                                        String dateString = DateTimeFormat.getFormat("dd.MM.yyyy").format(date);
-//                                        return TextNode.of(dateString);
-//                                    })
-//                        )
-                .addColumn(
-                        ColumnConfig.<Dataset>create("model", "Datenmodell")
-                                .setShowTooltip(false)
-                                .textAlign("center")
-                                .setCellRenderer(
-                                        cell -> {
-                                            if (cell.getRecord().getModel() != null && cell.getRecord().getModel().length() > 0) {
-                                                HTMLElement modelLinkElement = div()
-                                                        .add(Icons.ALL.launch_mdi().style().setCursor("pointer")).element();
-                                                HTMLElement modelLink = a()
-                                                        .attr("class", "icon-link")
-                                                        .attr("href", "https://geo.so.ch/modelfinder/?expanded=true&query=" + cell.getRecord().getModel())
-                                                        .attr("target", "_blank").add(modelLinkElement).element();
-
-                                                return modelLink;
-                                            }
-                                            return span().element();
-                                        })
-                )
-                .addColumn(
-                        ColumnConfig.<Dataset>create("formats", "Daten herunterladen")
-                                .setShowTooltip(false)
-                                .textAlign("left")
-                                .setCellRenderer(
-                                        cell -> {
-                                            HTMLElement badgesElement = div().element();
-
-                                            if (cell.getRecord().getSubunits() != null) {
-                                                HTMLElement regionSelectionElement = a().css("default-link")
-                                                        .textContent("Gebietsauswahl notwendig")
-                                                        .attr("href", cell.getRecord().getSubunits())
-                                                        .attr("target", "_blank")
-                                                        .element();
-                                                return regionSelectionElement;
-                                            } else {
-                                                for (String fileStr : cell.getRecord().getFileFormats()) {
-                                                    badgesElement.appendChild(a().css("badge-link")
-                                                            .attr("href", DATA_BASE_URL + cell.getRecord().getId() + "_" + fileStr + ".zip")
-                                                            .attr("target", "_blank")
-                                                            .add(Badge.create(formatLookUp.get(fileStr))
-                                                                    .setBackground(Color.GREY_LIGHTEN_2).style()
-                                                                    .setMarginRight("10px").setMarginTop("5px")
-                                                                    .setMarginBottom("5px").get().element())
-                                                            .element());
-                                                }
-                                                return badgesElement;
-                                            }
-                                        })
-                );
-//                .addColumn(
-//                        ColumnConfig.<Dataset>create("services", "Servicelinks")
-//                            .setShowTooltip(false)
-//                            .textAlign("center").setCellRenderer(
-//                                    cell -> {
-//                                        HTMLElement serviceLinkElement = div()
-//                                                .add(Icons.ALL.information_outline_mdi().style().setCursor("pointer")).element();
-//                                        serviceLinkElement.addEventListener("click", new EventListener() {
-//                                            @Override
-//                                            public void handleEvent(Event evt) {
-//                                                openServiceLinkDialog(cell.getRecord());
-//                                            }
-//                                        });
-//                                        return serviceLinkElement;
-//                                    })
-//                        );
-
-        listStore = new LocalListDataStore<>();
-        listStore.setData(datasets);
-
-        datasetTable = new DataTable<>(tableConfig, listStore);
-        datasetTable.setId("dataset-table");
-        datasetTable.noStripes();
-        //datasetTable.noHover();
-        datasetTable.load();
-
-        topLevelContent.appendChild(datasetTable.element());
+        //topLevelContent.appendChild(datasetTable.element());
 
 //        if (ident != null && ident.trim().length() > 0) {
 //            textBox.setValue(ident);
@@ -560,10 +320,10 @@ public class App implements EntryPoint {
 //            ident = null;
 //            removeQueryParam(QUERY_PARAM_KEY);
 //        } else 
-        if (filter != null && filter.trim().length() > 0) {
-            textBox.setValue(filter);
-            textBox.element().dispatchEvent(new KeyboardEvent("keyup"));
-        }
+//        if (filter != null && filter.trim().length() > 0) {
+//            textBox.setValue(filter);
+//            textBox.element().dispatchEvent(new KeyboardEvent("keyup"));
+//        }
     }
 
     private void openMetadataDialog(Dataset dataset) {
