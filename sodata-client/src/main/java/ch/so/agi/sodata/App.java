@@ -306,6 +306,8 @@ public class App implements EntryPoint {
         tabsPanel.appendChild(dataTab);
         tabsPanel.appendChild(modelsTab);
         
+        // Karten. Möglichkeit nach Layergruppe ("Kartenthema") zu sortieren.
+        
         dataTab.appendChild(new DataElement(DATA_BASE_URL).element());
         
         topLevelContent.appendChild(tabsPanel.element());
