@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,11 +34,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import ch.so.agi.sodata.model.dataproductservice.SimpleDataproduct;
 import ch.so.agi.sodata.search.InvalidLuceneQueryException;
 import ch.so.agi.sodata.search.LuceneSearcher;
 import ch.so.agi.sodata.search.LuceneSearcherException;
+import ch.so.agi.sodata.search.LuceneSearcherMapLayers;
+import ch.so.agi.sodata.service.DataproductHarvester;
 
 @RestController
+@DependsOn(value = "dataproductHarvester")
 public class MainController {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -55,6 +60,12 @@ public class MainController {
     
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    private DataproductHarvester dataproductHarvester;
+
+    @Autowired
+    private LuceneSearcherMapLayers mapLayersSearcher;
 
     private Map<String, Dataset> datasetMap;
     
@@ -103,6 +114,36 @@ public class MainController {
     @GetMapping("/settings")
     public Settings settings() {
         return settings;
+    }
+    
+    @GetMapping("/maplayers")
+    public List<SimpleDataproduct> searchMaplayers(@RequestParam(value="query", required=false) String searchTerms) {
+        if (searchTerms == null) {
+            return dataproductHarvester.getMapLayers();
+        } else {
+            List<Map<String, String>> results = null;
+            try {
+                results = mapLayersSearcher.searchIndex(searchTerms, QUERY_MAX_RECORDS);
+                log.debug("Search for '" + searchTerms +"' found " + results.size() + " records");            
+            } catch (LuceneSearcherException | InvalidLuceneQueryException e) {
+                throw new IllegalStateException(e); 
+            }
+            
+            
+            // Bereits im Harvester eine Map, statt Liste?
+            // -> durch Map iterieren in Indexer.
+            // Wohl wildcard suche von anfang an.
+
+            
+            return null;
+//            List<SimpleDataproduct> resultList = results.stream()
+//                    .map(r -> {
+//                        return datasetMap.get(r.get("id"));
+//                    })
+//                    .collect(Collectors.toList());
+//            return resultList;
+        }
+        
     }
     
     
