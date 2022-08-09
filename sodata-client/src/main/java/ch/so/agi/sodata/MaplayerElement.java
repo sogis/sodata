@@ -58,6 +58,7 @@ public class MaplayerElement implements IsElement<HTMLElement> {
     // Datenmodell (Bean) müsste so ein, dass man "generisch" gruppieren kann. Z.B. nach Parent-Layer oder
     // Kategorie oder Amt. Ist schon fast so. GroupedDataproduct wäre nur noch GruppenBehälter.
     // Wäre aber GUI-mässig schon noch schwierig, weil die Darstellugn auch anders sein würde/müsse.
+    // besser noch id, title -> durchziehen.
     
     // Wie aufklappen?
     
