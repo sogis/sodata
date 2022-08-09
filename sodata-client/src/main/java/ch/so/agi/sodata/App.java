@@ -326,12 +326,10 @@ public class App implements EntryPoint {
 
         topLevelContent.appendChild(div().css("sodata-title").textContent("Geodaten Kanton Solothurn").element());
 
-        String infoString = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
-              + "<a class='default-link' href='https://geoweb.so.ch/geodaten/index.php' target='_blank'>https://geoweb.so.ch/geodaten/index.php</a> eirmod "
-              + "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et "
-              + "justo <a class='default-link' href='https://geo.so.ch/geodata' target='_blank'>https://geo.so.ch/geodata</a> "
-              + "duo dolores et ea rebum. Stet clita kasd gubergren <a class='default-link' href='ftp://geo.so.ch/' target='_blank'>ftp://geo.so.ch/</a>, "
-              + "no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+        String infoString = "Der Bezug von Geodaten wird zurzeit komplett überarbeitet. Mit der Übergangslösung können die Geodaten weiterhin direkt und einfach bezogen werden. Bei Fragen können sie <a class=\"default-link\" mailto=\"agi@bd.so.ch\">uns</a> "
+                + "gerne kontaktieren."
+                + "<br><br>"
+                + "Die Übergangslösung ist an die kommende Lösung angelehnt. Sie können sich auf mehr Funktionalitäten und Daten freuen.";
         topLevelContent.appendChild(div().css("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
 
         TextBox textBox = TextBox.create().setLabel("Suchbegriff");
