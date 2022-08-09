@@ -7,9 +7,13 @@ import static org.jboss.elemento.Elements.h;
 import static org.jboss.elemento.Elements.p;
 import static org.jboss.elemento.Elements.span;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.dominokit.domino.ui.badges.Badge;
 import org.dominokit.domino.ui.datatable.ColumnConfig;
@@ -25,6 +29,7 @@ import org.jboss.elemento.IsElement;
 import com.github.nmorel.gwtjackson.client.ObjectMapper;
 import com.google.gwt.core.client.GWT;
 
+import ch.so.agi.sodata.model.GroupedDataproduct;
 import ch.so.agi.sodata.model.SimpleDataproduct;
 import elemental2.dom.AbortController;
 import elemental2.dom.DomGlobal;
@@ -39,13 +44,31 @@ public class MaplayerElement implements IsElement<HTMLElement> {
     private String dataBaseUrl;
     private SimpleDataproductMapper mapper;
     private List<SimpleDataproduct> mapLayers;
-    private LocalListDataStore<SimpleDataproduct> listStore;
-    private DataTable<SimpleDataproduct> mapTable;
+    private List<GroupedDataproduct> groupedMapLayers;
+    List<GroupedDataproduct> listGroupedDataproduct;
+    private LocalListDataStore<GroupedDataproduct> listStore;
+    private DataTable<GroupedDataproduct> mapTable;
 
     private HashMap<String, String> formatLookUp = new HashMap<String, String>();
 
     private AbortController abortController = null;
 
+    
+    
+    // Datenmodell (Bean) müsste so ein, dass man "generisch" gruppieren kann. Z.B. nach Parent-Layer oder
+    // Kategorie oder Amt. Ist schon fast so. GroupedDataproduct wäre nur noch GruppenBehälter.
+    // Wäre aber GUI-mässig schon noch schwierig, weil die Darstellugn auch anders sein würde/müsse.
+    
+    // Wie aufklappen?
+    
+    // Wie GUI unterscheiden wenn es nur ein SimpleLayer ist?
+    
+    // Unaufgeklappt: preview resp. Abspruch zum WGC
+    // Aufgeklappt: einfache Tabelle mit Preview und Abspruch.
+    // Eventuell noch (i) für Modal mit Abstract oder so.
+
+    
+    
     public MaplayerElement(String dataBaseUrl) {
         root = div().element();
         
@@ -65,8 +88,23 @@ public class MaplayerElement implements IsElement<HTMLElement> {
         })
         .then(json -> {
             mapLayers = mapper.read(json);
-//            console.log(mapLayers.size());
             Collections.sort(mapLayers, new UmlautComparatorMaplayer());
+            
+            console.log(new Date().getTime());
+            Map<String, List<SimpleDataproduct>> mapLayersGrouped =
+                    mapLayers.stream().collect(Collectors.groupingBy(w -> w.getLayerGroupDataproductId()));
+            
+            listGroupedDataproduct = new ArrayList<GroupedDataproduct>();
+            mapLayersGrouped.entrySet().forEach(entry -> {
+                console.log("fuu");
+                GroupedDataproduct groupedDataproduct = new GroupedDataproduct();
+                groupedDataproduct.setId(entry.getKey());
+                groupedDataproduct.setTitle(entry.getValue().get(0).getLayerGroupDisplay());
+                listGroupedDataproduct.add(groupedDataproduct);
+            }); 
+            console.log(new Date().getTime());
+
+            
             init();
             return null;
         }).catch_(error -> {
@@ -89,68 +127,83 @@ public class MaplayerElement implements IsElement<HTMLElement> {
             @Override
             public void handleEvent(Event evt) {
                 textBox.clear();
-                listStore.setData(mapLayers);
+                
+                console.log(new Date().getTime());
+                Map<String, List<SimpleDataproduct>> mapLayersGrouped =
+                        mapLayers.stream().collect(Collectors.groupingBy(w -> w.getLayerGroupDataproductId()));
+                
+                listGroupedDataproduct = new ArrayList<GroupedDataproduct>();
+                mapLayersGrouped.entrySet().forEach(entry -> {
+                    console.log("fuu");
+                    GroupedDataproduct groupedDataproduct = new GroupedDataproduct();
+                    groupedDataproduct.setId(entry.getKey());
+                    groupedDataproduct.setTitle(entry.getValue().get(0).getLayerGroupDisplay());
+                    listGroupedDataproduct.add(groupedDataproduct);
+                }); 
+                console.log(new Date().getTime());
+
+                listStore.setData(listGroupedDataproduct);
 
                 //removeQueryParam(FILTER_PARAM_KEY);
             }
         });
         textBox.addRightAddOn(resetIcon);
 
-        textBox.addEventListener("keyup", event -> {
-            if (textBox.getValue().trim().length() == 0) {
-                listStore.setData(mapLayers);
-
-                //removeQueryParam(FILTER_PARAM_KEY);
-
-                return;
-            }
-
-            if (abortController != null) {
-                abortController.abort();
-            }
-
-            abortController = new AbortController();
-            final RequestInit init = RequestInit.create();
-            init.setSignal(abortController.signal);
-
-            DomGlobal.fetch("/maplayers?query=" + textBox.getValue().toLowerCase(), init)
-            .then(response -> {
-                if (!response.ok) {
-                    return null;
-                }
-                return response.text();
-            }).then(json -> {
-                List<SimpleDataproduct> filteredDataproducts = mapper.read(json);
-
-                Collections.sort(filteredDataproducts, new UmlautComparatorMaplayer());
-
-                listStore.setData(filteredDataproducts);
-
-                // if (ident == null) {
-                // updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
-                // }
-
-                abortController = null;
-
-                return null;
-            }).catch_(error -> {
-                console.log(error);
-                return null;
-            });
-        });
+//        textBox.addEventListener("keyup", event -> {
+//            if (textBox.getValue().trim().length() == 0) {
+//                listStore.setData(mapLayers);
+//
+//                //removeQueryParam(FILTER_PARAM_KEY);
+//
+//                return;
+//            }
+//
+//            if (abortController != null) {
+//                abortController.abort();
+//            }
+//
+//            abortController = new AbortController();
+//            final RequestInit init = RequestInit.create();
+//            init.setSignal(abortController.signal);
+//
+//            DomGlobal.fetch("/maplayers?query=" + textBox.getValue().toLowerCase(), init)
+//            .then(response -> {
+//                if (!response.ok) {
+//                    return null;
+//                }
+//                return response.text();
+//            }).then(json -> {
+//                List<SimpleDataproduct> filteredDataproducts = mapper.read(json);
+//
+//                Collections.sort(filteredDataproducts, new UmlautComparatorMaplayer());
+//
+//                listStore.setData(filteredDataproducts);
+//
+//                // if (ident == null) {
+//                // updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
+//                // }
+//
+//                abortController = null;
+//
+//                return null;
+//            }).catch_(error -> {
+//                console.log(error);
+//                return null;
+//            });
+//        });
         
         root.appendChild(textBox.element());
         
-        TableConfig<SimpleDataproduct> tableConfig = new TableConfig<>();
+        TableConfig<GroupedDataproduct> tableConfig = new TableConfig<>();
         tableConfig
-                .addColumn(ColumnConfig.<SimpleDataproduct>create("title", "Name")
+                .addColumn(ColumnConfig.<GroupedDataproduct>create("title", "Name")
                         .setShowTooltip(false)
                         .textAlign("left")
                         .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getTitle())))
-                .addColumn(ColumnConfig.<SimpleDataproduct>create("theme", "Kartenthema")
+                .addColumn(ColumnConfig.<GroupedDataproduct>create("theme", "Kartenthema")
                         .setShowTooltip(false)
                         .textAlign("left")
-                        .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getLayerGroupDisplay())));
+                        .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getId())));
 
 //                .addColumn(ColumnConfig.<SimpleDataproduct>create("model", "Datenmodell")
 //                        .setShowTooltip(false)
@@ -205,8 +258,10 @@ public class MaplayerElement implements IsElement<HTMLElement> {
 //                            }
 //                        }));
 
+        
+
         listStore = new LocalListDataStore<>();
-        listStore.setData(mapLayers);
+        listStore.setData(listGroupedDataproduct);
 
         mapTable = new DataTable<>(tableConfig, listStore);
         mapTable.css("dataset-table");
