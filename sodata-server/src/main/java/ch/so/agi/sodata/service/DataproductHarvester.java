@@ -21,10 +21,10 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ch.so.agi.sodata.model.SimpleDataproduct;
 import ch.so.agi.sodata.model.dataproductservice.Dataproduct;
 import ch.so.agi.sodata.model.dataproductservice.DataproductResponse;
 import ch.so.agi.sodata.model.dataproductservice.Result;
-import ch.so.agi.sodata.model.dataproductservice.SimpleDataproduct;
 import ch.so.agi.sodata.model.dataproductservice.Sublayer;
 
 @Service
@@ -35,9 +35,15 @@ public class DataproductHarvester {
     ObjectMapper objectMapper;
     
     private List<SimpleDataproduct> mapLayers;
+    
+    private Map<String,SimpleDataproduct> mapLayersMap;
 
     public List<SimpleDataproduct> getMapLayers() {
         return mapLayers;
+    }
+    
+    public Map<String,SimpleDataproduct> getMapLayersMap() {
+        return mapLayersMap;
     }
     
     @PostConstruct
@@ -74,6 +80,7 @@ public class DataproductHarvester {
         // Eventuell List mit gruppierten Objekten? 
 
         mapLayers = new ArrayList<SimpleDataproduct>();
+        mapLayersMap = new HashMap<String,SimpleDataproduct>();
         
         DataproductResponse dataproductResponse = objectMapper.readValue(response.body(), DataproductResponse.class);
         
@@ -103,11 +110,12 @@ public class DataproductHarvester {
                 log.info("ich bin ein singlelayer: "+ dataproductId);
                 SimpleDataproduct simpleDataproduct = new SimpleDataproduct();
                 simpleDataproduct.setDataproductId(dataproductId);
-                simpleDataproduct.setDisplay(rootDisplay);
+                simpleDataproduct.setTitle(rootDisplay);
                 simpleDataproduct.setLayerAbstract(rootAbstract);
                 simpleDataproduct.setVisibility(rootVisibility);
                 simpleDataproduct.setOpacity(rootOpacity);
-                mapLayers.add(simpleDataproduct);
+                //mapLayers.add(simpleDataproduct);
+                mapLayersMap.put(dataproductId, simpleDataproduct);
             } else {
                 log.info("ich bin eine layergroup: "+ dataproductId);
 
@@ -122,13 +130,14 @@ public class DataproductHarvester {
                         
                         SimpleDataproduct simpleDataproduct = new SimpleDataproduct();
                         simpleDataproduct.setDataproductId(sublayerName);
-                        simpleDataproduct.setDisplay(sublayerTitle);
+                        simpleDataproduct.setTitle(sublayerTitle);
                         simpleDataproduct.setLayerAbstract(rootAbstract + " " + sublayerAbstract);
                         simpleDataproduct.setVisibility(sublayerVisibility);
                         simpleDataproduct.setOpacity(sublayerOpacity);
                         simpleDataproduct.setLayerGroupDataproductId(rootDataproductId);
                         simpleDataproduct.setLayerGroupDisplay(rootDisplay);
-                        mapLayers.add(simpleDataproduct);
+                        //mapLayers.add(simpleDataproduct);
+                        mapLayersMap.put(sublayerName, simpleDataproduct);
                     }
                 }
             }

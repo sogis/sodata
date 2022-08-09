@@ -39,7 +39,7 @@ import org.springframework.stereotype.Repository;
 
 import ch.so.agi.sodata.AppProperties;
 import ch.so.agi.sodata.Dataset;
-import ch.so.agi.sodata.model.dataproductservice.SimpleDataproduct;
+import ch.so.agi.sodata.model.SimpleDataproduct;
 import ch.so.agi.sodata.service.DataproductHarvester;
 
 @Repository("LuceneSearcherMapLayers")
@@ -69,11 +69,13 @@ public class LuceneSearcherMapLayers {
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         IndexWriter writer = new IndexWriter(fsIndex, indexWriterConfig);
         
-        List<SimpleDataproduct> simpleDataproducts = dataproductHarvester.getMapLayers();
-        for (SimpleDataproduct simpleDataproduct : simpleDataproducts) {
+        Map<String,SimpleDataproduct> simpleDataproductsMap = dataproductHarvester.getMapLayersMap();
+        
+        for (var entry : simpleDataproductsMap.entrySet()) {
+            SimpleDataproduct simpleDataproduct = entry.getValue();
             Document document = new Document();
             document.add(new TextField("id", simpleDataproduct.getDataproductId(), Store.YES));
-            document.add(new TextField("title", simpleDataproduct.getDisplay(), Store.YES));
+            document.add(new TextField("title", simpleDataproduct.getTitle(), Store.YES));
             document.add(new TextField("abstract", simpleDataproduct.getLayerAbstract(), Store.YES));
             if (simpleDataproduct.getLayerGroupDataproductId() != null) {
                 document.add(new TextField("layerGroupId", simpleDataproduct.getLayerGroupDataproductId(), Store.YES));
@@ -122,7 +124,7 @@ public class LuceneSearcherMapLayers {
             reader = DirectoryReader.open(fsIndex);
             indexSearcher = new IndexSearcher(reader);
             queryParser = new QueryParser("title", analyzer); // 'display' is default field if we don't prefix search string
-            //queryParser.setAllowLeadingWildcard(true); // TODO: Feedback der Benutzer abwarten.
+            queryParser.setAllowLeadingWildcard(true); // TODO: Feedback der Benutzer abwarten.
             
             String luceneQueryString = "";
             String[] splitedQuery = queryString.split("\\s+");
@@ -131,7 +133,7 @@ public class LuceneSearcherMapLayers {
                 // Das Feld, welches bestimmend sein soll (also in der Suche zuoberst gelistet), bekommt
                 // einen sehr hohen Boost. Wobei wir im GUI wieder alphabetisch sortieren. Es sorgt aber
                 // auch dafür, dass Objekte gefunden werden, die wir für passender halten.
-                luceneQueryString += "(id:" + token + "*^100 OR title:" + token + "*^10 OR abstract:" + token + "* OR layerGroupId:" + token + "* OR layerGroupDisplay:" + token + "*)";
+                luceneQueryString += "(id:*" + token + "*^100 OR title:*" + token + "*^10 OR abstract:*" + token + "* OR layerGroupId:*" + token + "* OR layerGroupDisplay:*" + token + "*)";
                 if (i<splitedQuery.length-1) {
                     luceneQueryString += " AND ";
                 }

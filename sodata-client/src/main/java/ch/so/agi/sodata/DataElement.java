@@ -72,7 +72,6 @@ public class DataElement implements IsElement<HTMLElement> {
         })
         .then(json -> {
             datasets = mapper.read(json);
-            console.log(datasets.size());
             Collections.sort(datasets, new UmlautComparator());
             init();
             return null;

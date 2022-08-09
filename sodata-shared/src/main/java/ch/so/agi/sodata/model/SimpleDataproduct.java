@@ -1,8 +1,8 @@
-package ch.so.agi.sodata.model.dataproductservice;
+package ch.so.agi.sodata.model;
 
 public class SimpleDataproduct {
     private String dataproductId;
-    private String display;
+    private String title;
     private String layerAbstract;
     private boolean visibility;
     private int opacity;
@@ -15,11 +15,11 @@ public class SimpleDataproduct {
     public void setDataproductId(String dataproductId) {
         this.dataproductId = dataproductId;
     }
-    public String getDisplay() {
-        return display;
+    public String getTitle() {
+        return title;
     }
-    public void setDisplay(String display) {
-        this.display = display;
+    public void setTitle(String title) {
+        this.title = title;
     }
     public String getLayerAbstract() {
         return layerAbstract;

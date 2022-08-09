@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import ch.so.agi.sodata.model.dataproductservice.SimpleDataproduct;
+import ch.so.agi.sodata.model.SimpleDataproduct;
 import ch.so.agi.sodata.search.InvalidLuceneQueryException;
 import ch.so.agi.sodata.search.LuceneSearcher;
 import ch.so.agi.sodata.search.LuceneSearcherException;
@@ -119,7 +119,10 @@ public class MainController {
     @GetMapping("/maplayers")
     public List<SimpleDataproduct> searchMaplayers(@RequestParam(value="query", required=false) String searchTerms) {
         if (searchTerms == null) {
-            return dataproductHarvester.getMapLayers();
+            List<SimpleDataproduct> resultList = dataproductHarvester.getMapLayersMap().entrySet().stream()
+                    .map(Map.Entry::getValue)
+                    .collect(Collectors.toList());
+            return resultList;            
         } else {
             List<Map<String, String>> results = null;
             try {
@@ -129,19 +132,13 @@ public class MainController {
                 throw new IllegalStateException(e); 
             }
             
-            
-            // Bereits im Harvester eine Map, statt Liste?
-            // -> durch Map iterieren in Indexer.
             // Wohl wildcard suche von anfang an.
 
             
-            return null;
-//            List<SimpleDataproduct> resultList = results.stream()
-//                    .map(r -> {
-//                        return datasetMap.get(r.get("id"));
-//                    })
-//                    .collect(Collectors.toList());
-//            return resultList;
+            List<SimpleDataproduct> resultList = results.stream().map(r -> {
+                return dataproductHarvester.getMapLayersMap().get(r.get("id"));
+            }).collect(Collectors.toList());
+            return resultList;
         }
         
     }
