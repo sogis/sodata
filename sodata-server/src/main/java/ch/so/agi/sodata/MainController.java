@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
@@ -117,12 +118,35 @@ public class MainController {
     }
     
     @GetMapping("/maplayers")
-    public List<SimpleDataproduct> searchMaplayers(@RequestParam(value="query", required=false) String searchTerms) {
+    public Map<String, List<SimpleDataproduct>> searchMaplayers(@RequestParam(value="query", required=false) String searchTerms) {
         if (searchTerms == null) {
-            List<SimpleDataproduct> resultList = dataproductHarvester.getMapLayersMap().entrySet().stream()
-                    .map(Map.Entry::getValue)
-                    .collect(Collectors.toList());
-            return resultList;            
+//            List<SimpleDataproduct> resultList = dataproductHarvester.getMapLayersMap().entrySet().stream()
+//                    .map(Map.Entry::getValue)
+//                    .collect(Collectors.toList());
+            
+            List<SimpleDataproduct> resultList = dataproductHarvester.getMapLayers();
+            
+            Map<String, List<SimpleDataproduct>> mapLayersGrouped =
+                    resultList.stream().collect(Collectors.groupingBy(w -> w.getLayerGroupDataproductId()));
+
+//            Map<GroupLayer, List<SimpleDataproduct>> mapLayersGrouped =
+//                    resultList.stream().collect(Collectors.groupingBy(w -> {
+//                        GroupLayer groupLayer = new GroupLayer();
+//                        groupLayer.setId(w.getLayerGroupDataproductId());
+//                        groupLayer.setTitle(w.getLayerGroupDisplay());
+//                        return groupLayer;
+//                    }));            
+//            Comparator<GroupLayer> byName = (GroupLayer o1, GroupLayer o2)-> o1.getTitle().compareTo(o2.getTitle());
+//            Map<GroupLayer, List<SimpleDataproduct>> result = mapLayersGrouped.entrySet()
+//                    .stream()
+//                    .sorted(Map.Entry.comparingByKey(byName))
+//                    .collect(Collectors.toMap(
+//                      Map.Entry::getKey, 
+//                      Map.Entry::getValue, 
+//                      (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+            
+            
+            return mapLayersGrouped;            
         } else {
             List<Map<String, String>> results = null;
             try {
@@ -132,13 +156,14 @@ public class MainController {
                 throw new IllegalStateException(e); 
             }
             
-            // Wohl wildcard suche von anfang an.
-
-            
             List<SimpleDataproduct> resultList = results.stream().map(r -> {
                 return dataproductHarvester.getMapLayersMap().get(r.get("id"));
             }).collect(Collectors.toList());
-            return resultList;
+            
+            Map<String, List<SimpleDataproduct>> mapLayersGrouped =
+                    resultList.stream().collect(Collectors.groupingBy(w -> w.getLayerGroupDataproductId()));
+
+            return mapLayersGrouped;
         }
         
     }

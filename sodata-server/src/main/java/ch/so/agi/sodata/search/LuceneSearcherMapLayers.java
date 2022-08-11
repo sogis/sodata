@@ -69,10 +69,27 @@ public class LuceneSearcherMapLayers {
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         IndexWriter writer = new IndexWriter(fsIndex, indexWriterConfig);
         
-        Map<String,SimpleDataproduct> simpleDataproductsMap = dataproductHarvester.getMapLayersMap();
+        List<SimpleDataproduct> simpleDataproducts = dataproductHarvester.getMapLayers();
+//        Map<String,SimpleDataproduct> simpleDataproductsMap = dataproductHarvester.getMapLayersMap();
         
-        for (var entry : simpleDataproductsMap.entrySet()) {
-            SimpleDataproduct simpleDataproduct = entry.getValue();
+//        for (var entry : simpleDataproductsMap.entrySet()) {
+//            SimpleDataproduct simpleDataproduct = entry.getValue();
+//            Document document = new Document();
+//            document.add(new TextField("id", simpleDataproduct.getDataproductId(), Store.YES));
+//            document.add(new TextField("title", simpleDataproduct.getDisplay(), Store.YES));
+//            document.add(new TextField("abstract", simpleDataproduct.getLayerAbstract(), Store.YES));
+//            if (simpleDataproduct.getLayerGroupDataproductId() != null) {
+//                document.add(new TextField("layerGroupId", simpleDataproduct.getLayerGroupDataproductId(), Store.YES));
+//            }
+//            if (simpleDataproduct.getLayerGroupDisplay() != null) {
+//                document.add(new TextField("layerGroupTitle", simpleDataproduct.getLayerGroupDisplay(), Store.YES));
+//            }
+//            document.add(new StoredField("visibility", Boolean.toString(simpleDataproduct.isVisibility())));
+//            document.add(new StoredField("opacity", String.valueOf(simpleDataproduct.getOpacity())));
+//            writer.addDocument(document);
+//        }
+
+        for (SimpleDataproduct simpleDataproduct : simpleDataproducts) {
             Document document = new Document();
             document.add(new TextField("id", simpleDataproduct.getDataproductId(), Store.YES));
             document.add(new TextField("title", simpleDataproduct.getTitle(), Store.YES));

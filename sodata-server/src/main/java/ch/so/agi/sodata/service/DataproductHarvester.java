@@ -86,6 +86,8 @@ public class DataproductHarvester {
         
         for (Result result : dataproductResponse.getResults()) {
             Dataproduct dataproduct = result.getDataproduct();
+            log.info(dataproduct.getDataproductId());
+            
             
             String dataproductId =  result.getDataproduct().getDataproductId();
             List<Sublayer> dataproductSublayers = result.getDataproduct().getSublayers();
@@ -100,47 +102,52 @@ public class DataproductHarvester {
             Map<String, Object> mapLayerMap = objectMapper.readValue(response.body(), HashMap.class);
             List<Map> infoMap = (List<Map>) mapLayerMap.get(dataproductId);
             
-            String rootDataproductId = dataproductId;
-            String rootDisplay = dataproduct.getDisplay();
-            String rootAbstract = (String) infoMap.get(0).get("abstract");
-            boolean rootVisibility = (boolean) infoMap.get(0).get("visibility");
-            int rootOpacity = (int) infoMap.get(0).get("opacity");
+            // Weil die dataproduct-Antwort auch alle Kinder einer Gruppe enthält und wir
+            // sowieso gruppiert sein wollen, können wir gleich so modellieren.
             
-            if (dataproduct.getSublayers() == null) {
-                log.info("ich bin ein singlelayer: "+ dataproductId);
-                SimpleDataproduct simpleDataproduct = new SimpleDataproduct();
-                simpleDataproduct.setDataproductId(dataproductId);
-                simpleDataproduct.setTitle(rootDisplay);
-                simpleDataproduct.setLayerAbstract(rootAbstract);
-                simpleDataproduct.setVisibility(rootVisibility);
-                simpleDataproduct.setOpacity(rootOpacity);
-                //mapLayers.add(simpleDataproduct);
-                mapLayersMap.put(dataproductId, simpleDataproduct);
-            } else {
-                log.info("ich bin eine layergroup: "+ dataproductId);
-
-                for (var layerInfo : infoMap) {
-                    List<Map<String,Object>> sublayers = (List<Map<String,Object>>) layerInfo.get("sublayers");
-                    for (Map<String,Object> sublayer : sublayers) {
-                        String sublayerName = (String) sublayer.get("name");
-                        String sublayerTitle = (String) sublayer.get("title");
-                        String sublayerAbstract = (String) sublayer.get("abstract");
-                        boolean sublayerVisibility = (boolean) sublayer.get("visibility");
-                        int sublayerOpacity = (int) sublayer.get("opacity");
-                        
-                        SimpleDataproduct simpleDataproduct = new SimpleDataproduct();
-                        simpleDataproduct.setDataproductId(sublayerName);
-                        simpleDataproduct.setTitle(sublayerTitle);
-                        simpleDataproduct.setLayerAbstract(rootAbstract + " " + sublayerAbstract);
-                        simpleDataproduct.setVisibility(sublayerVisibility);
-                        simpleDataproduct.setOpacity(sublayerOpacity);
-                        simpleDataproduct.setLayerGroupDataproductId(rootDataproductId);
-                        simpleDataproduct.setLayerGroupDisplay(rootDisplay);
-                        //mapLayers.add(simpleDataproduct);
-                        mapLayersMap.put(sublayerName, simpleDataproduct);
-                    }
-                }
-            }
+//            String rootDataproductId = dataproductId;
+//            String rootDisplay = dataproduct.getDisplay();
+//            String rootAbstract = (String) infoMap.get(0).get("abstract");
+//            boolean rootVisibility = (boolean) infoMap.get(0).get("visibility");
+//            int rootOpacity = (int) infoMap.get(0).get("opacity");
+//            
+//            if (dataproduct.getSublayers() == null) {
+//                log.info("ich bin ein singlelayer: "+ dataproductId);
+//                SimpleDataproduct simpleDataproduct = new SimpleDataproduct();
+//                simpleDataproduct.setDataproductId(dataproductId);
+//                simpleDataproduct.setTitle(rootDisplay);
+//                simpleDataproduct.setLayerAbstract(rootAbstract);
+//                simpleDataproduct.setVisibility(rootVisibility);
+//                simpleDataproduct.setOpacity(rootOpacity);
+//                simpleDataproduct.setLayerGroupDataproductId(rootDataproductId);
+//                simpleDataproduct.setLayerGroupDisplay(rootDisplay);
+//                mapLayers.add(simpleDataproduct);
+//                //mapLayersMap.put(dataproductId, simpleDataproduct);
+//            } else {
+//                log.info("ich bin eine layergroup: "+ dataproductId);
+//
+//                for (var layerInfo : infoMap) {
+//                    List<Map<String,Object>> sublayers = (List<Map<String,Object>>) layerInfo.get("sublayers");
+//                    for (Map<String,Object> sublayer : sublayers) {
+//                        String sublayerName = (String) sublayer.get("name");
+//                        String sublayerTitle = (String) sublayer.get("title");
+//                        String sublayerAbstract = (String) sublayer.get("abstract");
+//                        boolean sublayerVisibility = (boolean) sublayer.get("visibility");
+//                        int sublayerOpacity = (int) sublayer.get("opacity");
+//                        
+//                        SimpleDataproduct simpleDataproduct = new SimpleDataproduct();
+//                        simpleDataproduct.setDataproductId(sublayerName);
+//                        simpleDataproduct.setTitle(sublayerTitle);
+//                        simpleDataproduct.setLayerAbstract(rootAbstract + " " + sublayerAbstract);
+//                        simpleDataproduct.setVisibility(sublayerVisibility);
+//                        simpleDataproduct.setOpacity(sublayerOpacity);
+//                        simpleDataproduct.setLayerGroupDataproductId(rootDataproductId);
+//                        simpleDataproduct.setLayerGroupDisplay(rootDisplay);
+//                        mapLayers.add(simpleDataproduct);
+//                        //mapLayersMap.put(sublayerName, simpleDataproduct);
+//                    }
+//                }
+//            }
         }
     }
 }
