@@ -336,7 +336,7 @@ public class App implements EntryPoint {
         tableConfig
                 //.setFixed(true)
                 .addColumn(
-                        ColumnConfig.<Dataset>create("title", "Name")
+                        ColumnConfig.<Dataset>create("title", "Thema")
                             .setShowTooltip(false)
                             .textAlign("left")
                             //.asHeader()
