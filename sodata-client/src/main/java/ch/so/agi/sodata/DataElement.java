@@ -149,7 +149,7 @@ public class DataElement implements IsElement<HTMLElement> {
         
         TableConfig<Dataset> tableConfig = new TableConfig<>();
         tableConfig
-                .addColumn(ColumnConfig.<Dataset>create("title", "Name")
+                .addColumn(ColumnConfig.<Dataset>create("title", "Thema")
                         .setShowTooltip(false)
                         .textAlign("left")
                         .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getTitle())))

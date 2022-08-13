@@ -1,11 +1,7 @@
 package ch.so.agi.sodata;
 
 import static elemental2.dom.DomGlobal.console;
-import static org.jboss.elemento.Elements.a;
-import static org.jboss.elemento.Elements.div;
-import static org.jboss.elemento.Elements.h;
-import static org.jboss.elemento.Elements.p;
-import static org.jboss.elemento.Elements.span;
+import static org.jboss.elemento.Elements.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,54 +25,46 @@ import org.jboss.elemento.IsElement;
 import com.github.nmorel.gwtjackson.client.ObjectMapper;
 import com.google.gwt.core.client.GWT;
 
-import ch.so.agi.sodata.model.GroupedDataproduct;
-import ch.so.agi.sodata.model.SimpleDataproduct;
+import ch.so.agi.sodata.model.Dataproduct;
 import elemental2.dom.AbortController;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.Element;
 import elemental2.dom.Event;
 import elemental2.dom.EventListener;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTableCellElement;
+import elemental2.dom.HTMLTableElement;
+import elemental2.dom.HTMLTableRowElement;
+import elemental2.dom.HTMLTableSectionElement;
+import elemental2.dom.Node;
 import elemental2.dom.RequestInit;
 
 public class MaplayerElement implements IsElement<HTMLElement> {
     private final HTMLElement root;
     
     private String dataBaseUrl;
-    private SimpleDataproductMapper mapper;
-    private List<SimpleDataproduct> mapLayers;
-    private List<GroupedDataproduct> groupedMapLayers;
-    List<GroupedDataproduct> listGroupedDataproduct;
-    private LocalListDataStore<GroupedDataproduct> listStore;
-    private DataTable<GroupedDataproduct> mapTable;
+    private DataproductMapper mapper;
+    private List<Dataproduct> mapLayers;
+    private List<Dataproduct> sortedMapLayers;
+//    private List<GroupedDataproduct> groupedMapLayers;
+//    List<GroupedDataproduct> listGroupedDataproduct;
+    private LocalListDataStore<Dataproduct> listStore;
+    private DataTable<Dataproduct> mapTable;
 
     private HashMap<String, String> formatLookUp = new HashMap<String, String>();
 
     private AbortController abortController = null;
 
-    
-    
-    // Datenmodell (Bean) müsste so ein, dass man "generisch" gruppieren kann. Z.B. nach Parent-Layer oder
-    // Kategorie oder Amt. Ist schon fast so. GroupedDataproduct wäre nur noch GruppenBehälter.
-    // Wäre aber GUI-mässig schon noch schwierig, weil die Darstellugn auch anders sein würde/müsse.
-    // besser noch id, title -> durchziehen.
-    
-    // Wie aufklappen?
-    
-    // Wie GUI unterscheiden wenn es nur ein SimpleLayer ist?
-    
-    // Unaufgeklappt: preview resp. Abspruch zum WGC
-    // Aufgeklappt: einfache Tabelle mit Preview und Abspruch.
-    // Eventuell noch (i) für Modal mit Abstract oder so.
+    private HTMLTableElement rootTable = table().element();
+    private HTMLTableSectionElement mapsTableBody = tbody().element();
 
-    
-    
     public MaplayerElement(String dataBaseUrl) {
         root = div().element();
         
         this.dataBaseUrl = dataBaseUrl;
                 
         // Create the json-mapper
-        mapper = GWT.create(SimpleDataproductMapper.class);
+        mapper = GWT.create(DataproductMapper.class);
 
         // Get all datasets for initialize the table.
         DomGlobal.fetch("/maplayers")
@@ -89,23 +77,7 @@ public class MaplayerElement implements IsElement<HTMLElement> {
         })
         .then(json -> {
             mapLayers = mapper.read(json);
-            Collections.sort(mapLayers, new UmlautComparatorMaplayer());
-            
-            console.log(new Date().getTime());
-            Map<String, List<SimpleDataproduct>> mapLayersGrouped =
-                    mapLayers.stream().collect(Collectors.groupingBy(w -> w.getLayerGroupDataproductId()));
-            
-            listGroupedDataproduct = new ArrayList<GroupedDataproduct>();
-            mapLayersGrouped.entrySet().forEach(entry -> {
-                console.log("fuu");
-                GroupedDataproduct groupedDataproduct = new GroupedDataproduct();
-                groupedDataproduct.setId(entry.getKey());
-                groupedDataproduct.setTitle(entry.getValue().get(0).getLayerGroupDisplay());
-                listGroupedDataproduct.add(groupedDataproduct);
-            }); 
-            console.log(new Date().getTime());
-
-            
+            Collections.sort(mapLayers, new UmlautComparatorMaplayer());            
             init();
             return null;
         }).catch_(error -> {
@@ -129,156 +101,147 @@ public class MaplayerElement implements IsElement<HTMLElement> {
             public void handleEvent(Event evt) {
                 textBox.clear();
                 
-                console.log(new Date().getTime());
-                Map<String, List<SimpleDataproduct>> mapLayersGrouped =
-                        mapLayers.stream().collect(Collectors.groupingBy(w -> w.getLayerGroupDataproductId()));
-                
-                listGroupedDataproduct = new ArrayList<GroupedDataproduct>();
-                mapLayersGrouped.entrySet().forEach(entry -> {
-                    console.log("fuu");
-                    GroupedDataproduct groupedDataproduct = new GroupedDataproduct();
-                    groupedDataproduct.setId(entry.getKey());
-                    groupedDataproduct.setTitle(entry.getValue().get(0).getLayerGroupDisplay());
-                    listGroupedDataproduct.add(groupedDataproduct);
-                }); 
-                console.log(new Date().getTime());
-
-                listStore.setData(listGroupedDataproduct);
+                Collections.sort(mapLayers, new UmlautComparatorMaplayer());
 
                 //removeQueryParam(FILTER_PARAM_KEY);
             }
         });
         textBox.addRightAddOn(resetIcon);
 
-//        textBox.addEventListener("keyup", event -> {
-//            if (textBox.getValue().trim().length() == 0) {
+        textBox.addEventListener("keyup", event -> {
+            if (textBox.getValue().trim().length() == 0) {
 //                listStore.setData(mapLayers);
-//
-//                //removeQueryParam(FILTER_PARAM_KEY);
-//
-//                return;
-//            }
-//
-//            if (abortController != null) {
-//                abortController.abort();
-//            }
-//
-//            abortController = new AbortController();
-//            final RequestInit init = RequestInit.create();
-//            init.setSignal(abortController.signal);
-//
-//            DomGlobal.fetch("/maplayers?query=" + textBox.getValue().toLowerCase(), init)
-//            .then(response -> {
-//                if (!response.ok) {
-//                    return null;
-//                }
-//                return response.text();
-//            }).then(json -> {
-//                List<SimpleDataproduct> filteredDataproducts = mapper.read(json);
-//
-//                Collections.sort(filteredDataproducts, new UmlautComparatorMaplayer());
-//
-//                listStore.setData(filteredDataproducts);
-//
-//                // if (ident == null) {
-//                // updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
-//                // }
-//
-//                abortController = null;
-//
-//                return null;
-//            }).catch_(error -> {
-//                console.log(error);
-//                return null;
-//            });
-//        });
+
+                //removeQueryParam(FILTER_PARAM_KEY);
+
+                return;
+            }
+
+            if (abortController != null) {
+                abortController.abort();
+            }
+
+            abortController = new AbortController();
+            final RequestInit init = RequestInit.create();
+            init.setSignal(abortController.signal);
+
+            DomGlobal.fetch("/maplayers?query=" + textBox.getValue().toLowerCase(), init)
+            .then(response -> {
+                if (!response.ok) {
+                    return null;
+                }
+                return response.text();
+            }).then(json -> {
+                mapLayers = mapper.read(json);
+
+                Collections.sort(mapLayers, new UmlautComparatorMaplayer());
+                
+                // TODO 
+                removeResults();
+                
+                
+                //TODO
+                for (Dataproduct dataproduct : mapLayers) {
+                    mapsTableBody
+                            .appendChild(
+                                    tr().add(td().add(dataproduct.getTitle())).add(td().add("")).element());
+                }
+                
+
+                abortController = null;
+
+                return null;
+            }).catch_(error -> {
+                console.log(error);
+                return null;
+            });
+        });
         
         root.appendChild(textBox.element());
         
-        TableConfig<GroupedDataproduct> tableConfig = new TableConfig<>();
-        tableConfig
-                .addColumn(ColumnConfig.<GroupedDataproduct>create("title", "Name")
-                        .setShowTooltip(false)
-                        .textAlign("left")
-                        .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getTitle())))
-                .addColumn(ColumnConfig.<GroupedDataproduct>create("theme", "Kartenthema")
-                        .setShowTooltip(false)
-                        .textAlign("left")
-                        .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getId())));
-
-//                .addColumn(ColumnConfig.<SimpleDataproduct>create("model", "Datenmodell")
-//                        .setShowTooltip(false)
-//                        .textAlign("center")
-//                        .setCellRenderer(cell -> {
-//                            if (cell.getRecord().getModel() != null && cell.getRecord().getModel().length() > 0) {
-//                                HTMLElement modelLinkElement = div()
-//                                        .add(Icons.ALL.launch_mdi().style().setCursor("pointer"))
-//                                        .element();
-//                                HTMLElement modelLink = a().attr("class", "icon-link")
-//                                        .attr("href",
-//                                                "https://geo.so.ch/modelfinder/?expanded=true&query="
-//                                                        + cell.getRecord().getModel())
-//                                        .attr("target", "_blank")
-//                                        .add(modelLinkElement)
-//                                        .element();
-//
-//                                return modelLink;
-//                            }
-//                            return span().element();
-//                        }))
-//                .addColumn(ColumnConfig.<SimpleDataproduct>create("formats", "Daten herunterladen")
-//                        .setShowTooltip(false)
-//                        .textAlign("left")
-//                        .setCellRenderer(cell -> {
-//                            HTMLElement badgesElement = div().element();
-//
-//                            if (cell.getRecord().getSubunits() != null) {
-//                                HTMLElement regionSelectionElement = a().css("default-link")
-//                                        .textContent("Gebietsauswahl notwendig")
-//                                        .attr("href", cell.getRecord().getSubunits())
-//                                        .attr("target", "_blank")
-//                                        .element();
-//                                return regionSelectionElement;
-//                            } else {
-//                                for (String fileStr : cell.getRecord().getFileFormats()) {
-//                                    badgesElement.appendChild(a().css("badge-link")
-//                                            .attr("href",
-//                                                    dataBaseUrl + cell.getRecord().getId() + "_" + fileStr + ".zip")
-//                                            .attr("target", "_blank")
-//                                            .add(Badge.create(formatLookUp.get(fileStr))
-//                                                    .setBackground(Color.GREY_LIGHTEN_2)
-//                                                    .style()
-//                                                    .setMarginRight("10px")
-//                                                    .setMarginTop("5px")
-//                                                    .setMarginBottom("5px")
-//                                                    .get()
-//                                                    .element())
-//                                            .element());
-//                                }
-//                                return badgesElement;
-//                            }
-//                        }));
-
         
+        // TODO die Tabelle muss früher initialisert werden
+        //HTMLTableElement rootTable = table().element();
+        rootTable.id = "maps-table";
 
-        listStore = new LocalListDataStore<>();
-        listStore.setData(listGroupedDataproduct);
+        rootTable.appendChild(colgroup()
+                .add(col().attr("span", "1").style("width: 2%"))
+                .add(col().attr("span", "1").style("width: 2%"))
+                .add(col().attr("span", "1").style("width: 56%"))
+                .add(col().attr("span", "1").style("width: 20%"))
+                .add(col().attr("span", "1").style("width: 6%"))
+                .add(col().attr("span", "1").style("width: 7%"))
+                .add(col().attr("span", "1").style("width: 7%"))
+                .element());
+        HTMLTableSectionElement mapsTableHead = thead()
+                .add(tr()
+                        .add(th().add(""))
+                        .add(th().attr("colspan", "2").add("Kartenebene"))
+                        .add(th().add("Thema")) // Können mehrere sein....
+                        .add(th().add("Beschreibung"))
+                        .add(th().add("Vorschau"))
+                        .add(th().add("Absprung")))
+                .element();
+        rootTable.appendChild(mapsTableHead);
 
-        mapTable = new DataTable<>(tableConfig, listStore);
-        mapTable.css("dataset-table");
-        //datasetTable.setId("dataset-table");
-        mapTable.noStripes();
-        mapTable.load();
+        //HTMLTableSectionElement mapsTableBody = tbody().element();
+        //mapsTableBody.id = "maps-table-body";
         
-        root.appendChild(mapTable.element());
+        for (Dataproduct dataproduct : mapLayers) {
+            HTMLTableSectionElement tbodyParent = tbody().element();
+            
+//            tbodyParent
+//                    .appendChild(
+//                            tr().add(td().add("+")).add(td().add(dataproduct.getTitle())).add(td().add("")).element());
+            
+            HTMLTableRowElement tr = tr().element();
+            if (dataproduct.getSublayers() != null) {
+                HTMLElement sublayersIcon = Icons.ALL.plus_mdi().style().setCursor("pointer").get().element();
+                tr.appendChild(td().add(sublayersIcon).element());
+            } else {
+                HTMLElement layerIcon = Icons.ALL.layers_outline_mdi().style().setCursor("pointer").get().element();
+                tr.appendChild(td().add(layerIcon).element());
+            }
+            
+            tr.appendChild(td().attr("colspan", "2").add(dataproduct.getTitle()).element());
+            tr.appendChild(td().add("").element());
+            
+            tbodyParent.appendChild(tr);
+            rootTable.appendChild(tbodyParent);
+            
+            if (dataproduct.getSublayers() != null) {
+                HTMLTableSectionElement tbodyChildren = tbody().css("hide").element();
+                for (Dataproduct sublayer : dataproduct.getSublayers()) {
+                    HTMLElement layerIcon = Icons.ALL.layers_outline_mdi().style().setCursor("pointer").get().element();                    
+                    tbodyChildren
+                        .appendChild(
+                            tr().add(td().add("")).add(td().add(layerIcon)).add(td().add(sublayer.getTitle())).add(td().add("")).element());
+                }
+                rootTable.appendChild(tbodyChildren);
+                
+                tbodyParent.addEventListener("click", new EventListener() {
+                    @Override
+                    public void handleEvent(Event evt) {
+                        tbodyChildren.classList.toggle("hide");
+                    }
+                });
+            }
+        }
+
+        root.appendChild(rootTable);        
     }
     
-    
+    private void removeResults() {
+        while(mapsTableBody.firstChild != null) {
+            mapsTableBody.removeChild(mapsTableBody.firstChild);
+        }        
+    }
+
     @Override
     public HTMLElement element() {
         return root;
     }
     
-    public static interface SimpleDataproductMapper extends ObjectMapper<List<SimpleDataproduct>> {
+    public static interface DataproductMapper extends ObjectMapper<List<Dataproduct>> {
     }
 }

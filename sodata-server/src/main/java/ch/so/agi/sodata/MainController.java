@@ -7,8 +7,10 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,7 +37,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import ch.so.agi.sodata.model.SimpleDataproduct;
+import ch.so.agi.sodata.model.Dataproduct;
 import ch.so.agi.sodata.search.InvalidLuceneQueryException;
 import ch.so.agi.sodata.search.LuceneSearcher;
 import ch.so.agi.sodata.search.LuceneSearcherException;
@@ -70,6 +72,10 @@ public class MainController {
 
     private Map<String, Dataset> datasetMap;
     
+    private List<Dataproduct> dataproducts;
+
+    private Map<String,Dataproduct> dataproductsMap;
+
     // TODO
     
     // Absoluter Pfad zu themepublicatins.xml in application.properties als ENV mit Default.
@@ -103,7 +109,11 @@ public class MainController {
 //                dataset.setSubunits(filename + ".json");
 //                dataset.setSubunitsBase64(null); // Base64 soll nicht zum Client geschickt werden.
 //            }            
-            datasetMap.put(dataset.getId(), dataset);            
+            datasetMap.put(dataset.getId(), dataset);       
+            
+            
+            dataproducts = dataproductHarvester.getDataproducts();
+            dataproductsMap = dataproductHarvester.getDataproductsMap();            
         }
     }
     
@@ -118,54 +128,30 @@ public class MainController {
     }
     
     @GetMapping("/maplayers")
-    public Map<String, List<SimpleDataproduct>> searchMaplayers(@RequestParam(value="query", required=false) String searchTerms) {
+    public List<Dataproduct> searchMaplayers(@RequestParam(value="query", required=false) String searchTerms) {
         if (searchTerms == null) {
-//            List<SimpleDataproduct> resultList = dataproductHarvester.getMapLayersMap().entrySet().stream()
-//                    .map(Map.Entry::getValue)
-//                    .collect(Collectors.toList());
-            
-            List<SimpleDataproduct> resultList = dataproductHarvester.getMapLayers();
-            
-            Map<String, List<SimpleDataproduct>> mapLayersGrouped =
-                    resultList.stream().collect(Collectors.groupingBy(w -> w.getLayerGroupDataproductId()));
-
-//            Map<GroupLayer, List<SimpleDataproduct>> mapLayersGrouped =
-//                    resultList.stream().collect(Collectors.groupingBy(w -> {
-//                        GroupLayer groupLayer = new GroupLayer();
-//                        groupLayer.setId(w.getLayerGroupDataproductId());
-//                        groupLayer.setTitle(w.getLayerGroupDisplay());
-//                        return groupLayer;
-//                    }));            
-//            Comparator<GroupLayer> byName = (GroupLayer o1, GroupLayer o2)-> o1.getTitle().compareTo(o2.getTitle());
-//            Map<GroupLayer, List<SimpleDataproduct>> result = mapLayersGrouped.entrySet()
-//                    .stream()
-//                    .sorted(Map.Entry.comparingByKey(byName))
-//                    .collect(Collectors.toMap(
-//                      Map.Entry::getKey, 
-//                      Map.Entry::getValue, 
-//                      (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-            
-            
-            return mapLayersGrouped;            
+            return dataproducts;            
         } else {
             List<Map<String, String>> results = null;
             try {
                 results = mapLayersSearcher.searchIndex(searchTerms, QUERY_MAX_RECORDS);
-                log.debug("Search for '" + searchTerms +"' found " + results.size() + " records");            
+                log.debug("Search for '" + searchTerms +"' found " + results.size() + " records");                
             } catch (LuceneSearcherException | InvalidLuceneQueryException e) {
                 throw new IllegalStateException(e); 
             }
-            
-            List<SimpleDataproduct> resultList = results.stream().map(r -> {
-                return dataproductHarvester.getMapLayersMap().get(r.get("id"));
-            }).collect(Collectors.toList());
-            
-            Map<String, List<SimpleDataproduct>> mapLayersGrouped =
-                    resultList.stream().collect(Collectors.groupingBy(w -> w.getLayerGroupDataproductId()));
-
-            return mapLayersGrouped;
+            var resultList = new ArrayList<Dataproduct>();
+            var resultSet = new HashSet<Dataproduct>();
+            if (results.size() > 0) {
+                for (var result : results) {
+                    if(result.get("parentIdent") != null) {
+                        resultSet.add(dataproductsMap.get(result.get("parentIdent")));
+                    } else {
+                        resultSet.add(dataproductsMap.get(result.get("ident")));
+                    }
+                }
+            }
+            return new ArrayList<>(resultSet);
         }
-        
     }
     
     

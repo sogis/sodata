@@ -39,7 +39,7 @@ import org.springframework.stereotype.Repository;
 
 import ch.so.agi.sodata.AppProperties;
 import ch.so.agi.sodata.Dataset;
-import ch.so.agi.sodata.model.SimpleDataproduct;
+import ch.so.agi.sodata.model.Dataproduct;
 import ch.so.agi.sodata.service.DataproductHarvester;
 
 @Repository("LuceneSearcherMapLayers")
@@ -69,7 +69,7 @@ public class LuceneSearcherMapLayers {
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         IndexWriter writer = new IndexWriter(fsIndex, indexWriterConfig);
         
-        List<SimpleDataproduct> simpleDataproducts = dataproductHarvester.getMapLayers();
+        List<Dataproduct> dataproducts = dataproductHarvester.getDataproducts();
 //        Map<String,SimpleDataproduct> simpleDataproductsMap = dataproductHarvester.getMapLayersMap();
         
 //        for (var entry : simpleDataproductsMap.entrySet()) {
@@ -89,20 +89,28 @@ public class LuceneSearcherMapLayers {
 //            writer.addDocument(document);
 //        }
 
-        for (SimpleDataproduct simpleDataproduct : simpleDataproducts) {
+        for (Dataproduct dataproduct : dataproducts) {
             Document document = new Document();
-            document.add(new TextField("id", simpleDataproduct.getDataproductId(), Store.YES));
-            document.add(new TextField("title", simpleDataproduct.getTitle(), Store.YES));
-            document.add(new TextField("abstract", simpleDataproduct.getLayerAbstract(), Store.YES));
-            if (simpleDataproduct.getLayerGroupDataproductId() != null) {
-                document.add(new TextField("layerGroupId", simpleDataproduct.getLayerGroupDataproductId(), Store.YES));
-            }
-            if (simpleDataproduct.getLayerGroupDisplay() != null) {
-                document.add(new TextField("layerGroupTitle", simpleDataproduct.getLayerGroupDisplay(), Store.YES));
-            }
-            document.add(new StoredField("visibility", Boolean.toString(simpleDataproduct.isVisibility())));
-            document.add(new StoredField("opacity", String.valueOf(simpleDataproduct.getOpacity())));
+            document.add(new TextField("ident", dataproduct.getIdent(), Store.YES));
+            document.add(new TextField("title", dataproduct.getTitle(), Store.YES));
+            document.add(new TextField("abstract", dataproduct.getTheAbstract(), Store.YES));
+            document.add(new StoredField("visibility", Boolean.toString(dataproduct.isVisibility())));
+            document.add(new StoredField("opacity", String.valueOf(dataproduct.getOpacity())));
             writer.addDocument(document);
+
+            if (dataproduct.getSublayers() != null) {
+                for (Dataproduct sublayer : dataproduct.getSublayers()) {
+                    Document sublayerDocument = new Document();
+                    sublayerDocument.add(new TextField("ident", sublayer.getIdent(), Store.YES));
+                    sublayerDocument.add(new TextField("title", sublayer.getTitle(), Store.YES));
+                    sublayerDocument.add(new TextField("abstract", sublayer.getTheAbstract(), Store.YES));
+                    sublayerDocument.add(new StoredField("visibility", Boolean.toString(sublayer.isVisibility())));
+                    sublayerDocument.add(new StoredField("opacity", String.valueOf(sublayer.getOpacity())));
+                    sublayerDocument.add(new StoredField("parentIdent", String.valueOf(sublayer.getParentIdent())));
+                    sublayerDocument.add(new StoredField("parentTitle", String.valueOf(sublayer.getParentTitle())));
+                    writer.addDocument(sublayerDocument);
+                }
+            }
         }
         
         IndexWriter.DocStats docStats = writer.getDocStats();
@@ -150,7 +158,7 @@ public class LuceneSearcherMapLayers {
                 // Das Feld, welches bestimmend sein soll (also in der Suche zuoberst gelistet), bekommt
                 // einen sehr hohen Boost. Wobei wir im GUI wieder alphabetisch sortieren. Es sorgt aber
                 // auch dafür, dass Objekte gefunden werden, die wir für passender halten.
-                luceneQueryString += "(id:*" + token + "*^100 OR title:*" + token + "*^10 OR abstract:*" + token + "* OR layerGroupId:*" + token + "* OR layerGroupDisplay:*" + token + "*)";
+                luceneQueryString += "(ident:*" + token + "*^100 OR title:*" + token + "*^10 OR abstract:*" + token + "*)";
                 if (i<splitedQuery.length-1) {
                     luceneQueryString += " AND ";
                 }

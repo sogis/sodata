@@ -8,9 +8,11 @@ import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -19,13 +21,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ch.so.agi.sodata.model.SimpleDataproduct;
-import ch.so.agi.sodata.model.dataproductservice.Dataproduct;
-import ch.so.agi.sodata.model.dataproductservice.DataproductResponse;
-import ch.so.agi.sodata.model.dataproductservice.Result;
-import ch.so.agi.sodata.model.dataproductservice.Sublayer;
+import ch.so.agi.sodata.UmlautComparatorMaplayer;
+import ch.so.agi.sodata.model.Dataproduct;
 
 @Service
 public class DataproductHarvester {
@@ -33,19 +33,19 @@ public class DataproductHarvester {
 
     @Autowired
     ObjectMapper objectMapper;
-    
-    private List<SimpleDataproduct> mapLayers;
-    
-    private Map<String,SimpleDataproduct> mapLayersMap;
 
-    public List<SimpleDataproduct> getMapLayers() {
-        return mapLayers;
-    }
+    private List<Dataproduct> dataproducts;
+
+    private Map<String,Dataproduct> dataproductsMap;
     
-    public Map<String,SimpleDataproduct> getMapLayersMap() {
-        return mapLayersMap;
+    public List<Dataproduct> getDataproducts() {
+        return dataproducts;
     }
-    
+
+    public Map<String, Dataproduct> getDataproductsMap() {
+        return dataproductsMap;
+    }
+
     @PostConstruct
     private void init() throws Exception /*TODO*/ {
         HttpClient httpClient = HttpClient.newBuilder()
@@ -69,29 +69,14 @@ public class DataproductHarvester {
         //https://geo.so.ch/api/search/v2/?searchtext=Landwirtschaftliche%20Bewirtschaftungseinheiten&filter=foreground&limit=5
         //https://geo.so.ch/api/dataproduct/v1/weblayers?filter=ch.so.alw.landwirtschaft_tierhaltung.landwirtschaftliche_bewirtschaftungseinheiten 
         
-        // Rahmenbedingung:
-        // Der Abstract einer Layergruppe soll auch Inhalt des Abtracts eines Single Layers sein. 
-        // Falls der Singlelayer einen eigenen Abtract enthält wird der Layergruppen-Abstract
-        // hinzugefügt. Wird wohl sauberer sein mit Projekt Datenbezug. Jetzt könnte es Copy/Paste
-        // Dupleten haben.
-        // Die Layergruppe wird nicht indexiert, sondern nur als Feld eines Singlelayers.
+        dataproducts = new ArrayList<Dataproduct>();
         
-        
-        // Eventuell List mit gruppierten Objekten? 
+        var rootNode = objectMapper.readTree(response.body());
+        var resultsArray = rootNode.get("results");
+        for (JsonNode node : resultsArray) {
+            log.info(node.get("dataproduct").get("dataproduct_id").asText());
+            String dataproductId = node.get("dataproduct").get("dataproduct_id").asText();
 
-        mapLayers = new ArrayList<SimpleDataproduct>();
-        mapLayersMap = new HashMap<String,SimpleDataproduct>();
-        
-        DataproductResponse dataproductResponse = objectMapper.readValue(response.body(), DataproductResponse.class);
-        
-        for (Result result : dataproductResponse.getResults()) {
-            Dataproduct dataproduct = result.getDataproduct();
-            log.info(dataproduct.getDataproductId());
-            
-            
-            String dataproductId =  result.getDataproduct().getDataproductId();
-            List<Sublayer> dataproductSublayers = result.getDataproduct().getSublayers();
-            
             httpRequest = HttpRequest.newBuilder()
                     .uri(new URI("https://geo-i.so.ch/api/dataproduct/v1/weblayers?filter=" + dataproductId))
                     .GET()
@@ -99,55 +84,51 @@ public class DataproductHarvester {
 
             response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
             
-            Map<String, Object> mapLayerMap = objectMapper.readValue(response.body(), HashMap.class);
-            List<Map> infoMap = (List<Map>) mapLayerMap.get(dataproductId);
+            var weblayerRootNode = objectMapper.readTree(response.body());
+            var weblayerArray = weblayerRootNode.get(dataproductId);
+            var weblayerNode = weblayerArray.get(0);
+            var ident = weblayerNode.get("name").asText();
+            var title = weblayerNode.get("title").asText();
+            var theAbstract = weblayerNode.get("abstract").asText("-");
+            var visibility = weblayerNode.get("visibility").asBoolean(false);
+            var opacity = weblayerNode.get("opacity").asInt(255);
             
-            // Weil die dataproduct-Antwort auch alle Kinder einer Gruppe enthält und wir
-            // sowieso gruppiert sein wollen, können wir gleich so modellieren.
+            Dataproduct dataproduct = new Dataproduct();
+            dataproduct.setIdent(dataproductId);
+            dataproduct.setTitle(title);
+            dataproduct.setTheAbstract(theAbstract);
+            dataproduct.setVisibility(visibility);
+            dataproduct.setOpacity(opacity);
             
-//            String rootDataproductId = dataproductId;
-//            String rootDisplay = dataproduct.getDisplay();
-//            String rootAbstract = (String) infoMap.get(0).get("abstract");
-//            boolean rootVisibility = (boolean) infoMap.get(0).get("visibility");
-//            int rootOpacity = (int) infoMap.get(0).get("opacity");
-//            
-//            if (dataproduct.getSublayers() == null) {
-//                log.info("ich bin ein singlelayer: "+ dataproductId);
-//                SimpleDataproduct simpleDataproduct = new SimpleDataproduct();
-//                simpleDataproduct.setDataproductId(dataproductId);
-//                simpleDataproduct.setTitle(rootDisplay);
-//                simpleDataproduct.setLayerAbstract(rootAbstract);
-//                simpleDataproduct.setVisibility(rootVisibility);
-//                simpleDataproduct.setOpacity(rootOpacity);
-//                simpleDataproduct.setLayerGroupDataproductId(rootDataproductId);
-//                simpleDataproduct.setLayerGroupDisplay(rootDisplay);
-//                mapLayers.add(simpleDataproduct);
-//                //mapLayersMap.put(dataproductId, simpleDataproduct);
-//            } else {
-//                log.info("ich bin eine layergroup: "+ dataproductId);
-//
-//                for (var layerInfo : infoMap) {
-//                    List<Map<String,Object>> sublayers = (List<Map<String,Object>>) layerInfo.get("sublayers");
-//                    for (Map<String,Object> sublayer : sublayers) {
-//                        String sublayerName = (String) sublayer.get("name");
-//                        String sublayerTitle = (String) sublayer.get("title");
-//                        String sublayerAbstract = (String) sublayer.get("abstract");
-//                        boolean sublayerVisibility = (boolean) sublayer.get("visibility");
-//                        int sublayerOpacity = (int) sublayer.get("opacity");
-//                        
-//                        SimpleDataproduct simpleDataproduct = new SimpleDataproduct();
-//                        simpleDataproduct.setDataproductId(sublayerName);
-//                        simpleDataproduct.setTitle(sublayerTitle);
-//                        simpleDataproduct.setLayerAbstract(rootAbstract + " " + sublayerAbstract);
-//                        simpleDataproduct.setVisibility(sublayerVisibility);
-//                        simpleDataproduct.setOpacity(sublayerOpacity);
-//                        simpleDataproduct.setLayerGroupDataproductId(rootDataproductId);
-//                        simpleDataproduct.setLayerGroupDisplay(rootDisplay);
-//                        mapLayers.add(simpleDataproduct);
-//                        //mapLayersMap.put(sublayerName, simpleDataproduct);
-//                    }
-//                }
-//            }
+            dataproducts.add(dataproduct);
+            
+            if (weblayerNode.has("sublayers")) {
+                var sublayers = new ArrayList<Dataproduct>();
+                for (JsonNode sublayerNode : weblayerNode.get("sublayers")) {
+                    var sublayerIdent = sublayerNode.get("name").asText();
+                    var sublayerTitle = sublayerNode.get("title").asText();
+                    var sublayerAbstract = sublayerNode.get("abstract").asText("-");
+                    var sublayerVisibility = sublayerNode.get("visibility").asBoolean(false);
+                    var sublayerOpacity = sublayerNode.get("opacity").asInt(255);
+                    Dataproduct sublayerDataproduct = new Dataproduct();
+                    sublayerDataproduct.setIdent(sublayerIdent);
+                    sublayerDataproduct.setTitle(sublayerTitle);
+                    sublayerDataproduct.setTheAbstract(sublayerAbstract);
+                    sublayerDataproduct.setVisibility(sublayerVisibility);
+                    sublayerDataproduct.setOpacity(sublayerOpacity);
+                    sublayerDataproduct.setParentIdent(dataproductId);
+                    sublayerDataproduct.setParentTitle(title);
+                    sublayers.add(sublayerDataproduct);
+                }
+                Collections.sort(sublayers, new UmlautComparatorMaplayer());
+                
+                dataproduct.setSublayers(sublayers);
+            }
         }
+        
+        dataproductsMap = new HashMap<>();
+        for (Dataproduct dataproduct : dataproducts) {
+            dataproductsMap.put(dataproduct.getIdent(), dataproduct);
+        }        
     }
 }

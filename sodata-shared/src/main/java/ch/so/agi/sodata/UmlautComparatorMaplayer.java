@@ -2,11 +2,11 @@ package ch.so.agi.sodata;
 
 import java.util.Comparator;
 
-import ch.so.agi.sodata.model.SimpleDataproduct;
+import ch.so.agi.sodata.model.Dataproduct;
 
-public class UmlautComparatorMaplayer implements Comparator<SimpleDataproduct> {
+public class UmlautComparatorMaplayer implements Comparator<Dataproduct> {
     @Override
-    public int compare(SimpleDataproduct o1, SimpleDataproduct o2) {
+    public int compare(Dataproduct o1, Dataproduct o2) {
         String string0 = o1.getTitle().toLowerCase();
         String string1 = o2.getTitle().toLowerCase();
         string0 = string0.replace("ä", "a");
