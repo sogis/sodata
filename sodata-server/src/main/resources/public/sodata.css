@@ -125,6 +125,22 @@ a.default-link:visited {
     text-decoration: underline !important;
 }
 
+.modal-dialog a {
+    color: #c62828;
+    text-decoration: underline !important;
+} 
+
+.modal-dialog a:hover {
+    color: #c62828;
+    text-decoration: underline !important;
+}  
+
+.modal-dialog a:visited {
+    color: #c62828; 
+    text-decoration: underline !important;
+}
+
+
 .black-link {
     overflow: hidden;
     text-overflow: ellipsis;

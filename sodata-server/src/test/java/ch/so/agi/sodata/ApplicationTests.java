@@ -27,7 +27,7 @@ class ApplicationTests {
     @Test
     public void index_Ok() throws Exception {
         assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/index.html", String.class))
-                .contains("Datenabgabe • Kanton Solothurn");
+                .contains("Datenkatalog • Kanton Solothurn");
     }
 
     @Test
