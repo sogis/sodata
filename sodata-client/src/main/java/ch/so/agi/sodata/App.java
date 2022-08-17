@@ -282,12 +282,12 @@ public class App implements EntryPoint {
                 .appendChild(Icons.ALL.home(), " Home ", (evt) -> {
                     DomGlobal.window.open("https://geo.so.ch/", "_self");
                 })
-                .appendChild(" Datenkatalog ", (evt) -> {
+                .appendChild(" Geodatenkatalog ", (evt) -> {
                 });
         topLevelContent.appendChild(breadcrumb.element());
 
         // Add title and description
-        topLevelContent.appendChild(div().css("sodata-title").textContent("Datenkatalog Kanton Solothurn").element());
+        topLevelContent.appendChild(div().css("sodata-title").textContent("Geodatenkatalog Kanton Solothurn").element());
 
         String infoString = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
                 + "<a class='default-link' href='https://geoweb.so.ch/geodaten/index.php' target='_blank'>https://geoweb.so.ch/geodaten/index.php</a> eirmod "
@@ -310,6 +310,7 @@ public class App implements EntryPoint {
         
         mapsTab.appendChild(new MaplayerElement(DATA_BASE_URL).element());
         dataTab.appendChild(new DataElement(DATA_BASE_URL).element());
+        modelsTab.appendChild(new ModelElement(DATA_BASE_URL).element());
         
         topLevelContent.appendChild(tabsPanel.element());
         
