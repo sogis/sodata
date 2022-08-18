@@ -26,10 +26,13 @@ import com.github.nmorel.gwtjackson.client.ObjectMapper;
 import com.google.gwt.core.client.GWT;
 
 import elemental2.dom.AbortController;
+import elemental2.dom.CustomEvent;
+import elemental2.dom.CustomEventInit;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Event;
 import elemental2.dom.EventListener;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.KeyboardEvent;
 import elemental2.dom.RequestInit;
 
 public class DataElement implements IsElement<HTMLElement> {
@@ -41,6 +44,8 @@ public class DataElement implements IsElement<HTMLElement> {
     private LocalListDataStore<Dataset> listStore;
     private DataTable<Dataset> datasetTable;
 
+    private TextBox textBox;
+    
     private HashMap<String, String> formatLookUp = new HashMap<String, String>();
 
     private AbortController abortController = null;
@@ -82,8 +87,17 @@ public class DataElement implements IsElement<HTMLElement> {
         }); 
     }
 
+    public String getSearchText() {
+        return textBox.getValue().trim();
+    }
+    
+    public void setSearchText(String searchTerms) {
+        textBox.setValue(searchTerms);
+        textBox.element().dispatchEvent(new KeyboardEvent("keyup"));
+    }
+    
     private void init() {
-        TextBox textBox = TextBox.create().setLabel("Suchbegriff");
+        textBox = TextBox.create().setLabel("Suchbegriff");
         textBox.css("filter-text-box");
         textBox.addLeftAddOn(Icons.ALL.search());
         textBox.setFocusColor(Color.RED_DARKEN_3);
@@ -98,6 +112,14 @@ public class DataElement implements IsElement<HTMLElement> {
                 listStore.setData(datasets);
 
                 //removeQueryParam(FILTER_PARAM_KEY);
+                
+                resetIcon.style.setProperty("color", "rgba(0, 0, 0, 0.54)");
+
+                CustomEventInit eventInit = CustomEventInit.create();
+                eventInit.setDetail("");
+                eventInit.setBubbles(true);
+                CustomEvent cevent = new CustomEvent("searchStringChanged", eventInit);
+                root.dispatchEvent(cevent);
             }
         });
         textBox.addRightAddOn(resetIcon);
@@ -107,10 +129,12 @@ public class DataElement implements IsElement<HTMLElement> {
                 listStore.setData(datasets);
 
                 //removeQueryParam(FILTER_PARAM_KEY);
-
+                resetIcon.style.setProperty("color", "rgba(0, 0, 0, 0.54)");
                 return;
             }
 
+            resetIcon.style.setProperty("color", "#c62828");
+            
             if (abortController != null) {
                 abortController.abort();
             }

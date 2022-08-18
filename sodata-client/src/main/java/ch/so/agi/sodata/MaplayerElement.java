@@ -28,9 +28,10 @@ import org.jboss.elemento.IsElement;
 import com.github.nmorel.gwtjackson.client.ObjectMapper;
 import com.google.gwt.core.client.GWT;
 
-import ch.so.agi.sodata.App.MapSingleClickListener;
 import ch.so.agi.sodata.model.Dataproduct;
 import elemental2.dom.AbortController;
+import elemental2.dom.CustomEvent;
+import elemental2.dom.CustomEventInit;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.Event;
@@ -41,6 +42,7 @@ import elemental2.dom.HTMLTableCellElement;
 import elemental2.dom.HTMLTableElement;
 import elemental2.dom.HTMLTableRowElement;
 import elemental2.dom.HTMLTableSectionElement;
+import elemental2.dom.KeyboardEvent;
 import elemental2.dom.Node;
 import elemental2.dom.RequestInit;
 import ol.OLFactory;
@@ -58,6 +60,8 @@ public class MaplayerElement implements IsElement<HTMLElement> {
     private List<Dataproduct> mapLayers;
     private List<Dataproduct> completeMapLayers;
 
+    private TextBox textBox;
+    
     private HTMLElement resetIcon;
     
     private AbortController abortController = null;
@@ -97,9 +101,18 @@ public class MaplayerElement implements IsElement<HTMLElement> {
             return null;
         }); 
     }
+    
+    public String getSearchText() {
+        return textBox.getValue().trim();
+    }
+    
+    public void setSearchText(String searchTerms) {
+        textBox.setValue(searchTerms);
+        textBox.element().dispatchEvent(new KeyboardEvent("keyup"));
+    }
 
     private void init() {
-        TextBox textBox = TextBox.create().setLabel("Suchbegriff");
+        textBox = TextBox.create().setLabel("Suchbegriff");
         textBox.css("filter-text-box");
         textBox.addLeftAddOn(Icons.ALL.search());
         textBox.setFocusColor(Color.RED_DARKEN_3);
@@ -121,6 +134,12 @@ public class MaplayerElement implements IsElement<HTMLElement> {
                 resetIcon.style.setProperty("color", "rgba(0, 0, 0, 0.54)");
 
                 //removeQueryParam(FILTER_PARAM_KEY);
+                
+                CustomEventInit eventInit = CustomEventInit.create();
+                eventInit.setDetail("");
+                eventInit.setBubbles(true);
+                CustomEvent cevent = new CustomEvent("searchStringChanged", eventInit);
+                root.dispatchEvent(cevent);
             }
         });
         textBox.addRightAddOn(resetIcon);
@@ -134,6 +153,12 @@ public class MaplayerElement implements IsElement<HTMLElement> {
             }
             
             resetIcon.style.setProperty("color", "#c62828");
+            
+            CustomEventInit eventInit = CustomEventInit.create();
+            eventInit.setDetail(textBox.getValue().trim());
+            eventInit.setBubbles(true);
+            CustomEvent cevent = new CustomEvent("searchStringChanged", eventInit);
+            root.dispatchEvent(cevent);
 
             if (abortController != null) {
                 abortController.abort();
