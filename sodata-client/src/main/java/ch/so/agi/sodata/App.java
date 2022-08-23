@@ -326,7 +326,7 @@ public class App implements EntryPoint {
 
         topLevelContent.appendChild(div().css("sodata-title").textContent("Geodaten Kanton Solothurn").element());
 
-        String infoString = "Der Bezug von Geodaten wird zurzeit komplett überarbeitet. Mit der Übergangslösung können die Geodaten weiterhin direkt und einfach bezogen werden. "
+        String infoString = "Die Geodatenabgabe wird zurzeit komplett überarbeitet. Mit der Übergangslösung können die Geodaten weiterhin direkt und einfach bezogen werden. "
                 + "Bei Fragen können sie <a class=\"default-link\" href=\"mailto:agi@bd.so.ch\">uns</a> gerne kontaktieren."
                 + "<br><br>"
                 + "Die Übergangslösung ist an die kommende Lösung angelehnt. Sie können sich auf mehr Funktionalitäten und Daten freuen.";
