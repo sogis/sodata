@@ -1,9 +1,9 @@
 FROM alpine:3.16
 
 ARG UID=1001
-RUN adduser -S sodata -u $UID
+RUN adduser -S appuser -u $UID
 
-ENV HOME=/work
+ENV HOME=/app
 WORKDIR $HOME
 
 COPY target/sodata-server ./application
