@@ -121,7 +121,7 @@ app:
           #resolutionScope: 500
           #publishingDate: 2020-08-29
           #lastEditingDate: 2020-08-29
-          title: Gewässer Ökomorphologie
+          title: Gewässereigenschaften
           shortDescription: 
           keywords: Gewässer,Wasser,Gewässereigenschaften,AFU
           provider: Amt für Umwelt
@@ -224,26 +224,6 @@ app:
             - gpkg
             - shp
             - dxf
-        - id: ch.so.afu.hydrologische_einzugsgebiete
-          version: current
-          owner: mailto:afu@bd.so.ch
-          model: SO_AFU_Hydrologische_Einzugsgebiete_20220628
-          #epsgCode: 2056
-          #resolutionScope: 500
-          #publishingDate: 2020-08-29
-          #lastEditingDate: 2020-08-29
-          title: Hydrologische Einzugsgebiete
-          shortDescription: 
-          keywords: Hydrologisch,Wasser,Einzugsgebiete,AFU
-          provider: Amt für Umwelt
-          ownerUrl: https://afu.so.ch
-          servicer: https://agi.so.ch
-          technicalContact: mailto:agi@bd.so.ch
-          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
-          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
-          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
-          fileFormats:
-            - xtf
         - id: ch.so.afu.immissionskarten_luft
           version: current
           owner: mailto:afu@bd.so.ch
