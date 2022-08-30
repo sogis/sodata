@@ -37,7 +37,7 @@ management:
 logging:
   level:
     org.springframework: ${LOG_LEVEL_SPRING:INFO} 
-    ch.so.agi: ${LOG_LEVEL_APP:DEBUG} 
+    ch.so.agi: ${LOG_LEVEL_APP:INFO} 
 
 lucene:
     queryMaxRecords: ${LUCENE_QUERY_MAX_RECORDS:500}
