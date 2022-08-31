@@ -47,6 +47,7 @@ lucene:
 
 app:
     myVar: ${VAR:defaultValue}
+    configFile: ${CONFIG_FILE:./config.xml}
     Datasets:
         - id: ch.so.agi.lidar_2019.dtm_hillshade
           version: current

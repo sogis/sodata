@@ -33,7 +33,7 @@ public class Application extends SpringBootServletInitializer {
     XmlMapper xmlMapper() {
         XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.registerModule(new JavaTimeModule());
-        xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // TODO: wieder entfernen, wenn stabil
+        xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // TODO: wieder entfernen, wenn stabil? Oder tolerant sein?
 
 //        xmlMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 //        xmlMapper.registerModule(new JavaTimeModule());

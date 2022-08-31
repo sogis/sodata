@@ -11,6 +11,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import ch.so.agi.meta2file.model.ThemePublication;
+import ch.so.agi.sodata.dto.ThemePublicationDTO;
+
+//import ch.so.agi.meta2file.model.ThemePublication;
 
 @Service
 public class ConfigService {
@@ -45,6 +49,9 @@ public class ConfigService {
      * Dann müsste das mit Map noch gescheit gemacht werden, nicht dass man 2 Maps vorhalten muss. Ah oder doch:
      * Einmal ohne Meta und eine Meta-Pur mit FK.
      * 
+     * - 2. Memory-optimized: Anstelle einer Memory-Map eine h2-db. Das Java-Objekt wird rein-serialisiert und ident
+     * als Schlüssel nach der Lucene-Suche.
+     * 
      */
     
     
@@ -64,8 +71,21 @@ public class ConfigService {
                 if ("themePublication".equals(xr.getLocalName())) {
                     System.out.println(xr.getLocalName());
 
-                    var foo = xmlMapper.readValue(xr, ThemePublication.class);
-                    System.out.println(foo.getIdentifier());
+                    var themePublication = xmlMapper.readValue(xr, ThemePublication.class);
+                    System.out.println(themePublication.getLastPublishingDate());
+//                    System.out.println(foo.getServicer().getEmail());
+                    
+                    // -> Bean
+                    ModelMapper modelMapper = new ModelMapper();
+                    ThemePublicationDTO themePublicationDTO = modelMapper.map(themePublication, ThemePublicationDTO.class);
+                    System.out.println(themePublicationDTO.getLastPublishingDate());
+                    
+                    // siehe http://modelmapper.org/user-manual/converters/ für spezielle Umwandlungen (list/array...)
+                    
+                    // oder das Mapping ganz manuell oder halt automatisch, d.h. das was einfach ist und der Rest
+                    // muss eventuall sowieso sehr speziell behandelt werden (geometrien -> geojson).
+
+                    
                 }
 
             }
