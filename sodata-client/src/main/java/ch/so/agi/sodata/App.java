@@ -253,7 +253,7 @@ public class App implements EntryPoint {
               + "no sea takimata sanctus est Lorem ipsum dolor sit amet.";
         topLevelContent.appendChild(div().css("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
 
-        TextBox textBox = TextBox.create().setLabel("Suchbegriff");
+        TextBox textBox = TextBox.create().setLabel(messages.search_terms());
         textBox.addLeftAddOn(Icons.ALL.search());
         textBox.setFocusColor(Color.RED_DARKEN_3);
         textBox.getInputElement().setAttribute("autocomplete", "off");
@@ -336,7 +336,7 @@ public class App implements EntryPoint {
         tableConfig
                 //.setFixed(true)
                 .addColumn(
-                        ColumnConfig.<Dataset>create("title", "Thema")
+                        ColumnConfig.<Dataset>create("title", messages.table_header_topic())
                             .setShowTooltip(false)
                             .textAlign("left")
                             //.asHeader()
@@ -344,7 +344,7 @@ public class App implements EntryPoint {
                                     cell -> TextNode.of(cell.getTableRow().getRecord().getTitle()))
                         )
                 .addColumn(
-                        ColumnConfig.<Dataset>create("lastEditingDate", "Aktualisiert")
+                        ColumnConfig.<Dataset>create("lastEditingDate", messages.table_header_publication_date())
                             .setShowTooltip(false)
                             .textAlign("left")
                             .setCellRenderer(
@@ -356,7 +356,7 @@ public class App implements EntryPoint {
                                     })
                         )
                 .addColumn(
-                        ColumnConfig.<Dataset>create("metadata", "Metadaten")
+                        ColumnConfig.<Dataset>create("metadata", messages.table_header_metadata())
                             .setShowTooltip(false)
                             .textAlign("center")
                             .setCellRenderer(
@@ -373,7 +373,7 @@ public class App implements EntryPoint {
                                     })
                         )
                 .addColumn(
-                        ColumnConfig.<Dataset>create("formats", "Daten herunterladen")
+                        ColumnConfig.<Dataset>create("formats", messages.table_header_data_download())
                             .setShowTooltip(false)
                             .textAlign("left")
                             .setCellRenderer(
@@ -382,7 +382,7 @@ public class App implements EntryPoint {
 
                                         if (cell.getRecord().getSubunits() != null) {
                                             HTMLElement regionSelectionElement = a().css("default-link")
-                                                    .textContent("Gebietsauswahl notwendig").element();
+                                                    .textContent(messages.table_subunit_selection()).element();
                                             regionSelectionElement.addEventListener("click", new EventListener() {
                                                 @Override
                                                 public void handleEvent(Event evt) {

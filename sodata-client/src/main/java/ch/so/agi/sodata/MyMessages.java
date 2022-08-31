@@ -7,6 +7,25 @@ public interface MyMessages extends Messages {
     @DefaultMessage("Close")
     String close();
     
+    // Search
+    @DefaultMessage("Search terms")
+    String search_terms();
+    
+    // Table
+    @DefaultMessage("Topic")
+    String table_header_topic();
+    
+    @DefaultMessage("Publication date")
+    String table_header_publication_date();
+
+    @DefaultMessage("Metadata")
+    String table_header_metadata();
+
+    @DefaultMessage("Download data")
+    String table_header_data_download();
+    
+    @DefaultMessage("Subselection necessary")
+    String table_subunit_selection(); 
     
     // Meta
     @DefaultMessage("Description")
@@ -14,7 +33,6 @@ public interface MyMessages extends Messages {
     
     @DefaultMessage("Content")
     String meta_content();
-
     
     
     
