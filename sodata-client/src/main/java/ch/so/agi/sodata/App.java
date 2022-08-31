@@ -334,17 +334,31 @@ public class App implements EntryPoint {
 
         TableConfig<Dataset> tableConfig = new TableConfig<>();
         tableConfig
-                //.setFixed(true)
-                .addColumn(
-                        ColumnConfig.<Dataset>create("title", messages.table_header_topic())
-                            .setShowTooltip(false)
-                            .textAlign("left")
-                            //.asHeader()
-                            .setCellRenderer(
-                                    cell -> TextNode.of(cell.getTableRow().getRecord().getTitle()))
-                        )
+//            .setFixedBodyHeight("100%")
+//                .setFixed(true)
+                .addColumn(ColumnConfig.<Dataset>create("title", messages.table_header_topic())
+//                        .setWidth("45%")
+//                        .setWidth("400px")
+
+                        .setShowTooltip(false)
+                        .textAlign("left")
+                        // .asHeader()
+                        .setCellRenderer(
+                                 cell -> TextNode.of(cell.getTableRow().getRecord().getTitle())
+//                                cell -> {
+//                                    HTMLElement span = span().style("display: inline-block;  min-width: 350px; max-width: 800px; overflow: hidden;text-overflow: ellipsis;")
+//                                            .add(TextNode.of(cell.getTableRow().getRecord().getTitle()))
+//                                            .element();
+//                                    return span;
+//
+//                                }
+                                )
+
+                )
                 .addColumn(
                         ColumnConfig.<Dataset>create("lastEditingDate", messages.table_header_publication_date())
+//                        .setWidth("10%")
+                        //.setWidth("100px")
                             .setShowTooltip(false)
                             .textAlign("left")
                             .setCellRenderer(
@@ -357,6 +371,8 @@ public class App implements EntryPoint {
                         )
                 .addColumn(
                         ColumnConfig.<Dataset>create("metadata", messages.table_header_metadata())
+//                        .setWidth("10%")
+                        //.setWidth("100px")
                             .setShowTooltip(false)
                             .textAlign("center")
                             .setCellRenderer(
@@ -374,6 +390,8 @@ public class App implements EntryPoint {
                         )
                 .addColumn(
                         ColumnConfig.<Dataset>create("formats", messages.table_header_data_download())
+//                        .setWidth("25%")
+                        //.setWidth("250px")
                             .setShowTooltip(false)
                             .textAlign("left")
                             .setCellRenderer(
@@ -407,6 +425,8 @@ public class App implements EntryPoint {
                         )
                 .addColumn(
                         ColumnConfig.<Dataset>create("services", "Servicelinks")
+                        //.setWidth("100px")
+//                        .setWidth("10%")
                             .setShowTooltip(false)
                             .textAlign("center").setCellRenderer(
                                     cell -> {
