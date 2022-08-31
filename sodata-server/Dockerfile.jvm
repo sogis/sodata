@@ -3,10 +3,12 @@ FROM bellsoft/liberica-openjdk-alpine-musl:17.0.4
 ARG UID=1001
 RUN adduser -S sodata -u $UID
 
-ENV HOME=/work
+ENV HOME=/app
 WORKDIR $HOME
 
 COPY target/sodata-exec.jar ./application.jar
+#temporary
+COPY datasets.yml /app/datasets.yml 
 RUN chown $UID:0 . && \
     chmod 0775 . && \
     ls -la
@@ -14,4 +16,4 @@ RUN chown $UID:0 . && \
 USER $UID
 EXPOSE 8080
 ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true
-CMD java -XX:MaxRAMPercentage=80.0 -jar application.jar
+CMD java -XX:MaxRAMPercentage=80.0 -jar application.jar --spring.config.location=classpath:/application.yml,optional:file:/app/datasets.yml
