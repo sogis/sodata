@@ -42,7 +42,8 @@ public class ConfigService {
      * - Beim Suchen wird dann der Index durchsucht und dann die Objekte aus der Memory-Map geholt
      * (jetzt glaub schon so).
      * - Eventuell die Metadaten erst ohne-Request holen, weil die doch relativ umfangreich sein können.
-     * Dann müsste das mit Map noch gescheit gemacht werden
+     * Dann müsste das mit Map noch gescheit gemacht werden, nicht dass man 2 Maps vorhalten muss. Ah oder doch:
+     * Einmal ohne Meta und eine Meta-Pur mit FK.
      * 
      */
     
