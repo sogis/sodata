@@ -8,7 +8,7 @@ jobs:
   build-native:
     env:
       DOCKER_ACCOUNT: sogis
-      DOCKER_REPO: sodata-base
+      DOCKER_REPO: sodata
       DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}} 
       #DIGITALOCEAN_TOKEN: ${{secrets.DIGITALOCEAN_TOKEN}}
@@ -83,11 +83,10 @@ jobs:
           pull: true
           push: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
 
-      # Will be deployed with some sample dataset config with https://github.com/edigonzales/sodata-pipeline/
-      # - name: Deploy to Digital Ocean App Platform
-      #   run: |
-      #     curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $DIGITALOCEAN_TOKEN" "https://api.digitalocean.com/v2/apps/b259346a-0364-40b0-a221-6e62798f4c22/deployments"
-      #   if: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
+      - name: Deploy to Digital Ocean App Platform
+        run: |
+          curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $DIGITALOCEAN_TOKEN" "https://api.digitalocean.com/v2/apps/b259346a-0364-40b0-a221-6e62798f4c22/deployments"
+        if: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
 
   build-jvm:
     env:
