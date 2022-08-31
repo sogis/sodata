@@ -1,16 +1,5 @@
 # sodata
 
-## to be discussed
-- YAML statt JSON (-> config generator: sollte sicher eine Java-Lib geben für)
-- Servicelinks? 
-  * Nur Endpunkt? Wie sinnvoll ist das?
-  * Umgang mit geodienste.ch?
-- Subunits: 
-  * Woher stammt der klickbare Index?
-  * Welche Informationen werden benötigt? (Namen, Datum?)
-- Liefert Config den finalen Link auf den Datensatz? Wie ist das bei den Subunits?
-- Formate vs Links zu den Daten bei Subunits? Sind die Formate in der normalen Config oder im Subunit-Json?
-- last editing date als Attribut auch bei Subunit-Dataset. Es entspricht dem "neuesten" Datum.
 
 ## Docs
 - Suchindex beim Hochfahren. Index im Pod, nicht persistent.
@@ -94,7 +83,18 @@ docker run -p8080:8080 -v /Users/stefan/tmp:/config sogis/sodata-jvm:latest
 docker run -p8080:8080 -v /Users/stefan/tmp:/config sogis/sodata:latest
 ```
 
-## Konfiguration
+## Konfiguration (Umgebungsvariablen)
+
+| Name | Beschreibung | Standard |
+|-----|-----|-----|
+| `CONFIG_FILE` | Der Pfad zur XML-Config-Datei. | `/app/config.xml` |
+| `LOG_LEVEL_FRAMEWORK` | Das Logging-Level des Spring Boot Frameworks. | `info` |
+| `LOG_LEVEL_APPLICATION` | Das Logging-Level der Anwendung (= selber geschriebener Code). | `info` (**ändern**)|
+| `LOG_LEVEL_DB_CONNECTION_POOL` | **FIXME** Das Logging-Level des DB-Connection-Poolsocket. | `info` |
+
+
+
+### wird anders werden / deprecated
 Es gibt zwei Konfigurationsdateien: 
 
 - `application.yml`: Steuert die Anwendung im Allgemeinen, z.B. Loglevel oder Anzahl Suchresultate.

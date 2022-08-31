@@ -37,10 +37,11 @@ management:
 logging:
   level:
     org.springframework: ${LOG_LEVEL_SPRING:INFO} 
-    ch.so.agi: ${LOG_LEVEL_APP:DEBUG} 
+    ch.so.agi.sodata: ${LOG_LEVEL_APP:DEBUG} 
 
 lucene:
-    queryMaxRecords: ${LUCENE_QUERY_MAX_RECORDS:500}
+  queryMaxRecords: ${LUCENE_QUERY_MAX_RECORDS:500}
 
 app:
-    myVar: ${VAR:defaultValue}
+  configFile: ${CONFIG_FILE:/app/config.xml}
+  myVar: ${VAR:defaultValue}
