@@ -216,7 +216,7 @@ public class App implements EntryPoint {
 
 
         // Get datasets json from server and initialize the site.
-        DomGlobal.fetch("/datasets")
+        DomGlobal.fetch(pathname + "datasets")
         .then(response -> {
             if (!response.ok) {
                 DomGlobal.window.alert(response.statusText + ": " + response.body);
@@ -371,7 +371,7 @@ public class App implements EntryPoint {
             final RequestInit init = RequestInit.create();
             init.setSignal(abortController.signal);
 
-            DomGlobal.fetch("/datasets?query=" + textBox.getValue().toLowerCase(), init)
+            DomGlobal.fetch(pathname+"datasets?query=" + textBox.getValue().toLowerCase(), init)
                 .then(
                         response -> {
                                 if (!response.ok) {
