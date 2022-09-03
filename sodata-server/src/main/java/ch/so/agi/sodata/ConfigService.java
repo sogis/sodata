@@ -2,18 +2,15 @@ package ch.so.agi.sodata;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
+import java.nio.file.Paths;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,14 +29,16 @@ import ch.so.agi.sodata.dto.ThemePublicationDTO;
 @Service
 public class ConfigService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-
+    
+    @Value("${app.itemsGeoJsonDir}")
+    private String itemsGeoJsonDir;
+    
     @Value("${app.configFile}")
     private String CONFIG_FILE;   
 
     @Autowired
     private XmlMapper xmlMapper;
 
-    
     /**
      * - Kann ich überhaupt ganz einfach POJO machen, d.h. ohne Annotationen?
      * - 1. Versuch (ohne Memory-Optimierung): Benötigter Inhalt in Memory-Map vorhalten.
@@ -57,19 +56,12 @@ public class ConfigService {
      * @throws ParseException 
      * 
      */
-    
-    
-    
-    
-    
-    
+
     public void readXml() throws XMLStreamException, IOException, ParseException {
         log.info("config file: " + new File(CONFIG_FILE).getAbsolutePath());
-        
-        WKTReader wktReader = new WKTReader();
-        
-        XMLInputFactory xif = XMLInputFactory.newInstance();
-        XMLStreamReader xr = xif.createXMLStreamReader(new FileInputStream( new File(CONFIG_FILE)));
+                
+        var xif = XMLInputFactory.newInstance();
+        var xr = xif.createXMLStreamReader(new FileInputStream( new File(CONFIG_FILE)));
 
         while (xr.hasNext()) {
             xr.next();
@@ -78,24 +70,19 @@ public class ConfigService {
                     System.out.println(xr.getLocalName());
 
                     var themePublication = xmlMapper.readValue(xr, ThemePublication.class);
+                    var identifier = themePublication.getIdentifier();
                     var items = themePublication.getItems();
                     
-                    //https://github.com/orbisgis/h2gis/blob/v1.3.0/h2gis-functions/src/main/java/org/h2gis/functions/io/geojson/GeoJsonWriteDriver.java
-                    
-                    for (var item : items) {
-                        var identifier = item.getIdentifier();
-                        var title = item.getTitle();
-                        var lastPublishingDate = item.getLastPublishingDate();
-                        var secondToLastPublishingDate = item.getSecondToLastPublishingDate();
-                        
-                        Polygon geometry = (Polygon) wktReader.read(item.getGeometry());
-                        log.info("{}",geometry.getArea());
+                    // Die GeoJson-Datei mit den Subunits zur Auswahl im Client 
+                    // wird nur benötigt, falls es wirklich etwas auszuwählen gibt.
+                    // D.h. wenn es mindestens 2 Items (=Subunits) gibt.
+                    if (items.size() > 1) {
+                        var gsw = new GeoJsonWriter();
+                        gsw.write(Paths.get(itemsGeoJsonDir, identifier + ".json").toFile(), items); 
                     }
                     
-                    
-                    
-                    
-                    
+                    //log.info(itemsGeoJsonDir);
+
                     // -> Bean
                     //ModelMapper modelMapper = new ModelMapper();
                     //ThemePublicationDTO themePublicationDTO = modelMapper.map(themePublication, ThemePublicationDTO.class);
@@ -105,14 +92,8 @@ public class ConfigService {
                     
                     // oder das Mapping ganz manuell oder halt automatisch, d.h. das was einfach ist und der Rest
                     // muss eventuall sowieso sehr speziell behandelt werden (geometrien -> geojson).
-
-                    
                 }
-
             }
         }
-        
-        
     }
-    
 }

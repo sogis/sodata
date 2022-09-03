@@ -29,23 +29,28 @@ public class Application extends SpringBootServletInitializer {
         return builder.sources(Application.class);
     }  
     
+    @Bean
+    public ForwardedHeaderFilter forwardedHeaderFilter() {
+        return new ForwardedHeaderFilter();
+    }  
+    
     @Bean 
     XmlMapper xmlMapper() {
-        XmlMapper xmlMapper = new XmlMapper();
+        var xmlMapper = new XmlMapper();
         xmlMapper.registerModule(new JavaTimeModule());
         xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // TODO: wieder entfernen, wenn stabil? Oder tolerant sein?
-
 //        xmlMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 //        xmlMapper.registerModule(new JavaTimeModule());
         return xmlMapper; 
     }
     
     // Anwendung ist fertig gestartet.
+    // Importieren der Konfiguration. D.h. der XML-Datei mit den vorhandenen
+    // Themapublikationen (aka Datensätzen).
     @Bean
     CommandLineRunner init(ConfigService configService) {
         return args -> {
             configService.readXml();
         };
     }
-
 }

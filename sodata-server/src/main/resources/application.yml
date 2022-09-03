@@ -44,4 +44,5 @@ lucene:
 
 app:
   configFile: ${CONFIG_FILE:/app/config.xml}
+  itemsGeoJsonDir: ${ITEMS_GEOJSON_DIR:#{systemProperties['java.io.tmpdir']}}
   myVar: ${VAR:defaultValue}
