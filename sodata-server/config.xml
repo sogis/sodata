@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <themePublications>
   <themePublication>
-    <identifier>$themePub.identifier1$</identifier>
+    <identifier>$themePub1.identifier$</identifier>
     <model>$themePub.iliModelName$</model>
     <lastPublishingDate>2022-01-01</lastPublishingDate>
     <secondToLastPublishingDate>2022-01-01</secondToLastPublishingDate>
@@ -157,7 +157,7 @@ ArtPlusAttribut: Objekte.Hausnummer</shortDescription>
     </services>
   </themePublication>
   <themePublication>
-    <identifier>$themePub.identifier2$</identifier>
+    <identifier>$themePub2.identifier$</identifier>
     <model>$themePub.iliModelName$</model>
     <lastPublishingDate>2022-01-01</lastPublishingDate>
     <secondToLastPublishingDate>2022-01-01</secondToLastPublishingDate>

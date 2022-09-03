@@ -11,6 +11,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +54,7 @@ public class ConfigService {
      * 
      * - 2. Memory-optimized: Anstelle einer Memory-Map eine h2-db. Das Java-Objekt wird rein-serialisiert und ident
      * als Schlüssel nach der Lucene-Suche.
+     * @throws ParseException 
      * 
      */
     
@@ -59,8 +63,10 @@ public class ConfigService {
     
     
     
-    public void readXml() throws XMLStreamException, IOException {
+    public void readXml() throws XMLStreamException, IOException, ParseException {
         log.info("config file: " + new File(CONFIG_FILE).getAbsolutePath());
+        
+        WKTReader wktReader = new WKTReader();
         
         XMLInputFactory xif = XMLInputFactory.newInstance();
         XMLStreamReader xr = xif.createXMLStreamReader(new FileInputStream( new File(CONFIG_FILE)));
@@ -72,13 +78,28 @@ public class ConfigService {
                     System.out.println(xr.getLocalName());
 
                     var themePublication = xmlMapper.readValue(xr, ThemePublication.class);
-                    System.out.println(themePublication.getLastPublishingDate());
-//                    System.out.println(foo.getServicer().getEmail());
+                    var items = themePublication.getItems();
+                    
+                    //https://github.com/orbisgis/h2gis/blob/v1.3.0/h2gis-functions/src/main/java/org/h2gis/functions/io/geojson/GeoJsonWriteDriver.java
+                    
+                    for (var item : items) {
+                        var identifier = item.getIdentifier();
+                        var title = item.getTitle();
+                        var lastPublishingDate = item.getLastPublishingDate();
+                        var secondToLastPublishingDate = item.getSecondToLastPublishingDate();
+                        
+                        Polygon geometry = (Polygon) wktReader.read(item.getGeometry());
+                        log.info("{}",geometry.getArea());
+                    }
+                    
+                    
+                    
+                    
                     
                     // -> Bean
-                    ModelMapper modelMapper = new ModelMapper();
-                    ThemePublicationDTO themePublicationDTO = modelMapper.map(themePublication, ThemePublicationDTO.class);
-                    System.out.println(themePublicationDTO.getLastPublishingDate());
+                    //ModelMapper modelMapper = new ModelMapper();
+                    //ThemePublicationDTO themePublicationDTO = modelMapper.map(themePublication, ThemePublicationDTO.class);
+                    //System.out.println(themePublicationDTO.getLastPublishingDate());
                     
                     // siehe http://modelmapper.org/user-manual/converters/ für spezielle Umwandlungen (list/array...)
                     
