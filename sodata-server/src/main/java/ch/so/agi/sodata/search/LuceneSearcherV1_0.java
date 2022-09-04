@@ -39,7 +39,7 @@ import ch.so.agi.sodata.AppProperties;
 import ch.so.agi.sodata.Dataset;
 
 @Repository("LuceneSearcher")
-public class LuceneSearcher {
+public class LuceneSearcherV1_0 {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired

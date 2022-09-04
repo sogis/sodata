@@ -1,4 +1,4 @@
-package ch.so.agi.sodata;
+package ch.so.agi.sodata.util;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

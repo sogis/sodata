@@ -1,4 +1,4 @@
-package ch.so.agi.sodata;
+package ch.so.agi.sodata.controller;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,8 +33,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import ch.so.agi.sodata.AppProperties;
+import ch.so.agi.sodata.Dataset;
+import ch.so.agi.sodata.Settings;
 import ch.so.agi.sodata.search.InvalidLuceneQueryException;
-import ch.so.agi.sodata.search.LuceneSearcher;
+import ch.so.agi.sodata.search.LuceneSearcherV1_0;
 import ch.so.agi.sodata.search.LuceneSearcherException;
 
 @RestController
@@ -51,7 +54,7 @@ public class MainController {
     private AppProperties config; 
     
     @Autowired
-    private LuceneSearcher indexSearcher;
+    private LuceneSearcherV1_0 indexSearcher;
     
     @Autowired
     ObjectMapper objectMapper;

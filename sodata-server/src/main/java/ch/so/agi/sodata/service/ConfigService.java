@@ -1,4 +1,4 @@
-package ch.so.agi.sodata;
+package ch.so.agi.sodata.service;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +23,8 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import ch.so.agi.meta2file.model.ThemePublication;
 import ch.so.agi.sodata.dto.ThemePublicationDTO;
+import ch.so.agi.sodata.repository.ThemePublicationRepository;
+import ch.so.agi.sodata.util.GeoJsonWriter;
 
 //import ch.so.agi.meta2file.model.ThemePublication;
 
@@ -38,6 +40,9 @@ public class ConfigService {
 
     @Autowired
     private XmlMapper xmlMapper;
+    
+    @Autowired
+    private ThemePublicationRepository themePublicationRepository;
 
     /**
      * - Kann ich überhaupt ganz einfach POJO machen, d.h. ohne Annotationen?
@@ -80,6 +85,13 @@ public class ConfigService {
                         var gsw = new GeoJsonWriter();
                         gsw.write(Paths.get(itemsGeoJsonDir, identifier + ".json").toFile(), items); 
                     }
+                    
+                    //DTO: synonyms etc. flachwalzen? date als String wegen GWT. URI? 
+                    
+                    
+                    themePublicationRepository.save(new ThemePublicationDTO());
+                    
+                    
                     
                     //log.info(itemsGeoJsonDir);
 

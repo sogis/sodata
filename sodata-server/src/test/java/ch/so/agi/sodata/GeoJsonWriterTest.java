@@ -13,6 +13,7 @@ import org.locationtech.jts.io.ParseException;
 
 import ch.so.agi.meta2file.model.Item;
 import ch.so.agi.meta2file.model.ThemePublication;
+import ch.so.agi.sodata.util.GeoJsonWriter;
 
 public class GeoJsonWriterTest {
 
