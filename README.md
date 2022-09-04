@@ -37,6 +37,11 @@ Or without downloading all the snapshots again:
 ./mvnw gwt:codeserver -pl *-client -am -nsu 
 ```
 
+Test single class in subproject:
+```
+./mvnw test -Dtest=GeoJsonWriterTest -pl sodata-server
+```
+
 ## Build
 
 ### JVM
