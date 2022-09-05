@@ -1,14 +1,13 @@
 package ch.so.agi.sodata.dto;
 
-import java.net.URI;
-import java.time.LocalDate;
+//import java.net.URI;
 import java.util.Date;
 
 public class ThemePublicationDTO {
     private String identifier;
     private String model;
-    private LocalDate lastPublishingDate;
-    private LocalDate secondToLastPublishingDate;
+    private Date lastPublishingDate;
+    private Date secondToLastPublishingDate;
 //    private Office owner;
 //    private Office servicer;
 //    private String furtherInformation;
@@ -28,16 +27,16 @@ public class ThemePublicationDTO {
     public void setModel(String model) {
         this.model = model;
     }
-    public LocalDate getLastPublishingDate() {
+    public Date getLastPublishingDate() {
         return lastPublishingDate;
     }
-    public void setLastPublishingDate(LocalDate lastPublishingDate) {
+    public void setLastPublishingDate(Date lastPublishingDate) {
         this.lastPublishingDate = lastPublishingDate;
     }
-    public LocalDate getSecondToLastPublishingDate() {
+    public Date getSecondToLastPublishingDate() {
         return secondToLastPublishingDate;
     }
-    public void setSecondToLastPublishingDate(LocalDate secondToLastPublishingDate) {
+    public void setSecondToLastPublishingDate(Date secondToLastPublishingDate) {
         this.secondToLastPublishingDate = secondToLastPublishingDate;
     }
 //    public Office getOwner() {

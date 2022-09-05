@@ -11,6 +11,8 @@
   <inherits name="ol.GwtOL" />
   <inherits name="proj4.GwtProj4" />
   <inherits name="com.github.nmorel.gwtjackson.GwtJackson" />
+  <!--<inherits name="com.google.gwt.http.HTTP"/>-->
+  
 
   <source path="" />
 

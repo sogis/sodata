@@ -25,6 +25,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -36,8 +38,10 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import ch.so.agi.sodata.AppProperties;
 import ch.so.agi.sodata.Dataset;
 import ch.so.agi.sodata.Settings;
+import ch.so.agi.sodata.dto.ThemePublicationDTO;
 import ch.so.agi.sodata.search.InvalidLuceneQueryException;
 import ch.so.agi.sodata.search.LuceneSearcherV1_0;
+import ch.so.agi.sodata.service.ConfigService;
 import ch.so.agi.sodata.search.LuceneSearcherException;
 
 @RestController
@@ -60,6 +64,10 @@ public class MainController {
     ObjectMapper objectMapper;
 
     private Map<String, Dataset> datasetMap;
+    
+    //TEMP
+    @Autowired
+    private ConfigService configService;
     
     // TODO
     
@@ -103,7 +111,12 @@ public class MainController {
         return new ResponseEntity<String>("sodata", HttpStatus.OK);
     }
     
-    @GetMapping("/datasets")
+    @RequestMapping(value = "/themepublications", method = RequestMethod.GET, produces = { "application/json" })
+    public List<ThemePublicationDTO> searchThemePublications(@RequestParam(value="query", required=false) String searchTerms) {
+        return configService.getThemePublicationList();
+    }
+    
+    @RequestMapping(value = "/datasets", method = RequestMethod.GET, produces = { "application/json" })
     public List<Dataset> searchDatasets(@RequestParam(value="query", required=false) String searchTerms) {
         
         // TODO: ggf https://github.com/sogis/modelfinder/blob/main/modelfinder-server/src/main/java/ch/so/agi/search/LuceneSearcher.java#L247

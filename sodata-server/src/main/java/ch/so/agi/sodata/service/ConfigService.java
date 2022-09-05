@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -12,6 +14,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.locationtech.jts.io.ParseException;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.module.jsr310.Jsr310Module;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import ch.so.agi.meta2file.model.ThemePublication;
 import ch.so.agi.sodata.dto.ThemePublicationDTO;
@@ -38,11 +43,23 @@ public class ConfigService {
     @Value("${app.configFile}")
     private String CONFIG_FILE;   
 
-    @Autowired
-    private XmlMapper xmlMapper;
+//    @Autowired
+//    private XmlMapper xmlMapper;
     
     @Autowired
     private ThemePublicationRepository themePublicationRepository;
+    
+    //TEMP
+    private List<ThemePublicationDTO> themePublicationList;
+
+    public List<ThemePublicationDTO> getThemePublicationList() {
+        return themePublicationList;
+    }
+    
+    public void setThemePublicationList(List<ThemePublicationDTO> themePublicationList) {
+        this.themePublicationList = themePublicationList;
+    }
+    //TEMP
 
     /**
      * - Kann ich überhaupt ganz einfach POJO machen, d.h. ohne Annotationen?
@@ -63,6 +80,16 @@ public class ConfigService {
      */
 
     public void readXml() throws XMLStreamException, IOException, ParseException {
+        // Falls der XmlMapper als Bean definiert wird, überschreibt er den den Default-Object-Mapper,
+        // welcher Json-Output liefert. Falls es den XmlMapper als Bean benötigt, muss ich nochmals
+        // über die Bücher.
+        // Die Methode wird momentan nur ein einziges Mal direkt nach dem Hochfahren aufgerufen.
+        var xmlMapper = new XmlMapper();
+        xmlMapper.registerModule(new JavaTimeModule());
+        xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // TODO: wieder entfernen, wenn stabil? Oder tolerant sein?
+        //xmlMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        //xmlMapper.registerModule(new JavaTimeModule());
+
         log.info("config file: " + new File(CONFIG_FILE).getAbsolutePath());
                 
         var xif = XMLInputFactory.newInstance();
@@ -93,17 +120,23 @@ public class ConfigService {
                     
                     
                     
-                    //log.info(itemsGeoJsonDir);
-
                     // -> Bean
-                    //ModelMapper modelMapper = new ModelMapper();
-                    //ThemePublicationDTO themePublicationDTO = modelMapper.map(themePublication, ThemePublicationDTO.class);
-                    //System.out.println(themePublicationDTO.getLastPublishingDate());
+                    ModelMapper modelMapper = new ModelMapper();
+                    modelMapper.registerModule(new Jsr310Module());
+
+                    ThemePublicationDTO themePublicationDTO = modelMapper.map(themePublication, ThemePublicationDTO.class);
+                    System.out.println(themePublication.getLastPublishingDate());
+                    System.out.println(themePublicationDTO.getLastPublishingDate());
                     
                     // siehe http://modelmapper.org/user-manual/converters/ für spezielle Umwandlungen (list/array...)
                     
                     // oder das Mapping ganz manuell oder halt automatisch, d.h. das was einfach ist und der Rest
                     // muss eventuall sowieso sehr speziell behandelt werden (geometrien -> geojson).
+                    
+                    if (themePublicationList == null) {
+                        themePublicationList = new ArrayList<>();
+                    }
+                    themePublicationList.add(themePublicationDTO);
                 }
             }
         }

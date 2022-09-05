@@ -1,13 +1,13 @@
 package ch.so.agi.sodata.dto;
 
-import java.net.URI;
+//import com.google.gwt.http.client.URL;
 
 public class Office {
     private String agencyName;
     private String abbreviation;
     private String division;
-    private URI officeAtWeb;
-    private URI email;
+    private String officeAtWeb;
+    private String email;
     
     public String getAgencyName() {
         return agencyName;
@@ -27,16 +27,16 @@ public class Office {
     public void setDivision(String division) {
         this.division = division;
     }
-    public URI getOfficeAtWeb() {
+    public String getOfficeAtWeb() {
         return officeAtWeb;
     }
-    public void setOfficeAtWeb(URI officeAtWeb) {
+    public void setOfficeAtWeb(String officeAtWeb) {
         this.officeAtWeb = officeAtWeb;
     }
-    public URI getEmail() {
+    public String getEmail() {
         return email;
     }
-    public void setEmail(URI email) {
+    public void setEmail(String email) {
         this.email = email;
     }
     public String getPhone() {
