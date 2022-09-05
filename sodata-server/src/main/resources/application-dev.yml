@@ -78,9 +78,9 @@ app:
           #lastEditingDate: 2020-08-29
           title: Fischwanderhindernisse
           shortDescription: 
-          keywords: Fischwanderhindernisse,Hindernisse,AFU
-          provider: Amt für Umwelt
-          ownerUrl: https://afu.so.ch
+          keywords: Fischwanderhindernisse,Hindernisse,AWJF
+          provider: Amt für Wald, Jagd und Fischerei
+          ownerUrl: https://awjf.so.ch
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
@@ -165,9 +165,9 @@ app:
           #lastEditingDate: 2020-08-29
           title: Gewässer Revitalisierung
           shortDescription: 
-          keywords: Gewässer,Wasser,Revitalisierung,AFU
-          provider: Amt für Umwelt
-          ownerUrl: https://afu.so.ch
+          keywords: Gewässer,Wasser,Revitalisierung,AWJF
+          provider: Amt für Wald, Jagd und Fischerei
+          ownerUrl: https://awjf.so.ch
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
@@ -201,74 +201,74 @@ app:
         #     - gpkg
         #     - shp
         #     - dxf
-        - id: ch.so.afu.hydro_messstationen
-          version: current
-          owner: mailto:afu@bd.so.ch
-          model: SO_AFU_Hydro_Messstationen_Publikation_20220707
-          #epsgCode: 2056
-          #resolutionScope: 500
-          #publishingDate: 2020-08-29
-          #lastEditingDate: 2020-08-29
-          title: Hydro-Messstationen
-          shortDescription: 
-          keywords: Hydro,Wasser,Messstationen,AFU
-          provider: Amt für Umwelt
-          ownerUrl: https://afu.so.ch
-          servicer: https://agi.so.ch
-          technicalContact: mailto:agi@bd.so.ch
-          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
-          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
-          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
-          fileFormats:
-            - xtf
-            - gpkg
-            - shp
-            - dxf
-        - id: ch.so.afu.immissionskarten_luft
-          version: current
-          owner: mailto:afu@bd.so.ch
-          model: SO_AFU_Immissionskarten_20220522
-          #epsgCode: 2056
-          #resolutionScope: 500
-          #publishingDate: 2020-08-29
-          #lastEditingDate: 2020-08-29
-          title: Immissionskarten
-          shortDescription: 
-          keywords: Imissionskarten,Luft,AFU
-          provider: Amt für Umwelt
-          ownerUrl: https://afu.so.ch
-          servicer: https://agi.so.ch
-          technicalContact: mailto:agi@bd.so.ch
-          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
-          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
-          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
-          fileFormats:
-            - xtf
-            - gpkg
-            - dxf
-        - id: ch.so.afu.stoerfallverordnung
-          version: current
-          owner: mailto:afu@bd.so.ch
-          model: SO_AFU_Stoerfallverordnung_Publikation_20220711
-          #epsgCode: 2056
-          #resolutionScope: 500
-          #publishingDate: 2020-08-29
-          #lastEditingDate: 2020-08-29
-          title: Störfallverordnung
-          shortDescription: 
-          keywords: Störfallverordnung,AFU
-          provider: Amt für Umwelt
-          ownerUrl: https://afu.so.ch
-          servicer: https://agi.so.ch
-          technicalContact: mailto:agi@bd.so.ch
-          #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
-          #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
-          #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
-          fileFormats:
-            - xtf
-            - gpkg
-            - shp
-            - dxf
+        # - id: ch.so.afu.hydro_messstationen
+        #   version: current
+        #   owner: mailto:afu@bd.so.ch
+        #   model: SO_AFU_Hydro_Messstationen_Publikation_20220707
+        #   #epsgCode: 2056
+        #   #resolutionScope: 500
+        #   #publishingDate: 2020-08-29
+        #   #lastEditingDate: 2020-08-29
+        #   title: Hydro-Messstationen
+        #   shortDescription: 
+        #   keywords: Hydro,Wasser,Messstationen,AFU
+        #   provider: Amt für Umwelt
+        #   ownerUrl: https://afu.so.ch
+        #   servicer: https://agi.so.ch
+        #   technicalContact: mailto:agi@bd.so.ch
+        #   #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+        #   #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+        #   #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+        #   fileFormats:
+        #     - xtf
+        #     - gpkg
+        #     - shp
+        #     - dxf
+        # - id: ch.so.afu.immissionskarten_luft
+        #   version: current
+        #   owner: mailto:afu@bd.so.ch
+        #   model: SO_AFU_Immissionskarten_20220522
+        #   #epsgCode: 2056
+        #   #resolutionScope: 500
+        #   #publishingDate: 2020-08-29
+        #   #lastEditingDate: 2020-08-29
+        #   title: Immissionskarten
+        #   shortDescription: 
+        #   keywords: Imissionskarten,Luft,AFU
+        #   provider: Amt für Umwelt
+        #   ownerUrl: https://afu.so.ch
+        #   servicer: https://agi.so.ch
+        #   technicalContact: mailto:agi@bd.so.ch
+        #   #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+        #   #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+        #   #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+        #   fileFormats:
+        #     - xtf
+        #     - gpkg
+        #     - dxf
+        # - id: ch.so.afu.stoerfallverordnung
+        #   version: current
+        #   owner: mailto:afu@bd.so.ch
+        #   model: SO_AFU_Stoerfallverordnung_Publikation_20220711
+        #   #epsgCode: 2056
+        #   #resolutionScope: 500
+        #   #publishingDate: 2020-08-29
+        #   #lastEditingDate: 2020-08-29
+        #   title: Störfallverordnung
+        #   shortDescription: 
+        #   keywords: Störfallverordnung,AFU
+        #   provider: Amt für Umwelt
+        #   ownerUrl: https://afu.so.ch
+        #   servicer: https://agi.so.ch
+        #   technicalContact: mailto:agi@bd.so.ch
+        #   #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
+        #   #furtherMetadata: https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/c899f44f-7c8b-89b5-3c27-617cc9fdfa56
+        #   #knownWMS: 'https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.av.fixpunkte&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=633&WIDTH=1544&HEIGHT=907&BBOX=2576618.3333333335%2C1214252.2916666667%2C2658321.6666666665%2C1262247.708333333'
+        #   fileFormats:
+        #     - xtf
+        #     - gpkg
+        #     - shp
+        #     - dxf
         - id: ch.so.agi.av_gb_administrative_einteilungen
           version: current
           owner: mailto:agi@bd.so.ch
