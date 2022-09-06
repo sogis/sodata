@@ -56,7 +56,7 @@ public class LuceneSearcherV1_0 {
     public void init() throws IOException {
         log.info("Building index...");
         
-        Path tempDirWithPrefix = Files.createTempDirectory(Paths.get(System.getProperty("java.io.tmpdir")), "sodata_idx");
+        Path tempDirWithPrefix = Files.createTempDirectory(Paths.get(System.getProperty("java.io.tmpdir")), "sodata_idx_V1_0");
         log.info("Index folder: " + tempDirWithPrefix);
         
         fsIndex = new NIOFSDirectory(tempDirWithPrefix);

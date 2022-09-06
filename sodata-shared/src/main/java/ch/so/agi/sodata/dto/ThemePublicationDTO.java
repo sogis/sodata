@@ -2,8 +2,6 @@ package ch.so.agi.sodata.dto;
 
 import java.util.List;
 
-//import java.net.URI;
-
 /*
  * - URL/URI kann nicht verwendet werden, da diese nicht emuliert werden.
  * - Date könnte verwendet werden, führt aber zu Umständen wegen Timezone, wohl 
@@ -11,10 +9,11 @@ import java.util.List;
  * sollen.
  */
 
-
 public class ThemePublicationDTO {
     private String identifier;
     private String model;
+    private String title;
+    private String shortDescription;
     private String lastPublishingDate;
     private String secondToLastPublishingDate;
     private OfficeDTO owner;
@@ -38,6 +37,18 @@ public class ThemePublicationDTO {
     }
     public void setModel(String model) {
         this.model = model;
+    }
+    public String getTitle() {
+        return title;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public String getShortDescription() {
+        return shortDescription;
+    }
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
     }
     public String getLastPublishingDate() {
         return lastPublishingDate;

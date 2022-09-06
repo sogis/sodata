@@ -113,8 +113,14 @@ public class MainController {
     }
     
     @RequestMapping(value = "/themepublications", method = RequestMethod.GET, produces = { "application/json" })
-    public List<ThemePublicationDTO> searchThemePublications(@RequestParam(value="query", required=false) String searchTerms) {        
-        return configService.getThemePublicationList();
+    public List<ThemePublicationDTO> searchThemePublications(@RequestParam(value="query", required=false) String searchTerms) { 
+        if (searchTerms == null || searchTerms.trim().length() == 0) {
+            return configService.getThemePublicationList();
+        }
+        
+        
+        
+        return null;
     }
     
     @RequestMapping(value = "/datasets", method = RequestMethod.GET, produces = { "application/json" })

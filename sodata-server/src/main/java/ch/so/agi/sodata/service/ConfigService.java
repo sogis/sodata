@@ -8,7 +8,9 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -52,17 +54,37 @@ public class ConfigService {
     
     private ModelMapper modelMapper = new ModelMapper();
 
-    //TEMP
-    private List<ThemePublicationDTO> themePublicationList;
+    private Map<String,ThemePublicationDTO> themePublicationMap = new HashMap<>();
+    
+    private List<ThemePublicationDTO> themePublicationList = new ArrayList<>();
+    
+    public Map<String, ThemePublicationDTO> getThemePublicationMap() {
+        return themePublicationMap;
+    }
+
+    public void setThemePublicationMap(Map<String, ThemePublicationDTO> themePublicationMap) {
+        this.themePublicationMap = themePublicationMap;
+    }
 
     public List<ThemePublicationDTO> getThemePublicationList() {
         return themePublicationList;
     }
-    
+
     public void setThemePublicationList(List<ThemePublicationDTO> themePublicationList) {
         this.themePublicationList = themePublicationList;
     }
-    //TEMP
+
+//    //TEMP
+//    private List<ThemePublicationDTO> themePublicationList;
+//
+//    public List<ThemePublicationDTO> getThemePublicationList() {
+//        return themePublicationList;
+//    }
+//    
+//    public void setThemePublicationList(List<ThemePublicationDTO> themePublicationList) {
+//        this.themePublicationList = themePublicationList;
+//    }
+//    //TEMP
 
     /**
      * - Kann ich überhaupt ganz einfach POJO machen, d.h. ohne Annotationen?
@@ -92,8 +114,7 @@ public class ConfigService {
         xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // TODO: wieder entfernen, wenn stabil? Oder tolerant sein?
         //xmlMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         //xmlMapper.registerModule(new JavaTimeModule());
-                
-       
+
         log.info("config file: " + new File(CONFIG_FILE).getAbsolutePath());
                 
         var xif = XMLInputFactory.newInstance();
@@ -103,8 +124,6 @@ public class ConfigService {
             xr.next();
             if (xr.getEventType() == XMLStreamConstants.START_ELEMENT) {
                 if ("themePublication".equals(xr.getLocalName())) {
-                    System.out.println(xr.getLocalName());
-
                     var themePublication = xmlMapper.readValue(xr, ThemePublication.class);
                     var identifier = themePublication.getIdentifier();
                     var items = themePublication.getItems();
@@ -116,24 +135,15 @@ public class ConfigService {
                         var gsw = new GeoJsonWriter();
                         gsw.write(Paths.get(itemsGeoJsonDir, identifier + ".json").toFile(), items); 
                     }
-                                        
-                    themePublicationRepository.save(new ThemePublicationDTO());
-                    
+
                     ThemePublicationDTO themePublicationDTO = modelMapper.map(themePublication, ThemePublicationDTO.class);
-                    System.out.println(themePublication);
-//                    System.out.println(themePublicationDTO.getLastPublishingDate());
-                    
-                    // siehe http://modelmapper.org/user-manual/converters/ für spezielle Umwandlungen (list/array...)
-                    
-                    // oder das Mapping ganz manuell oder halt automatisch, d.h. das was einfach ist und der Rest
-                    // muss eventuall sowieso sehr speziell behandelt werden (geometrien -> geojson).
-                    
-                    if (themePublicationList == null) {
-                        themePublicationList = new ArrayList<>();
-                    }
+
+                    //themePublicationRepository.save(themePublicationDTO);
+                    themePublicationMap.put(identifier, themePublicationDTO);
                     themePublicationList.add(themePublicationDTO);
                 }
             }
         }
+        themePublicationRepository.saveAll(themePublicationList);
     }
 }
