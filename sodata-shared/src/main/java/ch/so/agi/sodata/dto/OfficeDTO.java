@@ -2,7 +2,7 @@ package ch.so.agi.sodata.dto;
 
 //import com.google.gwt.http.client.URL;
 
-public class Office {
+public class OfficeDTO {
     private String agencyName;
     private String abbreviation;
     private String division;

@@ -11,6 +11,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -112,7 +113,7 @@ public class MainController {
     }
     
     @RequestMapping(value = "/themepublications", method = RequestMethod.GET, produces = { "application/json" })
-    public List<ThemePublicationDTO> searchThemePublications(@RequestParam(value="query", required=false) String searchTerms) {
+    public List<ThemePublicationDTO> searchThemePublications(@RequestParam(value="query", required=false) String searchTerms) {        
         return configService.getThemePublicationList();
     }
     

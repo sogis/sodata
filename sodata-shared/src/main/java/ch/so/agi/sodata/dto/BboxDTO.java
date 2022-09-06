@@ -1,6 +1,6 @@
 package ch.so.agi.sodata.dto;
 
-public class Bbox {
+public class BboxDTO {
     private double left;
     private double bottom;
     private double right;

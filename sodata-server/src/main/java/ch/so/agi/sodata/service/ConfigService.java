@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +18,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.locationtech.jts.io.ParseException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.module.jsr310.Jsr310Module;
+import org.modelmapper.module.jsr310.Jsr310ModuleConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,13 +46,12 @@ public class ConfigService {
     
     @Value("${app.configFile}")
     private String CONFIG_FILE;   
-
-//    @Autowired
-//    private XmlMapper xmlMapper;
     
     @Autowired
     private ThemePublicationRepository themePublicationRepository;
     
+    private ModelMapper modelMapper = new ModelMapper();
+
     //TEMP
     private List<ThemePublicationDTO> themePublicationList;
 
@@ -89,7 +92,8 @@ public class ConfigService {
         xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // TODO: wieder entfernen, wenn stabil? Oder tolerant sein?
         //xmlMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         //xmlMapper.registerModule(new JavaTimeModule());
-
+                
+       
         log.info("config file: " + new File(CONFIG_FILE).getAbsolutePath());
                 
         var xif = XMLInputFactory.newInstance();
@@ -112,21 +116,12 @@ public class ConfigService {
                         var gsw = new GeoJsonWriter();
                         gsw.write(Paths.get(itemsGeoJsonDir, identifier + ".json").toFile(), items); 
                     }
-                    
-                    //DTO: synonyms etc. flachwalzen? date als String wegen GWT. URI? 
-                    
-                    
+                                        
                     themePublicationRepository.save(new ThemePublicationDTO());
                     
-                    
-                    
-                    // -> Bean
-                    ModelMapper modelMapper = new ModelMapper();
-                    modelMapper.registerModule(new Jsr310Module());
-
                     ThemePublicationDTO themePublicationDTO = modelMapper.map(themePublication, ThemePublicationDTO.class);
-                    System.out.println(themePublication.getLastPublishingDate());
-                    System.out.println(themePublicationDTO.getLastPublishingDate());
+                    System.out.println(themePublication);
+//                    System.out.println(themePublicationDTO.getLastPublishingDate());
                     
                     // siehe http://modelmapper.org/user-manual/converters/ für spezielle Umwandlungen (list/array...)
                     

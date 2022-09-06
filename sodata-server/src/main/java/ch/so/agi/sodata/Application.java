@@ -34,7 +34,7 @@ public class Application extends SpringBootServletInitializer {
     @Bean
     ForwardedHeaderFilter forwardedHeaderFilter() {
         return new ForwardedHeaderFilter();
-    }  
+    } 
         
     // Anwendung ist fertig gestartet.
     // Importieren der Konfiguration. D.h. der XML-Datei mit den vorhandenen

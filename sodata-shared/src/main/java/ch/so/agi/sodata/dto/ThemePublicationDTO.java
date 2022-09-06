@@ -1,19 +1,31 @@
 package ch.so.agi.sodata.dto;
 
+import java.util.List;
+
 //import java.net.URI;
-import java.util.Date;
+
+/*
+ * - URL/URI kann nicht verwendet werden, da diese nicht emuliert werden.
+ * - Date könnte verwendet werden, führt aber zu Umständen wegen Timezone, wohl 
+ * auch weil Ursprungstyp LocalDate ist, was es eigentlich einfacher hätte machen
+ * sollen.
+ */
+
 
 public class ThemePublicationDTO {
     private String identifier;
     private String model;
-    private Date lastPublishingDate;
-    private Date secondToLastPublishingDate;
-//    private Office owner;
-//    private Office servicer;
-//    private String furtherInformation;
-//    private Bbox bbox;
-//    private URI previewURL;
-//    private Keywords keywords;
+    private String lastPublishingDate;
+    private String secondToLastPublishingDate;
+    private OfficeDTO owner;
+    private OfficeDTO servicer;
+    private String furtherInformation;
+//    private Bbox bbox; // benötige ich nicht für Lucene und GUI
+    private String previewUrl;
+    private List<String> keywords;
+    private List<String> synonyms;
+    private List<FileFormatDTO> fileFormats;
+    private List<TableInfoDTO> tablesInfo;
     
     public String getIdentifier() {
         return identifier;
@@ -27,52 +39,70 @@ public class ThemePublicationDTO {
     public void setModel(String model) {
         this.model = model;
     }
-    public Date getLastPublishingDate() {
+    public String getLastPublishingDate() {
         return lastPublishingDate;
     }
-    public void setLastPublishingDate(Date lastPublishingDate) {
+    public void setLastPublishingDate(String lastPublishingDate) {
         this.lastPublishingDate = lastPublishingDate;
     }
-    public Date getSecondToLastPublishingDate() {
+    public String getSecondToLastPublishingDate() {
         return secondToLastPublishingDate;
     }
-    public void setSecondToLastPublishingDate(Date secondToLastPublishingDate) {
+    public void setSecondToLastPublishingDate(String secondToLastPublishingDate) {
         this.secondToLastPublishingDate = secondToLastPublishingDate;
     }
-//    public Office getOwner() {
-//        return owner;
-//    }
-//    public void setOwner(Office owner) {
-//        this.owner = owner;
-//    }
-//    public Office getServicer() {
-//        return servicer;
-//    }
-//    public void setServicer(Office servicer) {
-//        this.servicer = servicer;
-//    }
-//    public String getFurtherInformation() {
-//        return furtherInformation;
-//    }
-//    public void setFurtherInformation(String furtherInformation) {
-//        this.furtherInformation = furtherInformation;
-//    }
+    public OfficeDTO getOwner() {
+        return owner;
+    }
+    public void setOwner(OfficeDTO owner) {
+        this.owner = owner;
+    }
+    public OfficeDTO getServicer() {
+        return servicer;
+    }
+    public void setServicer(OfficeDTO servicer) {
+        this.servicer = servicer;
+    }
+    public String getFurtherInformation() {
+        return furtherInformation;
+    }
+    public void setFurtherInformation(String furtherInformation) {
+        this.furtherInformation = furtherInformation;
+    }
 //    public Bbox getBbox() {
 //        return bbox;
 //    }
 //    public void setBbox(Bbox bbox) {
 //        this.bbox = bbox;
 //    }
-//    public URI getPreviewURL() {
-//        return previewURL;
-//    }
-//    public void setPreviewURL(URI previewURL) {
-//        this.previewURL = previewURL;
-//    }
-//    public Keywords getKeywords() {
-//        return keywords;
-//    }
-//    public void setKeywords(Keywords keywords) {
-//        this.keywords = keywords;
-//    }
+    public String getPreviewUrl() {
+        return previewUrl;
+    }
+    public void setPreviewUrl(String previewUrl) {
+        this.previewUrl = previewUrl;
+    }
+    public List<String> getKeywords() {
+        return keywords;
+    }
+    public void setKeywords(List<String> keywords) {
+        this.keywords = keywords;
+    }
+    public List<String> getSynonyms() {
+        return synonyms;
+    }
+    public void setSynonyms(List<String> synonyms) {
+        this.synonyms = synonyms;
+    }
+    public List<FileFormatDTO> getFileFormats() {
+        return fileFormats;
+    }
+    public void setFileFormats(List<FileFormatDTO> fileFormats) {
+        this.fileFormats = fileFormats;
+    }
+    public List<TableInfoDTO> getTablesInfo() {
+        return tablesInfo;
+    }
+    public void setTablesInfo(List<TableInfoDTO> tablesInfo) {
+        this.tablesInfo = tablesInfo;
+    }
 }
