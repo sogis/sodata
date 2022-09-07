@@ -35,5 +35,4 @@ class ApplicationTests {
         assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/datasets?query=wald", String.class))
                 .contains("Wald");
     }
-
 }

@@ -132,8 +132,10 @@ public class ConfigService {
                     // wird nur benötigt, falls es wirklich etwas auszuwählen gibt.
                     // D.h. wenn es mindestens 2 Items (=Subunits) gibt.
                     if (items.size() > 1) {
+                        File geoJsonFile = Paths.get(itemsGeoJsonDir, identifier + ".json").toFile();
                         var gsw = new GeoJsonWriter();
-                        gsw.write(Paths.get(itemsGeoJsonDir, identifier + ".json").toFile(), items); 
+                        gsw.write(geoJsonFile, items); 
+                        log.debug("GeoJson file written: " + geoJsonFile);
                     }
 
                     ThemePublicationDTO themePublicationDTO = modelMapper.map(themePublication, ThemePublicationDTO.class);
