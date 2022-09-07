@@ -78,9 +78,9 @@ app:
           #lastEditingDate: 2020-08-29
           title: Fischwanderhindernisse
           shortDescription: 
-          keywords: Fischwanderhindernisse,Hindernisse,AWJF
-          provider: Amt für Wald, Jagd und Fischerei
-          ownerUrl: https://awjf.so.ch
+          keywords: Fischwanderhindernisse,Hindernisse,AFU
+          provider: Amt für Umwelt
+          ownerUrl: https://afu.so.ch
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
@@ -165,9 +165,9 @@ app:
           #lastEditingDate: 2020-08-29
           title: Gewässer Revitalisierung
           shortDescription: 
-          keywords: Gewässer,Wasser,Revitalisierung,AWJF
-          provider: Amt für Wald, Jagd und Fischerei
-          ownerUrl: https://awjf.so.ch
+          keywords: Gewässer,Wasser,Revitalisierung,AFU
+          provider: Amt für Umwelt
+          ownerUrl: https://afu.so.ch
           servicer: https://agi.so.ch
           technicalContact: mailto:agi@bd.so.ch
           #furtherInformation: http://geo.so.ch/models/AGI/SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822.uml
