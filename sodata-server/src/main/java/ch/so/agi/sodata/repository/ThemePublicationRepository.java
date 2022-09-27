@@ -49,6 +49,7 @@ public class ThemePublicationRepository {
         writer = new IndexWriter(fsIndex, indexWriterConfig);
     }
     
+    // Öffnen/schliessen müsste eh anders gelöst werden.
     @Deprecated
     public void save(ThemePublicationDTO themePublication) throws IOException {
         log.info("save: " + themePublication.getIdentifier());
@@ -81,8 +82,8 @@ public class ThemePublicationRepository {
             String ownerLuceneString = themePublication.getOwner().getAgencyName();
             if (themePublication.getOwner().getAbbreviation() != null) ownerLuceneString += ", " + themePublication.getOwner().getAbbreviation();
             document.add(new TextField("owner", ownerLuceneString, Store.YES));
-            document.add(new TextField("keywords", String.join(", ", themePublication.getKeywords()), Store.YES));
-            document.add(new TextField("synonyms", String.join(", ", themePublication.getSynonyms()), Store.YES));
+            if (themePublication.getKeywords() != null) document.add(new TextField("keywords", String.join(", ", themePublication.getKeywords()), Store.YES));
+            if (themePublication.getSynonyms() != null) document.add(new TextField("synonyms", String.join(", ", themePublication.getSynonyms()), Store.YES));
             
             writer.addDocument(document);
         }

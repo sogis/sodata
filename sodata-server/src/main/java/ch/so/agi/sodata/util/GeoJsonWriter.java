@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
@@ -46,7 +47,7 @@ public class GeoJsonWriter {
             var itemTitle = item.getTitle();
             var itemLastPublishingDate = item.getLastPublishingDate();
             Map<String,Object> properties = Map.of("identifier",itemIdentifier, "title",itemTitle, "lastPublishingDate",itemLastPublishingDate);
-            var geometry = (Polygon) wktReader.read(item.getGeometry());
+            var geometry = wktReader.read(item.getGeometry());
             writeFeature(jsonGenerator, geometry, properties);
         }
         
@@ -90,6 +91,8 @@ public class GeoJsonWriter {
         gen.writeObjectFieldStart("geometry");
         if (geom instanceof Polygon) {
             write((Polygon) geom, gen);
+        } else if (geom instanceof MultiPolygon) {
+            write((MultiPolygon) geom, gen);
         } else {
             throw new RuntimeException("Unsupported Geomery type");
         }
@@ -103,6 +106,22 @@ public class GeoJsonWriter {
         writeCoordinates(geom.getExteriorRing().getCoordinates(), gen);
         for (int i = 0; i < geom.getNumInteriorRing(); ++i) {
             writeCoordinates(geom.getInteriorRingN(i).getCoordinates(), gen);
+        }
+        gen.writeEndArray();
+    }
+    
+    private void write(MultiPolygon geom, JsonGenerator gen) throws IOException {
+        gen.writeStringField("type", "MultiPolygon");
+        gen.writeFieldName("coordinates");
+        gen.writeStartArray();
+        for (int i = 0; i < geom.getNumGeometries(); ++i) {
+            Polygon p = (Polygon) geom.getGeometryN(i);
+            gen.writeStartArray();
+            writeCoordinates(p.getExteriorRing().getCoordinates(), gen);
+            for (int j = 0; j < p.getNumInteriorRing(); ++j) {
+                writeCoordinates(p.getInteriorRingN(j).getCoordinates(), gen);
+            }
+            gen.writeEndArray();
         }
         gen.writeEndArray();
     }

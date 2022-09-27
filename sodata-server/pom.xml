@@ -89,8 +89,8 @@
     definieren muss. -->
     <dependency>
       <groupId>io.github.sogis</groupId>
-      <artifactId>metabean2file</artifactId>
-      <version>1.0.55</version>
+      <artifactId>meta2file</artifactId>
+      <version>1.0.62</version>
     </dependency>
   </dependencies>
   <build>

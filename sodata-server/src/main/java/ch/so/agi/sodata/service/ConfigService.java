@@ -128,6 +128,8 @@ public class ConfigService {
                     var identifier = themePublication.getIdentifier();
                     var items = themePublication.getItems();
                     
+                    log.info("**"+ themePublication.getIdentifier());
+                    
                     // Die GeoJson-Datei mit den Subunits zur Auswahl im Client 
                     // wird nur benötigt, falls es wirklich etwas auszuwählen gibt.
                     // D.h. wenn es mindestens 2 Items (=Subunits) gibt.
@@ -135,7 +137,7 @@ public class ConfigService {
                         File geoJsonFile = Paths.get(itemsGeoJsonDir, identifier + ".json").toFile();
                         var gsw = new GeoJsonWriter();
                         gsw.write(geoJsonFile, items); 
-                        log.debug("GeoJson file written: " + geoJsonFile);
+                        log.debug("GeoJSON file written: " + geoJsonFile);
                     }
 
                     ThemePublicationDTO themePublicationDTO = modelMapper.map(themePublication, ThemePublicationDTO.class);

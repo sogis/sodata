@@ -43,6 +43,6 @@ lucene:
   queryMaxRecords: ${LUCENE_QUERY_MAX_RECORDS:500}
 
 app:
-  configFile: ${CONFIG_FILE:/app/config.xml}
+  configFile: ${CONFIG_FILE:/app/datasearch.xml}
   itemsGeoJsonDir: ${ITEMS_GEOJSON_DIR:#{systemProperties['java.io.tmpdir']}}
   myVar: ${VAR:defaultValue}
