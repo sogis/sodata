@@ -33,7 +33,7 @@ public class ThemePublicationRepository {
     private IndexWriter writer;
     //private IndexWriterConfig indexWriterConfig;
 
-    // Muss dem Parsen der Xml-Config passieren, was im CommandLineRunner
+    // Muss vor dem Parsen der Xml-Config passieren, was im CommandLineRunner
     // gemacht wird.
     @PostConstruct
     public void init() throws IOException {
@@ -49,7 +49,6 @@ public class ThemePublicationRepository {
         writer = new IndexWriter(fsIndex, indexWriterConfig);
     }
     
-    // Öffnen/schliessen müsste eh anders gelöst werden.
     @Deprecated
     public void save(ThemePublicationDTO themePublication) throws IOException {
         log.info("save: " + themePublication.getIdentifier());
