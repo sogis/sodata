@@ -355,7 +355,6 @@ app:
           fileFormats:
             - xtf
             - gpkg
-            - shp
             - dxf
         - id: ch.so.agi.inventar_hoheitsgrenzen
           version: current
@@ -510,7 +509,6 @@ app:
           fileFormats:
             - xtf
             - gpkg
-            - shp
             - dxf
         - id: ch.so.alw.tiergesundheit_massnahmen
           version: current
