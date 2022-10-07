@@ -4,6 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+@Deprecated
 @Component
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "app")

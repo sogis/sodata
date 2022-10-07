@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+@Deprecated
 @Component
 @ConfigurationProperties("app")
 public class AppProperties {
