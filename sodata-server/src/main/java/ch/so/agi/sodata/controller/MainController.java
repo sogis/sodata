@@ -48,45 +48,7 @@ public class MainController {
     
     @Autowired
     private ConfigService configService;
-    
-    // TODO
-    
-    // Absoluter Pfad zu themepublicatins.xml in application.properties als ENV mit Default.
-    // XmlThemePublication -> GwtThemePublication Mapper
-    
-    // Eigenes Properties-Package falls mehrere Klassen? 
-    
-    // TODO: wird nicht mehr im postconstruct gemacht
-//    @PostConstruct
-//    public void init() throws Exception {        
-//        datasetMap = new HashMap<String, Dataset>();
-//        for (Dataset dataset : config.getDatasets()) {
-//            String tmpdir = System.getProperty("java.io.tmpdir");
-//            String filename = dataset.getId();
-//            File subunitFile = Paths.get(tmpdir, filename + ".json").toFile();
-//
-//            if (dataset.getSubunits() != null) {
-//                InputStream resource = new ClassPathResource("public/"+filename+".json").getInputStream();
-//                Files.copy(resource, subunitFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-//                dataset.setSubunits(filename + ".json");
-//            }
-//            
-//            if (dataset.getSubunitsBase64() != null) {
-//                try (FileOutputStream fos = new FileOutputStream(subunitFile); ) {
-//                    String b64 = dataset.getSubunitsBase64();
-//                    byte[] decoder = Base64.getDecoder().decode(b64);
-//                    fos.write(decoder);                    
-//                  } catch (IOException e) {
-//                    e.printStackTrace();
-//                    throw new Exception(e);
-//                  }
-//                dataset.setSubunits(filename + ".json");
-//                dataset.setSubunitsBase64(null); // Base64 soll nicht zum Client geschickt werden.
-//            }            
-//            datasetMap.put(dataset.getId(), dataset);            
-//        }
-//    }
-    
+        
     @GetMapping("/ping")
     public ResponseEntity<String> ping() {
         return new ResponseEntity<String>("sodata", HttpStatus.OK);
