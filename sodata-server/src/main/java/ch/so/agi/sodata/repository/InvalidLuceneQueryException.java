@@ -1,4 +1,4 @@
-package ch.so.agi.sodata.search;
+package ch.so.agi.sodata.repository;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

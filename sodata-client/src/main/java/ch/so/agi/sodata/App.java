@@ -5,6 +5,7 @@ import static elemental2.dom.DomGlobal.fetch;
 import static org.jboss.elemento.Elements.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -41,6 +42,7 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
+import elemental2.core.Global;
 import elemental2.dom.AbortController;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
@@ -55,6 +57,9 @@ import elemental2.dom.Location;
 import elemental2.dom.RequestInit;
 import elemental2.dom.URL;
 import elemental2.dom.URLSearchParams;
+import elemental2.dom.XMLHttpRequest;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import ol.AtPixelOptions;
 import ol.Extent;
 import ol.Map;
@@ -78,7 +83,6 @@ import ol.style.Fill;
 import ol.style.Stroke;
 import ol.style.Style;
 
-import ch.so.agi.sodata.Dataset;
 import ch.so.agi.sodata.dto.FileFormatDTO;
 import ch.so.agi.sodata.dto.ThemePublicationDTO;
 
@@ -88,7 +92,7 @@ public class App implements EntryPoint {
 
     // Client application settings
     private String myVar;
-    private String filesServerUrl;
+    private String FILES_SERVER_URL;
     
     // Format settings
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
@@ -106,11 +110,6 @@ public class App implements EntryPoint {
     private HTMLElement datasetContent;
     
     // Theme publications vars
-    private DatasetMapper datasetMapper;
-    private List<Dataset> datasets;
-    private LocalListDataStore<Dataset> datasetListStore;
-    private DataTable<Dataset> datasetTable;
-    //-------
     private ThemePublicationMapper mapper;
     private List<ThemePublicationDTO> themePublications;
     private LocalListDataStore<ThemePublicationDTO> themePublicationListStore;
@@ -150,11 +149,10 @@ public class App implements EntryPoint {
     private AbortController abortController = null;
 
     // Create model mapper interfaces
-    public static interface DatasetMapper extends ObjectMapper<List<Dataset>> {}
     public static interface ThemePublicationMapper extends ObjectMapper<List<ThemePublicationDTO>> {}
     
 	public void onModuleLoad() {
-        datasetMapper = GWT.create(DatasetMapper.class);   
+//        datasetMapper = GWT.create(DatasetMapper.class);   
         mapper = GWT.create(ThemePublicationMapper.class);   
 
         // Change Domino UI color scheme.
@@ -168,8 +166,34 @@ public class App implements EntryPoint {
         if (pathname.contains("index.html")) {
             pathname = pathname.replace("index.html", "");
         }
+        
+        // Get settings with a synchronous request.
+        XMLHttpRequest httpRequest = new XMLHttpRequest();
+        httpRequest.open("GET", pathname + "settings", false);
+        httpRequest.onload = event -> {
+            if (Arrays.asList(200, 201, 204).contains(httpRequest.status)) {
+                String responseText = httpRequest.responseText;
+                try {
+                    JsPropertyMap<Object> propertiesMap = Js.asPropertyMap(Global.JSON.parse(responseText));
+                    FILES_SERVER_URL = propertiesMap.getAsAny("filesServerUrl").asString();
 
-        // Get datasets json from server and initialize the site.
+                } catch (Exception e) {
+                    DomGlobal.window.alert("Error loading settings!");
+                    DomGlobal.console.error("Error loading settings!", e);
+                }
+            } else {
+                DomGlobal.window.alert("Error loading settings!" + httpRequest.status);
+            }
+
+        };
+
+        httpRequest.addEventListener("error", event -> {
+            DomGlobal.window.alert("Error loading settings! Error: " + httpRequest.status + " " + httpRequest.statusText);
+        });
+
+        httpRequest.send();
+
+        // Get themes publications json from server and initialize the site.
         DomGlobal.fetch("/themepublications")
         .then(response -> {
             if (!response.ok) {
@@ -179,11 +203,11 @@ public class App implements EntryPoint {
             return response.text();
         })
         .then(json -> {
-//            datasets = datasetMapper.read(json);
             themePublications = mapper.read(json);
             Collections.sort(themePublications, new ThemePublicationComparator());
-            console.log(themePublications);
+            
             init();
+            
             return null;
         }).catch_(error -> {
             console.log(error);
@@ -198,7 +222,7 @@ public class App implements EntryPoint {
         HTMLDocument document = DomGlobal.document;
 
         // This cannot be done in index.html since href depends
-        // on the url.
+        // on the real world url.
         Element head = document.getElementsByTagName("head").getAt(0);
         HTMLElement opensearchdescription = (HTMLElement) document.createElement("link");
         opensearchdescription.setAttribute("rel", "search");
@@ -264,19 +288,20 @@ public class App implements EntryPoint {
             @Override
             public void handleEvent(Event evt) {
                 textBox.clear();
-                
-                // TODO fixme
-                datasetListStore.setData(datasets);
-                
+                themePublicationListStore.setData(themePublications);
                 removeQueryParam(FILTER_PARAM_KEY);
             }
         });
         textBox.addRightAddOn(resetIcon);
 
-        textBox.addEventListener("keyup", event -> {         
+        textBox.addEventListener("keyup", event -> {        
+            if (textBox.getValue().trim().length() > 0 && textBox.getValue().trim().length() <=2) {
+                themePublicationListStore.setData(themePublications);
+                return;
+            }
+            
             if (textBox.getValue().trim().length() == 0) {
-                //TODO fixme
-                datasetListStore.setData(datasets);                
+                themePublicationListStore.setData(themePublications);
                 return;
             }
             
@@ -288,26 +313,17 @@ public class App implements EntryPoint {
             final RequestInit init = RequestInit.create();
             init.setSignal(abortController.signal);
 
-            // TODO fixme
-            DomGlobal.fetch("/datasets?query=" + textBox.getValue().toLowerCase(), init).then(response -> {
+            DomGlobal.fetch("/themepublications?query=" + textBox.getValue().toLowerCase(), init).then(response -> {
                 if (!response.ok) {
                     return null;
                 }
                 return response.text();
-            }).then(json -> {
-                // TODO fixme
-                List<Dataset> filteredDatasets = datasetMapper.read(json);
-
-                // TODO fixme
-                Collections.sort(filteredDatasets, new Comparator<Dataset>() {
-                    @Override
-                    public int compare(Dataset o1, Dataset o2) {
-                        return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
-                    }
-                });
-
-                datasetListStore.setData(filteredDatasets);
-
+            }).then(json -> {                
+                List<ThemePublicationDTO> filteredThemePublications = mapper.read(json);
+                filteredThemePublications.sort(new ThemePublicationComparator());
+                
+                themePublicationListStore.setData(filteredThemePublications);
+                
                 updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
 
                 abortController = null;
@@ -320,16 +336,15 @@ public class App implements EntryPoint {
         });
         topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(textBox)).element());
 
-        // Configuration of the themepublication table
+        // Configuration of the theme publication table
         TableConfig<ThemePublicationDTO> tableConfig = new TableConfig<>();
         tableConfig
                 .addColumn(ColumnConfig.<ThemePublicationDTO>create("title", messages.table_header_topic())
                         .setShowTooltip(false)
                         .textAlign("left")
-                        .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getTitle()))
-
-                )
-                .addColumn(ColumnConfig.<ThemePublicationDTO>create("lastPublishingDate", messages.table_header_publication_date())
+                        .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getTitle())))
+                .addColumn(ColumnConfig
+                        .<ThemePublicationDTO>create("lastPublishingDate", messages.table_header_publication_date())
                         .setShowTooltip(false)
                         .textAlign("left")
                         .setCellRenderer(cell -> {
@@ -348,7 +363,7 @@ public class App implements EntryPoint {
                             metadataLinkElement.addEventListener("click", new EventListener() {
                                 @Override
                                 public void handleEvent(Event evt) {
-                                    //openMetadataDialog(cell.getRecord());
+                                    // openMetadataDialog(cell.getRecord());
                                 }
                             });
                             return metadataLinkElement;
@@ -358,7 +373,7 @@ public class App implements EntryPoint {
                         .textAlign("left")
                         .setCellRenderer(cell -> {
                             HTMLElement badgesElement = div().element();
-                            
+
                             if (cell.getRecord().isHasSubunits()) {
                                 HTMLElement regionSelectionElement = a().css("default-link")
                                         .textContent(messages.table_subunit_selection())
@@ -366,7 +381,7 @@ public class App implements EntryPoint {
                                 regionSelectionElement.addEventListener("click", new EventListener() {
                                     @Override
                                     public void handleEvent(Event evt) {
-                                        //openRegionSelectionDialog(cell.getRecord());
+                                        // openRegionSelectionDialog(cell.getRecord());
                                     }
                                 });
                                 return regionSelectionElement;
@@ -385,9 +400,12 @@ public class App implements EntryPoint {
                                         .collect(Collectors.toList());
 
                                 for (FileFormatDTO fileFormat : sortedFileFormats) {
+
+                                    String fileUrl = FILES_SERVER_URL + "/data/" + cell.getRecord().getIdentifier()
+                                            + "/aktuell/" + cell.getRecord().getIdentifier() + "."
+                                            + fileFormat.getAbbreviation() + ".zip";
                                     badgesElement.appendChild(a().css("badge-link")
-                                            .attr("href", // TODO fixme
-                                                    "/dataset/" + cell.getRecord().getIdentifier() + "_" + fileFormat.getAbbreviation() + ".zip")
+                                            .attr("href", fileUrl)
                                             .attr("target", "_blank")
                                             .add(Badge.create(formatLookUp.get(fileFormat.getAbbreviation()))
                                                     .setBackground(Color.GREY_LIGHTEN_2)
@@ -405,15 +423,6 @@ public class App implements EntryPoint {
 
         themePublicationListStore = new LocalListDataStore<>();
         themePublicationListStore.setData(themePublications);
-        
-//        datasetListStore = new LocalListDataStore<>();
-//        //listStore.setData(datasets);
-
-//        datasetTable = new DataTable<>(tableConfig, datasetListStore);
-//        datasetTable.setId("dataset-table");
-//        datasetTable.noStripes();
-//        //datasetTable.noHover();
-//        datasetTable.load();
         
         themePublicationTable = new DataTable<>(tableConfig, themePublicationListStore);
         themePublicationTable.setId("dataset-table");
@@ -451,8 +460,8 @@ public class App implements EntryPoint {
         modal.css("modal-object");
 
         TabsPanel tabsPanel = TabsPanel.create().setColor(Color.RED_DARKEN_3);
-        Tab selectionTab = Tab.create(Icons.ALL.map_outline_mdi(), "AUSWAHL");
-        Tab downloadTab = Tab.create(Icons.ALL.file_download_outline_mdi(), "HERUNTERLADEN");
+        Tab selectionTab = Tab.create(Icons.ALL.map_outline_mdi(), "AUSWAHL"); // TODO i18n
+        Tab downloadTab = Tab.create(Icons.ALL.file_download_outline_mdi(), "HERUNTERLADEN"); // TODO i18n
         tabsPanel.appendChild(selectionTab);
         tabsPanel.appendChild(downloadTab);
 
@@ -604,6 +613,8 @@ public class App implements EntryPoint {
         }
     }
 
+    // TODO remove
+    // Dient eventuell noch als Inspiration
     private void openServiceLinkDialog(Dataset dataset) {
         ModalDialog modal = ModalDialog.create("Servicelinks").setAutoClose(true);
 
@@ -634,8 +645,8 @@ public class App implements EntryPoint {
             Stroke stroke = new Stroke();
             stroke.setWidth(4); 
             //stroke.setColor(new ol.color.Color(56, 142, 60, 1.0)); 
-            stroke.setColor(new ol.color.Color(78,127,217, 1.0)); 
             //stroke.setColor(new ol.color.Color(230, 0, 0, 0.6));
+            stroke.setColor(new ol.color.Color(78,127,217, 1.0)); 
             style.setStroke(stroke);
             Fill fill = new Fill();
             fill.setColor(new ol.color.Color(255, 255, 255, 0.6));

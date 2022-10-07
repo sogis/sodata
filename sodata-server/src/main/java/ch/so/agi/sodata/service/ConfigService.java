@@ -4,11 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,17 +12,13 @@ import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import org.locationtech.jts.io.ParseException;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.module.jsr310.Jsr310Module;
-import org.modelmapper.module.jsr310.Jsr310ModuleConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -35,10 +27,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import ch.so.agi.meta2file.model.ThemePublication;
 import ch.so.agi.sodata.dto.ThemePublicationDTO;
-import ch.so.agi.sodata.repository.ThemePublicationRepository;
+import ch.so.agi.sodata.repository.LuceneThemePublicationRepository;
 import ch.so.agi.sodata.util.GeoJsonWriter;
-
-//import ch.so.agi.meta2file.model.ThemePublication;
 
 @Service
 public class ConfigService {
@@ -51,7 +41,7 @@ public class ConfigService {
     private String CONFIG_FILE;   
     
     @Autowired
-    private ThemePublicationRepository themePublicationRepository;
+    private LuceneThemePublicationRepository luceneThemePublicationRepository;
     
     private ModelMapper modelMapper = new ModelMapper();
 
@@ -75,36 +65,14 @@ public class ConfigService {
         this.themePublicationList = themePublicationList;
     }
 
-//    //TEMP
-//    private List<ThemePublicationDTO> themePublicationList;
-//
-//    public List<ThemePublicationDTO> getThemePublicationList() {
-//        return themePublicationList;
-//    }
-//    
-//    public void setThemePublicationList(List<ThemePublicationDTO> themePublicationList) {
-//        this.themePublicationList = themePublicationList;
-//    }
-//    //TEMP
 
-    /**
+    /*
      * - Kann ich überhaupt ganz einfach POJO machen, d.h. ohne Annotationen?
      * - 1. Versuch (ohne Memory-Optimierung): Benötigter Inhalt in Memory-Map vorhalten.
-     * Wahrscheinlich ohne Geometriezeugs, das wird beim Parsen wegpersistiert und mit einem Fremdschlüssel
-     * versehen.
-     * - Beim Parsen den notwendigen Teil in den Lucene-Index schreiben (Repository...)
-     * - Beim Suchen wird dann der Index durchsucht und dann die Objekte aus der Memory-Map geholt
-     * (jetzt glaub schon so).
-     * - Eventuell die Metadaten erst ohne-Request holen, weil die doch relativ umfangreich sein können.
-     * Dann müsste das mit Map noch gescheit gemacht werden, nicht dass man 2 Maps vorhalten muss. Ah oder doch:
-     * Einmal ohne Meta und eine Meta-Pur mit FK.
-     * 
      * - 2. Memory-optimized: Anstelle einer Memory-Map eine h2-db. Das Java-Objekt wird rein-serialisiert und ident
      * als Schlüssel nach der Lucene-Suche.
-     * @throws ParseException 
      * 
      */
-
     public void readXml() throws XMLStreamException, IOException, ParseException {
         // Falls der XmlMapper als Bean definiert wird, überschreibt er den Default-Object-Mapper,
         // welcher Json-Output liefert. Falls der XmlMapper als Bean benötigt wird, muss ich nochmals
@@ -117,7 +85,7 @@ public class ConfigService {
         //xmlMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         //xmlMapper.registerModule(new JavaTimeModule());
 
-        log.info("config file: " + new File(CONFIG_FILE).getAbsolutePath());
+        log.debug("config file: " + new File(CONFIG_FILE).getAbsolutePath());
                 
         var xif = XMLInputFactory.newInstance();
         var xr = xif.createXMLStreamReader(new FileInputStream( new File(CONFIG_FILE)));
@@ -130,11 +98,11 @@ public class ConfigService {
                     var identifier = themePublication.getIdentifier();
                     var items = themePublication.getItems();
                     
-                    log.info("**"+ themePublication.getIdentifier());
+                    log.debug("Identifier: "+ themePublication.getIdentifier());
                     
                     ThemePublicationDTO themePublicationDTO = modelMapper.map(themePublication, ThemePublicationDTO.class);
 
-                    // Die GeoJson-Datei mit den Subunits zur Auswahl im Client 
+                    // Die GeoJSON-Datei mit den Subunits zur Auswahl im Client 
                     // wird nur benötigt, falls es wirklich etwas auszuwählen gibt.
                     // D.h. wenn es mindestens 2 Items (=Subunits) gibt.
                     if (items.size() > 1) {
@@ -146,13 +114,11 @@ public class ConfigService {
                         log.debug("GeoJSON file written: " + geoJsonFile);
                     }
 
-
-                    //themePublicationRepository.save(themePublicationDTO);
                     themePublicationMap.put(identifier, themePublicationDTO);
                     themePublicationList.add(themePublicationDTO);
                 }
             }
         }
-        themePublicationRepository.saveAll(themePublicationList);
+        luceneThemePublicationRepository.saveAll(themePublicationList);
     }
 }

@@ -1,27 +1,14 @@
 package ch.so.agi.sodata.controller;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,14 +23,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import ch.so.agi.sodata.AppProperties;
-import ch.so.agi.sodata.Dataset;
 import ch.so.agi.sodata.ClientSettings;
 import ch.so.agi.sodata.dto.ThemePublicationDTO;
-import ch.so.agi.sodata.search.InvalidLuceneQueryException;
-import ch.so.agi.sodata.search.LuceneSearcherV1_0;
+import ch.so.agi.sodata.repository.InvalidLuceneQueryException;
+import ch.so.agi.sodata.repository.LuceneSearcherException;
+import ch.so.agi.sodata.repository.LuceneThemePublicationRepository;
 import ch.so.agi.sodata.service.ConfigService;
-import ch.so.agi.sodata.search.LuceneSearcherException;
 
 @RestController
 public class MainController {
@@ -53,20 +38,14 @@ public class MainController {
     private Integer QUERY_MAX_RECORDS;   
 
     @Autowired
-    ClientSettings settings;
-    
+    private ClientSettings settings;
+        
     @Autowired
-    private AppProperties config; 
-    
-    @Autowired
-    private LuceneSearcherV1_0 indexSearcher;
+    private LuceneThemePublicationRepository themePublicationsRepository;
     
     @Autowired
     ObjectMapper objectMapper;
-
-    private Map<String, Dataset> datasetMap;
     
-    //TEMP
     @Autowired
     private ConfigService configService;
     
@@ -78,35 +57,35 @@ public class MainController {
     // Eigenes Properties-Package falls mehrere Klassen? 
     
     // TODO: wird nicht mehr im postconstruct gemacht
-    @PostConstruct
-    public void init() throws Exception {        
-        datasetMap = new HashMap<String, Dataset>();
-        for (Dataset dataset : config.getDatasets()) {
-            String tmpdir = System.getProperty("java.io.tmpdir");
-            String filename = dataset.getId();
-            File subunitFile = Paths.get(tmpdir, filename + ".json").toFile();
-
-            if (dataset.getSubunits() != null) {
-                InputStream resource = new ClassPathResource("public/"+filename+".json").getInputStream();
-                Files.copy(resource, subunitFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                dataset.setSubunits(filename + ".json");
-            }
-            
-            if (dataset.getSubunitsBase64() != null) {
-                try (FileOutputStream fos = new FileOutputStream(subunitFile); ) {
-                    String b64 = dataset.getSubunitsBase64();
-                    byte[] decoder = Base64.getDecoder().decode(b64);
-                    fos.write(decoder);                    
-                  } catch (IOException e) {
-                    e.printStackTrace();
-                    throw new Exception(e);
-                  }
-                dataset.setSubunits(filename + ".json");
-                dataset.setSubunitsBase64(null); // Base64 soll nicht zum Client geschickt werden.
-            }            
-            datasetMap.put(dataset.getId(), dataset);            
-        }
-    }
+//    @PostConstruct
+//    public void init() throws Exception {        
+//        datasetMap = new HashMap<String, Dataset>();
+//        for (Dataset dataset : config.getDatasets()) {
+//            String tmpdir = System.getProperty("java.io.tmpdir");
+//            String filename = dataset.getId();
+//            File subunitFile = Paths.get(tmpdir, filename + ".json").toFile();
+//
+//            if (dataset.getSubunits() != null) {
+//                InputStream resource = new ClassPathResource("public/"+filename+".json").getInputStream();
+//                Files.copy(resource, subunitFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+//                dataset.setSubunits(filename + ".json");
+//            }
+//            
+//            if (dataset.getSubunitsBase64() != null) {
+//                try (FileOutputStream fos = new FileOutputStream(subunitFile); ) {
+//                    String b64 = dataset.getSubunitsBase64();
+//                    byte[] decoder = Base64.getDecoder().decode(b64);
+//                    fos.write(decoder);                    
+//                  } catch (IOException e) {
+//                    e.printStackTrace();
+//                    throw new Exception(e);
+//                  }
+//                dataset.setSubunits(filename + ".json");
+//                dataset.setSubunitsBase64(null); // Base64 soll nicht zum Client geschickt werden.
+//            }            
+//            datasetMap.put(dataset.getId(), dataset);            
+//        }
+//    }
     
     @GetMapping("/ping")
     public ResponseEntity<String> ping() {
@@ -122,39 +101,25 @@ public class MainController {
     public List<ThemePublicationDTO> searchThemePublications(@RequestParam(value="query", required=false) String searchTerms) { 
         if (searchTerms == null || searchTerms.trim().length() == 0) {
             return configService.getThemePublicationList();
-        }
-        
-        
-        
-        return null;
-    }
-    
-    @RequestMapping(value = "/datasets", method = RequestMethod.GET, produces = { "application/json" })
-    public List<Dataset> searchDatasets(@RequestParam(value="query", required=false) String searchTerms) {
-        
-        // TODO: ggf https://github.com/sogis/modelfinder/blob/main/modelfinder-server/src/main/java/ch/so/agi/search/LuceneSearcher.java#L247
-        // Entscheiden beim Refactoring.
-        if (searchTerms == null) {
-            return config.getDatasets();
         } else {
             List<Map<String, String>> results = null;
             try {
-                results = indexSearcher.searchIndex(searchTerms, QUERY_MAX_RECORDS);
+                results = themePublicationsRepository.findByQuery(searchTerms, QUERY_MAX_RECORDS);
                 log.debug("Search for '" + searchTerms +"' found " + results.size() + " records");            
             } catch (LuceneSearcherException | InvalidLuceneQueryException e) {
                 throw new IllegalStateException(e);
             }
 
-            List<Dataset> resultList = results.stream()
+            List<ThemePublicationDTO> resultList = results.stream()
                     .map(r -> {
-                        return datasetMap.get(r.get("id"));
+                        return configService.getThemePublicationMap().get(r.get("id"));
                     })
                     .collect(Collectors.toList());
             return resultList;
+
         }
     }
-    
-    // TODO: fixme 
+        
     @GetMapping(value="/opensearchdescription.xml", produces=MediaType.APPLICATION_XML_VALUE) 
     public ResponseEntity<?> opensearchdescription() {
         String xml = """
@@ -171,13 +136,12 @@ public class MainController {
         return new ResponseEntity<String>(xml, HttpStatus.OK);
     }
     
-    // TODO: fixme 
     @GetMapping(value="/search/suggestions", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> suggestModels(@RequestParam(value="q", required=false) String searchTerms) {
         List<Map<String, String>> results = null;
 
         try {
-            results = indexSearcher.searchIndex(searchTerms, 50);
+            results = themePublicationsRepository.findByQuery(searchTerms, 50);
             log.debug("Search for '" + searchTerms +"' found " + results.size() + " records");            
         } catch (LuceneSearcherException | InvalidLuceneQueryException e) {
             throw new IllegalStateException(e);
