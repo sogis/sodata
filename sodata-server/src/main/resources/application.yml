@@ -30,6 +30,10 @@ management:
     endpoint:
         health: 
             show-details: always
+            livenessState:
+                enabled: true
+            readinessState:
+                enabled: true
 
 # ========================
 # APPLICATION
