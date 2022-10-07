@@ -1,6 +1,9 @@
 app:
     configFile: ${CONFIG_FILE:./datasearch.xml}
     myVar: ${VAR:defaultValue}
+    
+    # TODO: remove
+    
     Datasets:
         - id: ch.so.agi.lidar_2019.dtm_hillshade
           version: current

@@ -7,6 +7,7 @@ import java.util.List;
  * - Date könnte verwendet werden, führt aber zu Umständen wegen Timezone, wohl 
  * auch weil Ursprungstyp LocalDate ist, was es eigentlich einfacher hätte machen
  * sollen.
+ * - BBOX wird weder für die Suche noch im GUI verwendet.
  */
 
 public class ThemePublicationDTO {
@@ -19,7 +20,6 @@ public class ThemePublicationDTO {
     private OfficeDTO owner;
     private OfficeDTO servicer;
     private String furtherInformation;
-//    private Bbox bbox; // benötige ich nicht für Lucene und GUI
     private String previewUrl;
     private List<String> keywords;
     private List<String> synonyms;
@@ -80,12 +80,6 @@ public class ThemePublicationDTO {
     public void setFurtherInformation(String furtherInformation) {
         this.furtherInformation = furtherInformation;
     }
-//    public Bbox getBbox() {
-//        return bbox;
-//    }
-//    public void setBbox(Bbox bbox) {
-//        this.bbox = bbox;
-//    }
     public String getPreviewUrl() {
         return previewUrl;
     }

@@ -105,10 +105,11 @@ public class ConfigService {
      */
 
     public void readXml() throws XMLStreamException, IOException, ParseException {
-        // Falls der XmlMapper als Bean definiert wird, überschreibt er den den Default-Object-Mapper,
-        // welcher Json-Output liefert. Falls es den XmlMapper als Bean benötigt, muss ich nochmals
+        // Falls der XmlMapper als Bean definiert wird, überschreibt er den Default-Object-Mapper,
+        // welcher Json-Output liefert. Falls der XmlMapper als Bean benötigt wird, muss ich nochmals
         // über die Bücher.
-        // Die Methode wird momentan nur ein einziges Mal direkt nach dem Hochfahren aufgerufen.
+        // Die Methode wird momentan nur ein einziges Mal direkt nach dem Hochfahren aufgerufen und
+        // somit scheint der XmlMapper nicht als Bean benötigt zu werden.
         var xmlMapper = new XmlMapper();
         xmlMapper.registerModule(new JavaTimeModule());
         xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // TODO: wieder entfernen, wenn stabil? Oder tolerant sein?

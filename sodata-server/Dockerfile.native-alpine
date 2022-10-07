@@ -7,7 +7,7 @@ ENV HOME=/app
 WORKDIR $HOME
 
 COPY target/sodata-server ./application
-#temporary
+#temporary. todo: remove
 COPY datasets.yml /app/datasets.yml 
 RUN chown $UID:0 . && \
     chmod 0775 . && \
@@ -17,4 +17,5 @@ USER $UID
 EXPOSE 8080
 ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true
 #CMD ["./application"]
+# optional:file kann entfernt werden, da die Datensatzkonfiguration nicht mehr so gehandhabt wird.
 CMD ["./application", "--spring.config.location=classpath:/application.yml,optional:file:/app/datasets.yml"]
