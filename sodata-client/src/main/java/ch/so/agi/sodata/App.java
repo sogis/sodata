@@ -283,6 +283,8 @@ public class App implements EntryPoint {
         textBox.getInputElement().setAttribute("autocomplete", "off");
         textBox.getInputElement().setAttribute("spellcheck", "false");
 
+        textBox.focus();
+        
         HTMLElement resetIcon = Icons.ALL.close().style().setCursor("pointer").get().element();
         resetIcon.addEventListener("click", new EventListener() {
             @Override
@@ -302,6 +304,7 @@ public class App implements EntryPoint {
             
             if (textBox.getValue().trim().length() == 0) {
                 themePublicationListStore.setData(themePublications);
+                removeQueryParam(FILTER_PARAM_KEY);
                 return;
             }
             
@@ -400,7 +403,6 @@ public class App implements EntryPoint {
                                         .collect(Collectors.toList());
 
                                 for (FileFormatDTO fileFormat : sortedFileFormats) {
-
                                     String fileUrl = FILES_SERVER_URL + "/data/" + cell.getRecord().getIdentifier()
                                             + "/aktuell/" + cell.getRecord().getIdentifier() + "."
                                             + fileFormat.getAbbreviation() + ".zip";

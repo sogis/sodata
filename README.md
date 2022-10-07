@@ -57,7 +57,7 @@ Siehe Dockerfile: Die Datensatz-Konfiguration wird unter `/config/datasets.yml` 
 
 ### Native
 ```
-./mvnw clean test
+CONFIG_FILE=$PWD/sodata-server/datasearch.xml ITEMS_GEOJSON_DIR=/tmp/ ./mvnw clean -Pnative test
 ./mvnw -DskipTests -Penv-prod,native package
 ```
 

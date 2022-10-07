@@ -86,6 +86,8 @@ public class ConfigService {
         //xmlMapper.registerModule(new JavaTimeModule());
 
         log.debug("config file: " + new File(CONFIG_FILE).getAbsolutePath());
+//        System.out.println("config file: " + new File(CONFIG_FILE).getAbsolutePath());
+//        System.err.println("config file: " + new File(CONFIG_FILE).getAbsolutePath());
                 
         var xif = XMLInputFactory.newInstance();
         var xr = xif.createXMLStreamReader(new FileInputStream( new File(CONFIG_FILE)));

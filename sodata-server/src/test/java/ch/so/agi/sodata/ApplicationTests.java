@@ -29,10 +29,10 @@ class ApplicationTests {
         assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/index.html", String.class))
                 .contains("Datenbezug • Kanton Solothurn");
     }
-
-    @Test
-    public void search_Ok() throws Exception {
-        assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/datasets?query=wald", String.class))
-                .contains("Wald");
-    }
+    
+//    @Test
+//    public void search_Ok() throws Exception {
+//        assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/themepublications?query=afu", String.class))
+//                .contains("fliess");
+//    }
 }

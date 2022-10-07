@@ -44,7 +44,7 @@ public class MainController {
     private LuceneThemePublicationRepository themePublicationsRepository;
     
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
     
     @Autowired
     private ConfigService configService;
