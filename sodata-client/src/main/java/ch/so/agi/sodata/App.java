@@ -93,7 +93,7 @@ public class App implements EntryPoint {
     // Client application settings
     private String myVar;
     private String FILES_SERVER_URL;
-    
+
     // Format settings
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
     private NumberFormat fmtPercent = NumberFormat.getFormat("#0.0");
@@ -108,32 +108,36 @@ public class App implements EntryPoint {
     private HTMLElement container;
     private HTMLElement topLevelContent;
     private HTMLElement datasetContent;
-    
+
     // Theme publications vars
     private ThemePublicationMapper mapper;
     private List<ThemePublicationDTO> themePublications;
     private LocalListDataStore<ThemePublicationDTO> themePublicationListStore;
     private DataTable<ThemePublicationDTO> themePublicationTable;
-    
+
     // Format lookup and sort order
-    private HashMap<String, String> formatLookUp = new HashMap<String, String>() {{
-        put("xtf","INTERLIS");
-        put("itf","INTERLIS");
-        put("shp","Shapefile");
-        put("dxf","DXF");
-        put("gpkg","GeoPackage");
-        put("tiff","GeoTIFF");
-    }};
-    
-    private ArrayList<String> fileFormatList = new ArrayList<String>() {{
-        add("xtf");
-        add("itf");
-        add("gpkg");
-        add("shp");
-        add("dxf");
-        add("tiff");
-    }};
-    
+    private HashMap<String, String> formatLookUp = new HashMap<String, String>() {
+        {
+            put("xtf", "INTERLIS");
+            put("itf", "INTERLIS");
+            put("shp", "Shapefile");
+            put("dxf", "DXF");
+            put("gpkg", "GeoPackage");
+            put("tiff", "GeoTIFF");
+        }
+    };
+
+    private ArrayList<String> fileFormatList = new ArrayList<String>() {
+        {
+            add("xtf");
+            add("itf");
+            add("gpkg");
+            add("shp");
+            add("dxf");
+            add("tiff");
+        }
+    };
+
     // ol3 vector layer
     private String ID_ATTR_NAME = "id";
     private String SUBUNIT_VECTOR_LAYER_ID = "subunit_vector_layer";
@@ -144,16 +148,17 @@ public class App implements EntryPoint {
     // ol3 map
     private String MAP_DIV_ID = "map";
     private Map map;
-    
+
     // Abort controller for fetching from server
     private AbortController abortController = null;
 
     // Create model mapper interfaces
-    public static interface ThemePublicationMapper extends ObjectMapper<List<ThemePublicationDTO>> {}
-    
-	public void onModuleLoad() {
+    public static interface ThemePublicationMapper extends ObjectMapper<List<ThemePublicationDTO>> {
+    }
+
+    public void onModuleLoad() {
 //        datasetMapper = GWT.create(DatasetMapper.class);   
-        mapper = GWT.create(ThemePublicationMapper.class);   
+        mapper = GWT.create(ThemePublicationMapper.class);
 
         // Change Domino UI color scheme.
         Theme theme = new Theme(ColorScheme.RED);
@@ -162,11 +167,11 @@ public class App implements EntryPoint {
         // Get url from browser (client) to find out the correct location of resources.
         location = DomGlobal.window.location;
         pathname = location.pathname;
-        
+
         if (pathname.contains("index.html")) {
             pathname = pathname.replace("index.html", "");
         }
-        
+
         // Get settings with a synchronous request.
         XMLHttpRequest httpRequest = new XMLHttpRequest();
         httpRequest.open("GET", pathname + "settings", false);
@@ -188,26 +193,25 @@ public class App implements EntryPoint {
         };
 
         httpRequest.addEventListener("error", event -> {
-            DomGlobal.window.alert("Error loading settings! Error: " + httpRequest.status + " " + httpRequest.statusText);
+            DomGlobal.window
+                    .alert("Error loading settings! Error: " + httpRequest.status + " " + httpRequest.statusText);
         });
 
         httpRequest.send();
 
         // Get themes publications json from server and initialize the site.
-        DomGlobal.fetch("/themepublications")
-        .then(response -> {
+        DomGlobal.fetch("/themepublications").then(response -> {
             if (!response.ok) {
                 DomGlobal.window.alert(response.statusText + ": " + response.body);
                 return null;
             }
             return response.text();
-        })
-        .then(json -> {
+        }).then(json -> {
             themePublications = mapper.read(json);
             Collections.sort(themePublications, new ThemePublicationComparator());
-            
+
             init();
-            
+
             return null;
         }).catch_(error -> {
             console.log(error);
@@ -215,8 +219,8 @@ public class App implements EntryPoint {
             return null;
         });
     }
-	
-	public void init() {	    
+
+    public void init() {
         // HTMLDocument: used for creating html elements that are not
         // available in elemento (e.g. summary, details).
         HTMLDocument document = DomGlobal.document;
@@ -227,18 +231,18 @@ public class App implements EntryPoint {
         HTMLElement opensearchdescription = (HTMLElement) document.createElement("link");
         opensearchdescription.setAttribute("rel", "search");
         opensearchdescription.setAttribute("type", "application/opensearchdescription+xml");
-        
+
         String host = location.host;
         String protocol = location.protocol;
         opensearchdescription.setAttribute("href", protocol + "//" + host + pathname + "opensearchdescription.xml");
         opensearchdescription.setAttribute("title", "Geodaten Kanton Solothurn");
         head.appendChild(opensearchdescription);
-	    
+
         // Get search params to control the browser url
         URLSearchParams searchParams = new URLSearchParams(location.search);
-                
+
         if (searchParams.has(FILTER_PARAM_KEY)) {
-            filter = searchParams.get(FILTER_PARAM_KEY);            
+            filter = searchParams.get(FILTER_PARAM_KEY);
         }
 
         // Add our "root" container
@@ -260,21 +264,20 @@ public class App implements EntryPoint {
         container.appendChild(topLevelContent);
 
         // Add breadcrumb
-        Breadcrumb breadcrumb = Breadcrumb.create()
-                .appendChild(Icons.ALL.home(), " Home ", (evt) -> {
-                    DomGlobal.window.open("https://geo.so.ch/", "_self");
-                })
-                .appendChild(" Geodaten ", (evt) -> {});
+        Breadcrumb breadcrumb = Breadcrumb.create().appendChild(Icons.ALL.home(), " Home ", (evt) -> {
+            DomGlobal.window.open("https://geo.so.ch/", "_self");
+        }).appendChild(" Geodaten ", (evt) -> {
+        });
         topLevelContent.appendChild(breadcrumb.element());
 
         topLevelContent.appendChild(div().css("sodata-title").textContent("Geodaten Kanton Solothurn").element());
 
         String infoString = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
-              + "<a class='default-link' href='https://geoweb.so.ch/geodaten/index.php' target='_blank'>https://geoweb.so.ch/geodaten/index.php</a> eirmod "
-              + "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et "
-              + "justo <a class='default-link' href='https://files.geo.so.ch' target='_blank'>https://geo.so.ch/geodata</a> "
-              + "duo dolores et ea rebum. Stet clita kasd gubergren <a class='default-link' href='sftp://sftp.geo.so.ch/' target='_blank'>ftp://geo.so.ch/</a>, "
-              + "no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+                + "<a class='default-link' href='https://geoweb.so.ch/geodaten/index.php' target='_blank'>https://geoweb.so.ch/geodaten/index.php</a> eirmod "
+                + "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et "
+                + "justo <a class='default-link' href='https://files.geo.so.ch' target='_blank'>https://geo.so.ch/geodata</a> "
+                + "duo dolores et ea rebum. Stet clita kasd gubergren <a class='default-link' href='sftp://sftp.geo.so.ch/' target='_blank'>ftp://geo.so.ch/</a>, "
+                + "no sea takimata sanctus est Lorem ipsum dolor sit amet.";
         topLevelContent.appendChild(div().css("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
 
         TextBox textBox = TextBox.create().setLabel(messages.search_terms());
@@ -284,7 +287,7 @@ public class App implements EntryPoint {
         textBox.getInputElement().setAttribute("spellcheck", "false");
 
         textBox.focus();
-        
+
         HTMLElement resetIcon = Icons.ALL.close().style().setCursor("pointer").get().element();
         resetIcon.addEventListener("click", new EventListener() {
             @Override
@@ -296,22 +299,22 @@ public class App implements EntryPoint {
         });
         textBox.addRightAddOn(resetIcon);
 
-        textBox.addEventListener("keyup", event -> {        
-            if (textBox.getValue().trim().length() > 0 && textBox.getValue().trim().length() <=2) {
+        textBox.addEventListener("keyup", event -> {
+            if (textBox.getValue().trim().length() > 0 && textBox.getValue().trim().length() <= 2) {
                 themePublicationListStore.setData(themePublications);
                 return;
             }
-            
+
             if (textBox.getValue().trim().length() == 0) {
                 themePublicationListStore.setData(themePublications);
                 removeQueryParam(FILTER_PARAM_KEY);
                 return;
             }
-            
+
             if (abortController != null) {
                 abortController.abort();
             }
-            
+
             abortController = new AbortController();
             final RequestInit init = RequestInit.create();
             init.setSignal(abortController.signal);
@@ -321,12 +324,12 @@ public class App implements EntryPoint {
                     return null;
                 }
                 return response.text();
-            }).then(json -> {                
+            }).then(json -> {
                 List<ThemePublicationDTO> filteredThemePublications = mapper.read(json);
                 filteredThemePublications.sort(new ThemePublicationComparator());
-                
+
                 themePublicationListStore.setData(filteredThemePublications);
-                
+
                 updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
 
                 abortController = null;
@@ -366,7 +369,7 @@ public class App implements EntryPoint {
                             metadataLinkElement.addEventListener("click", new EventListener() {
                                 @Override
                                 public void handleEvent(Event evt) {
-                                    // openMetadataDialog(cell.getRecord());
+                                    openMetadataDialog(cell.getRecord());
                                 }
                             });
                             return metadataLinkElement;
@@ -384,7 +387,7 @@ public class App implements EntryPoint {
                                 regionSelectionElement.addEventListener("click", new EventListener() {
                                     @Override
                                     public void handleEvent(Event evt) {
-                                        // openRegionSelectionDialog(cell.getRecord());
+                                        openRegionSelectionDialog(cell.getRecord());
                                     }
                                 });
                                 return regionSelectionElement;
@@ -425,27 +428,27 @@ public class App implements EntryPoint {
 
         themePublicationListStore = new LocalListDataStore<>();
         themePublicationListStore.setData(themePublications);
-        
+
         themePublicationTable = new DataTable<>(tableConfig, themePublicationListStore);
         themePublicationTable.setId("dataset-table");
         themePublicationTable.noStripes();
         themePublicationTable.load();
 
-        topLevelContent.appendChild(themePublicationTable.element()); 
-        
+        topLevelContent.appendChild(themePublicationTable.element());
+
         if (filter != null && filter.trim().length() > 0) {
             textBox.setValue(filter);
             textBox.element().dispatchEvent(new KeyboardEvent("keyup"));
         }
-	}
-	
-    private void openMetadataDialog(Dataset dataset) {
-        ModalDialog modal = ModalDialog.create(dataset.getTitle()).setAutoClose(true);
+    }
+
+    private void openMetadataDialog(ThemePublicationDTO themePublication) {
+        ModalDialog modal = ModalDialog.create(themePublication.getTitle()).setAutoClose(true);
         modal.css("modal-object");
-        
-        MetadataElement metaDataElement = new MetadataElement(dataset);
-        modal.add(metaDataElement);
-        
+
+//        MetadataElement metaDataElement = new MetadataElement(dataset);
+//        modal.add(metaDataElement);
+
         Button closeButton = Button.create(messages.close().toUpperCase()).linkify();
         closeButton.removeWaves();
         closeButton.setBackground(Color.RED_DARKEN_3);
@@ -456,29 +459,36 @@ public class App implements EntryPoint {
 
         closeButton.blur();
     }
-    
-    private void openRegionSelectionDialog(Dataset dataset) {
-        ModalDialog modal = ModalDialog.create("Gebietsauswahl: " + dataset.getTitle()).setAutoClose(true);
+
+    private void openRegionSelectionDialog(ThemePublicationDTO themePublication) {
+        ModalDialog modal = ModalDialog.create(messages.subunits_title_selection() + ": " + themePublication.getTitle()).setAutoClose(true);
         modal.css("modal-object");
 
         TabsPanel tabsPanel = TabsPanel.create().setColor(Color.RED_DARKEN_3);
-        Tab selectionTab = Tab.create(Icons.ALL.map_outline_mdi(), "AUSWAHL"); // TODO i18n
-        Tab downloadTab = Tab.create(Icons.ALL.file_download_outline_mdi(), "HERUNTERLADEN"); // TODO i18n
+        Tab selectionTab = Tab.create(Icons.ALL.map_outline_mdi(), messages.subunits_tab_selection().toUpperCase());
+        Tab downloadTab = Tab.create(Icons.ALL.file_download_outline_mdi(), messages.subunits_tab_download().toUpperCase());
         tabsPanel.appendChild(selectionTab);
         tabsPanel.appendChild(downloadTab);
 
         HTMLDivElement mapDiv = div().id("map").element();
-        modal.getBodyElement().appendChild(div().css("modal-body-paragraph")
-                .textContent("Sie können einzelne Datensätze mit einem Klick in die Karte aus- und abwählen. "
-                        + "Im Reiter 'Herunterladen' können Sie die Daten anschliessend herunterladen. "
-                        + "Wünschen Sie viele Datensätze herunterzuladen ... Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor "
-                        + "invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et."));
+        modal.getBodyElement()
+                .appendChild(div().css("modal-body-paragraph")
+                        .textContent("Sie können einzelne Datensätze mit einem Klick in die Karte aus- und abwählen. "
+                                + "Im Reiter 'Herunterladen' können Sie die Daten anschliessend herunterladen. "
+                                + "Wünschen Sie viele Datensätze herunterzuladen ... Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor "
+                                + "invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et."));
 
         selectionTab.appendChild(mapDiv);
-        
-        // FIXME TODO
-        String subunits = dataset.getSubunits();
-        DomGlobal.fetch("/subunits/"+subunits)
+
+        Button closeButton = Button.create(messages.close().toUpperCase()).linkify();
+        closeButton.removeWaves();
+        closeButton.setBackground(Color.RED_DARKEN_3);
+        EventListener closeModalListener = (evt) -> modal.close();
+        closeButton.addClickListener(closeModalListener);
+        modal.appendFooterChild(closeButton);
+        modal.large().open();
+
+        DomGlobal.fetch("/subunits/"+themePublication.getIdentifier() + ".json")
         .then(response -> {
             if (!response.ok) {
                 DomGlobal.window.alert(response.statusText + ": " + response.body);
@@ -496,6 +506,7 @@ public class App implements EntryPoint {
             return null;
         });
 
+        // TODO i18n
         TableConfig<Feature> tableConfig = new TableConfig<>();
         tableConfig
             .addColumn(ColumnConfig.<Feature>create("title", "Name").setShowTooltip(false).textAlign("left")
@@ -504,11 +515,11 @@ public class App implements EntryPoint {
                 .setCellRenderer(cell -> {
                     Date date;
                     String dateString;
-                    if (cell.getRecord().get("last_editing_date").toString().length() < 8) {
-                        date = DateTimeFormat.getFormat("yyyy-MM").parse(cell.getRecord().get("last_editing_date"));
+                    if (cell.getRecord().get("lastPublishingDate").toString().length() < 8) {
+                        date = DateTimeFormat.getFormat("yyyy-MM").parse(cell.getRecord().get("lastPublishingDate"));
                         dateString = DateTimeFormat.getFormat("MMMM yyyy").format(date);
                     } else {
-                        date = DateTimeFormat.getFormat("yyyy-MM-dd").parse(cell.getRecord().get("last_editing_date"));
+                        date = DateTimeFormat.getFormat("yyyy-MM-dd").parse(cell.getRecord().get("lastPublishingDate"));
                         dateString = DateTimeFormat.getFormat("dd.MM.yyyy").format(date);
                     }
                     return TextNode.of(dateString);
@@ -516,18 +527,19 @@ public class App implements EntryPoint {
             .addColumn(ColumnConfig.<Feature>create("formats", "Daten herunterladen").setShowTooltip(false).textAlign("left")
                 .setCellRenderer(cell -> {
                     HTMLElement badgesElement = div().element();
-                    for (String fileFormatsStr : dataset.getFileFormats()) {
-                        badgesElement.appendChild(a().css("badge-link")
-                                .attr("href", "/dataset/" + cell.getRecord().getId() + "_" + fileFormatsStr + ".zip") // TODO Was kommt woher?
-                                .attr("target", "_blank")
-                                .add(Badge.create(formatLookUp.get(fileFormatsStr))
-                                        .setBackground(Color.GREY_LIGHTEN_2).style()
-                                        .setMarginRight("10px").setMarginTop("5px")
-                                        .setMarginBottom("5px").get().element())
-                                .element());
-                     
-                    }
-                    return badgesElement;
+//                    for (String fileFormatsStr : dataset.getFileFormats()) {
+//                        badgesElement.appendChild(a().css("badge-link")
+//                                .attr("href", "/dataset/" + cell.getRecord().getId() + "_" + fileFormatsStr + ".zip") // TODO Was kommt woher?
+//                                .attr("target", "_blank")
+//                                .add(Badge.create(formatLookUp.get(fileFormatsStr))
+//                                        .setBackground(Color.GREY_LIGHTEN_2).style()
+//                                        .setMarginRight("10px").setMarginTop("5px")
+//                                        .setMarginBottom("5px").get().element())
+//                                .element());
+//                     
+//                    }
+//                    return badgesElement;
+                    return TextNode.of("fubar");
                 }));
 
         LocalListDataStore<Feature> subunitListStore = new LocalListDataStore<>();
@@ -540,14 +552,6 @@ public class App implements EntryPoint {
         downloadTab.appendChild(subunitFeatureTable.element());
 
         modal.getBodyElement().appendChild(tabsPanel);
-
-        Button closeButton = Button.create("SCHLIESSEN").linkify();
-        closeButton.removeWaves();
-        closeButton.setBackground(Color.RED_DARKEN_3);
-        EventListener closeModalListener = (evt) -> modal.close();
-        closeButton.addClickListener(closeModalListener);
-        modal.appendFooterChild(closeButton);
-        modal.large().open();
 
         downloadTab.addClickListener(new EventListener() {
             @Override
@@ -562,54 +566,60 @@ public class App implements EntryPoint {
                     featuresList.add(feature);
                 }
                 
-                Collections.sort(featuresList, new Comparator<Feature>() {
-                    @Override
-                    public int compare(Feature o1, Feature o2) {
-                        return o1.get("title").toString().toLowerCase().compareTo(o2.get("title").toString().toLowerCase());
-                    }
-                });
+                // TODO: Umlaute
+//                Collections.sort(featuresList, new Comparator<Feature>() {
+//                    @Override
+//                    public int compare(Feature o1, Feature o2) {
+//                        return o1.get("title").toString().toLowerCase().compareTo(o2.get("title").toString().toLowerCase());
+//                    }
+//                });
                 
                 subunitListStore.setData(featuresList);
             }
         });
 
-        map = MapPresets.getBlakeAndWhiteMap(mapDiv.id); //, subunitsWmsLayer);
+        map = MapPresets.getBlakeAndWhiteMap(mapDiv.id);
         map.addSingleClickListener(new MapSingleClickListener());
 
         closeButton.blur();
     }
-    
+
     public final class MapSingleClickListener implements ol.event.EventListener<MapBrowserEvent> {
         @Override
-        public void onEvent(MapBrowserEvent event) {            
+        public void onEvent(MapBrowserEvent event) {
+            
+            console.log("clicked");
+            
             AtPixelOptions featureAtPixelOptions = new AtPixelOptions();
             map.forEachFeatureAtPixel(event.getPixel(), new FeatureAtPixelFunction() {
                 @Override
-                public boolean call(Feature feature, Layer layer) {                    
+                public boolean call(Feature feature, Layer layer) {
                     if (layer.get(ID_ATTR_NAME).toString().equalsIgnoreCase(SELECTED_VECTOR_LAYER_ID)) {
                         ol.layer.Vector selectedLayer = (ol.layer.Vector) getMapLayerById(SELECTED_VECTOR_LAYER_ID);
-                        Vector selectedSource = (Vector) selectedLayer.getSource();     
+                        Vector selectedSource = (Vector) selectedLayer.getSource();
                         selectedSource.removeFeature(feature);
                         return true;
                     }
                     if (layer.get(ID_ATTR_NAME).toString().equalsIgnoreCase(SUBUNIT_VECTOR_LAYER_ID)) {
                         ol.layer.Vector selectedLayer = (ol.layer.Vector) getMapLayerById(SELECTED_VECTOR_LAYER_ID);
                         Vector selectedSource = (Vector) selectedLayer.getSource();
-                        
+
                         Style style = new Style();
                         Stroke stroke = new Stroke();
-                        stroke.setWidth(4); 
-                        stroke.setColor(new ol.color.Color(198, 40, 40, 1.0)); 
+                        stroke.setWidth(4);
+                        stroke.setColor(new ol.color.Color(198, 40, 40, 1.0));
                         style.setStroke(stroke);
                         Fill fill = new Fill();
                         fill.setColor(new ol.color.Color(255, 255, 255, 0.6));
                         style.setFill(fill);
-                       
+
                         Feature f = feature.clone();
                         f.setStyle(style);
                         selectedSource.addFeature(f);
+                        
+                        console.log(f);
                     }
-                    return false;                    
+                    return false;
                 }
             }, featureAtPixelOptions);
         }
@@ -617,38 +627,39 @@ public class App implements EntryPoint {
 
     // TODO remove
     // Dient eventuell noch als Inspiration
-    private void openServiceLinkDialog(Dataset dataset) {
-        ModalDialog modal = ModalDialog.create("Servicelinks").setAutoClose(true);
+//    private void openServiceLinkDialog(Dataset dataset) {
+//        ModalDialog modal = ModalDialog.create("Servicelinks").setAutoClose(true);
+//
+//        modal.appendChild(
+//                InfoBox.create(Icons.ALL.map(), "WMS", "https://geo.so.ch/wms").setIconBackground(Color.RED_DARKEN_3));
+//        modal.appendChild(InfoBox.create(Icons.ALL.file_download_mdi(), "WFS", "https://geo.so.ch/wfs")
+//                .setIconBackground(Color.RED_DARKEN_3));
+//        modal.appendChild(
+//                InfoBox.create(Icons.ALL.file_download_mdi(), "Data Service", "https://geo.so.ch/api/data/v1/api/")
+//                        .setIconBackground(Color.RED_DARKEN_3));
+//
+//        Button closeButton = Button.create("SCHLIESSEN").linkify();
+//        closeButton.removeWaves();
+//        closeButton.setBackground(Color.RED_DARKEN_3);
+//        EventListener closeModalListener = (evt) -> modal.close();
+//        closeButton.addClickListener(closeModalListener);
+//        modal.appendFooterChild(closeButton);
+//        modal.open();
+//
+//        closeButton.blur();
+//    }
 
-        modal.appendChild(InfoBox.create(Icons.ALL.map(), "WMS", "https://geo.so.ch/wms").setIconBackground(Color.RED_DARKEN_3));
-        modal.appendChild(InfoBox.create(Icons.ALL.file_download_mdi(), "WFS", "https://geo.so.ch/wfs")
-                .setIconBackground(Color.RED_DARKEN_3));
-        modal.appendChild(
-                InfoBox.create(Icons.ALL.file_download_mdi(), "Data Service", "https://geo.so.ch/api/data/v1/api/")
-                        .setIconBackground(Color.RED_DARKEN_3));
-
-        Button closeButton = Button.create("SCHLIESSEN").linkify();
-        closeButton.removeWaves();
-        closeButton.setBackground(Color.RED_DARKEN_3);
-        EventListener closeModalListener = (evt) -> modal.close();
-        closeButton.addClickListener(closeModalListener);
-        modal.appendFooterChild(closeButton);
-        modal.open();
-
-        closeButton.blur();
-    }
-    
     private void createVectorLayers(Feature[] features) {
         removeVectorLayer(SUBUNIT_VECTOR_LAYER_ID);
         removeVectorLayer(SELECTED_VECTOR_LAYER_ID);
-        
+
         {
             Style style = new Style();
             Stroke stroke = new Stroke();
-            stroke.setWidth(4); 
-            //stroke.setColor(new ol.color.Color(56, 142, 60, 1.0)); 
-            //stroke.setColor(new ol.color.Color(230, 0, 0, 0.6));
-            stroke.setColor(new ol.color.Color(78,127,217, 1.0)); 
+            stroke.setWidth(4);
+            // stroke.setColor(new ol.color.Color(56, 142, 60, 1.0));
+            // stroke.setColor(new ol.color.Color(230, 0, 0, 0.6));
+            stroke.setColor(new ol.color.Color(78, 127, 217, 1.0));
             style.setStroke(stroke);
             Fill fill = new Fill();
             fill.setColor(new ol.color.Color(255, 255, 255, 0.6));
@@ -663,7 +674,7 @@ public class App implements EntryPoint {
             VectorOptions vectorSourceOptions = OLFactory.createOptions();
             vectorSourceOptions.setFeatures(featureCollection);
             Vector vectorSource = new Vector(vectorSourceOptions);
-            
+
             VectorLayerOptions vectorLayerOptions = OLFactory.createOptions();
             vectorLayerOptions.setSource(vectorSource);
             ol.layer.Vector vectorLayer = new ol.layer.Vector(vectorLayerOptions);
@@ -671,12 +682,12 @@ public class App implements EntryPoint {
             vectorLayer.set(ID_ATTR_NAME, SUBUNIT_VECTOR_LAYER_ID);
             map.addLayer(vectorLayer);
         }
-        
+
         {
             Style style = new Style();
             Stroke stroke = new Stroke();
-            stroke.setWidth(4); 
-            stroke.setColor(new ol.color.Color(198, 40, 40, 1.0)); 
+            stroke.setWidth(4);
+            stroke.setColor(new ol.color.Color(198, 40, 40, 1.0));
             style.setStroke(stroke);
             Fill fill = new Fill();
             fill.setColor(new ol.color.Color(255, 255, 255, 0.6));
@@ -684,7 +695,7 @@ public class App implements EntryPoint {
 
             VectorOptions vectorSourceOptions = OLFactory.createOptions();
             Vector vectorSource = new Vector(vectorSourceOptions);
-            
+
             VectorLayerOptions vectorLayerOptions = OLFactory.createOptions();
             vectorLayerOptions.setSource(vectorSource);
             ol.layer.Vector vectorLayer = new ol.layer.Vector(vectorLayerOptions);
@@ -693,7 +704,7 @@ public class App implements EntryPoint {
             map.addLayer(vectorLayer);
         }
     }
-        
+
     private void removeVectorLayer(String id) {
         Base vlayer = getMapLayerById(id);
         map.removeLayer(vlayer);
@@ -718,7 +729,7 @@ public class App implements EntryPoint {
         }
         return null;
     }
-    
+
     private void removeQueryParam(String key) {
         URL url = new URL(DomGlobal.location.href);
         String host = url.host;
@@ -726,11 +737,11 @@ public class App implements EntryPoint {
         String pathname = url.pathname;
         URLSearchParams params = url.searchParams;
         params.delete(key);
-        
-        String newUrl = protocol + "//" + host + pathname + "?" + params.toString(); 
+
+        String newUrl = protocol + "//" + host + pathname + "?" + params.toString();
         updateUrlWithoutReloading(newUrl);
     }
-    
+
     private void updateUrlLocation(String key, String value) {
         URL url = new URL(DomGlobal.location.href);
         String host = url.host;
@@ -738,12 +749,12 @@ public class App implements EntryPoint {
         String pathname = url.pathname;
         URLSearchParams params = url.searchParams;
         params.set(key, value);
-        
-        String newUrl = protocol + "//" + host + pathname + "?" + params.toString(); 
-        
+
+        String newUrl = protocol + "//" + host + pathname + "?" + params.toString();
+
         updateUrlWithoutReloading(newUrl);
     }
-    
+
     // Update the URL in the browser without reloading the page.
     private static native void updateUrlWithoutReloading(String newUrl) /*-{
         $wnd.history.pushState(newUrl, "", newUrl);

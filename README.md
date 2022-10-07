@@ -53,7 +53,7 @@ Test single class in subproject:
 docker build -t sogis/sodata-jvm:latest -f sodata-server/src/main/docker/Dockerfile.jvm .
 ```
 
-Siehe Dockerfile: Die Datensatz-Konfiguration wird unter `/config/datasets.yml` erwartet. Ohne diese Datei bleibt die Tabelle im Browser leer. Siehe Kapitel "Konfiguration" für zusätzliche Informationen.
+~~Siehe Dockerfile: Die Datensatz-Konfiguration wird unter `/config/datasets.yml` erwartet. Ohne diese Datei bleibt die Tabelle im Browser leer. Siehe Kapitel "Konfiguration" für zusätzliche Informationen.~~
 
 ### Native
 ```

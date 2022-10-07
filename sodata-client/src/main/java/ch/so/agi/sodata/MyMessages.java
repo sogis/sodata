@@ -34,6 +34,16 @@ public interface MyMessages extends Messages {
     @DefaultMessage("Content")
     String meta_content();
     
+    // Subunits
+    @DefaultMessage("Area selection")
+    String subunits_title_selection();
+
+    @DefaultMessage("Selection")
+    String subunits_tab_selection();
+
+    @DefaultMessage("Herunterladen")
+    String subunits_tab_download();
+    
     
     
     @DefaultMessage("Fubar")
