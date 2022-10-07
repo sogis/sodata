@@ -4,12 +4,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@Deprecated
 @Component
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "app")
-public class Settings {
+public class ClientSettings {
     private String myVar;
+    
+    private String filesServerUrl;
 
     public String getMyVar() {
         return myVar;
@@ -17,5 +18,13 @@ public class Settings {
 
     public void setMyVar(String myVar) {
         this.myVar = myVar;
+    }
+
+    public String getFilesServerUrl() {
+        return filesServerUrl;
+    }
+
+    public void setFilesServerUrl(String filesServerUrl) {
+        this.filesServerUrl = filesServerUrl;
     }
 }

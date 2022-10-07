@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import ch.so.agi.sodata.AppProperties;
 import ch.so.agi.sodata.Dataset;
-import ch.so.agi.sodata.Settings;
+import ch.so.agi.sodata.ClientSettings;
 import ch.so.agi.sodata.dto.ThemePublicationDTO;
 import ch.so.agi.sodata.search.InvalidLuceneQueryException;
 import ch.so.agi.sodata.search.LuceneSearcherV1_0;
@@ -53,7 +53,7 @@ public class MainController {
     private Integer QUERY_MAX_RECORDS;   
 
     @Autowired
-    Settings settings;
+    ClientSettings settings;
     
     @Autowired
     private AppProperties config; 
@@ -77,6 +77,7 @@ public class MainController {
     
     // Eigenes Properties-Package falls mehrere Klassen? 
     
+    // TODO: wird nicht mehr im postconstruct gemacht
     @PostConstruct
     public void init() throws Exception {        
         datasetMap = new HashMap<String, Dataset>();
@@ -112,6 +113,11 @@ public class MainController {
         return new ResponseEntity<String>("sodata", HttpStatus.OK);
     }
     
+    @RequestMapping(value = "/settings", method = RequestMethod.GET, produces = { "application/json" })
+    public ClientSettings settings() {
+        return settings;
+    }
+
     @RequestMapping(value = "/themepublications", method = RequestMethod.GET, produces = { "application/json" })
     public List<ThemePublicationDTO> searchThemePublications(@RequestParam(value="query", required=false) String searchTerms) { 
         if (searchTerms == null || searchTerms.trim().length() == 0) {
@@ -148,6 +154,7 @@ public class MainController {
         }
     }
     
+    // TODO: fixme 
     @GetMapping(value="/opensearchdescription.xml", produces=MediaType.APPLICATION_XML_VALUE) 
     public ResponseEntity<?> opensearchdescription() {
         String xml = """
@@ -164,6 +171,7 @@ public class MainController {
         return new ResponseEntity<String>(xml, HttpStatus.OK);
     }
     
+    // TODO: fixme 
     @GetMapping(value="/search/suggestions", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> suggestModels(@RequestParam(value="q", required=false) String searchTerms) {
         List<Map<String, String>> results = null;

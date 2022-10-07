@@ -15,6 +15,7 @@ public class ThemePublicationDTO {
     private String model;
     private String title;
     private String shortDescription;
+    private boolean hasSubunits;
     private String lastPublishingDate;
     private String secondToLastPublishingDate;
     private OfficeDTO owner;
@@ -49,6 +50,12 @@ public class ThemePublicationDTO {
     }
     public void setShortDescription(String shortDescription) {
         this.shortDescription = shortDescription;
+    }
+    public boolean isHasSubunits() {
+        return hasSubunits;
+    }
+    public void setHasSubunits(boolean hasSubunits) {
+        this.hasSubunits = hasSubunits;
     }
     public String getLastPublishingDate() {
         return lastPublishingDate;

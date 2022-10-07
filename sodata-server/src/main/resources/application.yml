@@ -50,3 +50,4 @@ app:
   configFile: ${CONFIG_FILE:/app/datasearch.xml}
   itemsGeoJsonDir: ${ITEMS_GEOJSON_DIR:#{systemProperties['java.io.tmpdir']}}
   myVar: ${VAR:defaultValue}
+  filesServerUrl: ${FILES_SERVER_URL:https://files.geo.so.ch}

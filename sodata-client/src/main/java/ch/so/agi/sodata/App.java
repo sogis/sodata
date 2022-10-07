@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.dominokit.domino.ui.badges.Badge;
 import org.dominokit.domino.ui.breadcrumbs.Breadcrumb;
@@ -76,66 +77,85 @@ import ol.source.VectorOptions;
 import ol.style.Fill;
 import ol.style.Stroke;
 import ol.style.Style;
-import proj4.Proj4;
 
 import ch.so.agi.sodata.Dataset;
+import ch.so.agi.sodata.dto.FileFormatDTO;
+import ch.so.agi.sodata.dto.ThemePublicationDTO;
 
 public class App implements EntryPoint {
     // Internationalization
     private MyMessages messages = GWT.create(MyMessages.class);
 
-    // Application settings
+    // Client application settings
     private String myVar;
-
+    private String filesServerUrl;
+    
     // Format settings
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
     private NumberFormat fmtPercent = NumberFormat.getFormat("#0.0");
 
+    // Browser-URL components
     private Location location;
     private String pathname;
     private String filter = null;
-//    private String ident = null;
     private String FILTER_PARAM_KEY = "filter";
-//    private String IDENT_PARAM_KEY = "ident";
 
+    // Main HTML elements
     private HTMLElement container;
     private HTMLElement topLevelContent;
     private HTMLElement datasetContent;
     
-    private DatasetMapper mapper;
+    // Theme publications vars
+    private DatasetMapper datasetMapper;
     private List<Dataset> datasets;
-    private LocalListDataStore<Dataset> listStore;
+    private LocalListDataStore<Dataset> datasetListStore;
     private DataTable<Dataset> datasetTable;
-
-    private HashMap<String, String> formatLookUp = new HashMap<String, String>();
-
+    //-------
+    private ThemePublicationMapper mapper;
+    private List<ThemePublicationDTO> themePublications;
+    private LocalListDataStore<ThemePublicationDTO> themePublicationListStore;
+    private DataTable<ThemePublicationDTO> themePublicationTable;
+    
+    // Format lookup and sort order
+    private HashMap<String, String> formatLookUp = new HashMap<String, String>() {{
+        put("xtf","INTERLIS");
+        put("itf","INTERLIS");
+        put("shp","Shapefile");
+        put("dxf","DXF");
+        put("gpkg","GeoPackage");
+        put("tiff","GeoTIFF");
+    }};
+    
+    private ArrayList<String> fileFormatList = new ArrayList<String>() {{
+        add("xtf");
+        add("itf");
+        add("gpkg");
+        add("shp");
+        add("dxf");
+        add("tiff");
+    }};
+    
+    // ol3 vector layer
     private String ID_ATTR_NAME = "id";
     private String SUBUNIT_VECTOR_LAYER_ID = "subunit_vector_layer";
     private String SUBUNIT_VECTOR_FEATURE_ID = "subunit_fid";
     private String SELECTED_VECTOR_LAYER_ID = "selected_vector_layer";
     private String SELECTED_VECTOR_FEATURE_ID = "selected_fid";
 
-    private AbortController abortController = null;
-
-    // Projection
-    //private static final String EPSG_2056 = "EPSG:2056";
-    //private static final String EPSG_4326 = "EPSG:4326"; 
-    //private Projection projection;
-
-    public static interface DatasetMapper extends ObjectMapper<List<Dataset>> {}
-
+    // ol3 map
     private String MAP_DIV_ID = "map";
     private Map map;
+    
+    // Abort controller for fetching from server
+    private AbortController abortController = null;
 
+    // Create model mapper interfaces
+    public static interface DatasetMapper extends ObjectMapper<List<Dataset>> {}
+    public static interface ThemePublicationMapper extends ObjectMapper<List<ThemePublicationDTO>> {}
+    
 	public void onModuleLoad() {
-        formatLookUp.put("xtf", "INTERLIS");
-        formatLookUp.put("itf", "INTERLIS");
-	    formatLookUp.put("shp", "Shapefile");
-	    formatLookUp.put("dxf", "DXF");
-	    formatLookUp.put("gpkg", "GeoPackage");
-	    formatLookUp.put("gtiff", "GeoTIFF");
-
-	    mapper = GWT.create(DatasetMapper.class);   
+        datasetMapper = GWT.create(DatasetMapper.class);   
+        mapper = GWT.create(ThemePublicationMapper.class);   
 
         // Change Domino UI color scheme.
         Theme theme = new Theme(ColorScheme.RED);
@@ -150,7 +170,7 @@ public class App implements EntryPoint {
         }
 
         // Get datasets json from server and initialize the site.
-        DomGlobal.fetch("/datasets")
+        DomGlobal.fetch("/themepublications")
         .then(response -> {
             if (!response.ok) {
                 DomGlobal.window.alert(response.statusText + ": " + response.body);
@@ -159,17 +179,11 @@ public class App implements EntryPoint {
             return response.text();
         })
         .then(json -> {
-            datasets = mapper.read(json);
-            
-            Collections.sort(datasets, new Comparator<Dataset>() {
-                @Override
-                public int compare(Dataset o1, Dataset o2) {
-                    return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
-                }
-            });
-            
+//            datasets = datasetMapper.read(json);
+            themePublications = mapper.read(json);
+            Collections.sort(themePublications, new ThemePublicationComparator());
+            console.log(themePublications);
             init();
-            
             return null;
         }).catch_(error -> {
             console.log(error);
@@ -178,21 +192,8 @@ public class App implements EntryPoint {
         });
     }
 	
-	public void init() {
-	    /*
-	    // Registering EPSG:2056 / LV95 reference frame.
-        Proj4.defs(EPSG_2056, "+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs");
-        ol.proj.Proj4.register(Proj4.get());
-
-        ProjectionOptions projectionOptions = OLFactory.createOptions();
-        projectionOptions.setCode(EPSG_2056);
-        projectionOptions.setUnits("m");
-        projectionOptions.setExtent(new Extent(2420000, 1030000, 2900000, 1350000));
-        projection = new Projection(projectionOptions);
-        Projection.addProjection(projection);
-        */
-	    
-        // HTML document: used for creating html elements that are not
+	public void init() {	    
+        // HTMLDocument: used for creating html elements that are not
         // available in elemento (e.g. summary, details).
         HTMLDocument document = DomGlobal.document;
 
@@ -209,16 +210,12 @@ public class App implements EntryPoint {
         opensearchdescription.setAttribute("title", "Geodaten Kanton Solothurn");
         head.appendChild(opensearchdescription);
 	    
-        // Get search params to control some parts of the gui.
+        // Get search params to control the browser url
         URLSearchParams searchParams = new URLSearchParams(location.search);
                 
         if (searchParams.has(FILTER_PARAM_KEY)) {
             filter = searchParams.get(FILTER_PARAM_KEY);            
         }
-
-//        if (searchParams.has(IDENT_PARAM_KEY)) {
-//            ident = searchParams.get(IDENT_PARAM_KEY);            
-//        }
 
         // Add our "root" container
         container = div().id("container").element();
@@ -226,8 +223,11 @@ public class App implements EntryPoint {
 
         // Add logo
         HTMLElement logoDiv = div().css("logo")
-                .add(div()
-                        .add(img().attr("src", location.protocol + "//" + location.host + location.pathname + "Logo.png").attr("alt", "Logo Kanton")).element()).element();
+                .add(div().add(
+                        img().attr("src", location.protocol + "//" + location.host + location.pathname + "Logo.png")
+                                .attr("alt", "Logo Kanton"))
+                        .element())
+                .element();
         container.appendChild(logoDiv);
 
         // Create a top level content div for everything except the logo.
@@ -248,8 +248,8 @@ public class App implements EntryPoint {
         String infoString = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
               + "<a class='default-link' href='https://geoweb.so.ch/geodaten/index.php' target='_blank'>https://geoweb.so.ch/geodaten/index.php</a> eirmod "
               + "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et "
-              + "justo <a class='default-link' href='https://geo.so.ch/geodata' target='_blank'>https://geo.so.ch/geodata</a> "
-              + "duo dolores et ea rebum. Stet clita kasd gubergren <a class='default-link' href='ftp://geo.so.ch/' target='_blank'>ftp://geo.so.ch/</a>, "
+              + "justo <a class='default-link' href='https://files.geo.so.ch' target='_blank'>https://geo.so.ch/geodata</a> "
+              + "duo dolores et ea rebum. Stet clita kasd gubergren <a class='default-link' href='sftp://sftp.geo.so.ch/' target='_blank'>ftp://geo.so.ch/</a>, "
               + "no sea takimata sanctus est Lorem ipsum dolor sit amet.";
         topLevelContent.appendChild(div().css("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
 
@@ -264,20 +264,19 @@ public class App implements EntryPoint {
             @Override
             public void handleEvent(Event evt) {
                 textBox.clear();
-                listStore.setData(datasets);
+                
+                // TODO fixme
+                datasetListStore.setData(datasets);
                 
                 removeQueryParam(FILTER_PARAM_KEY);
-                //removeQueryParam(IDENT_PARAM_KEY);
             }
         });
         textBox.addRightAddOn(resetIcon);
 
         textBox.addEventListener("keyup", event -> {         
-            // Ident-Parameter wird entfernt, sobald es ein Interagieren seitens Benutzer gibt.
-            //removeQueryParam(IDENT_PARAM_KEY);
-
             if (textBox.getValue().trim().length() == 0) {
-                listStore.setData(datasets);                
+                //TODO fixme
+                datasetListStore.setData(datasets);                
                 return;
             }
             
@@ -289,67 +288,57 @@ public class App implements EntryPoint {
             final RequestInit init = RequestInit.create();
             init.setSignal(abortController.signal);
 
-            DomGlobal.fetch("/datasets?query=" + textBox.getValue().toLowerCase(), init)
-                .then(
-                        response -> {
-                                if (!response.ok) {
-                                    return null;
-                                }
-                                return response.text();
-                            }
-                        )
-                .then(
-                        json -> {
-                                List<Dataset> filteredDatasets = mapper.read(json);
-                    
-                                Collections.sort(
-                                        filteredDatasets, new Comparator<Dataset>() {
-                                                @Override
-                                                public int compare(Dataset o1, Dataset o2) {
-                                                    return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
-                                                }
-                                            }
-                                        );
-                                
-                                listStore.setData(filteredDatasets);
-                    
-                                //if (ident == null) {
-                                updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
-                                //}
-                    
-                                abortController = null;
+            // TODO fixme
+            DomGlobal.fetch("/datasets?query=" + textBox.getValue().toLowerCase(), init).then(response -> {
+                if (!response.ok) {
+                    return null;
+                }
+                return response.text();
+            }).then(json -> {
+                // TODO fixme
+                List<Dataset> filteredDatasets = datasetMapper.read(json);
 
-                                return null;
-                            }
-                        )
-                .catch_(
-                        error -> {
-                                console.log(error);
-                                return null;
-                            }
-                        );
-            }
-        );
+                // TODO fixme
+                Collections.sort(filteredDatasets, new Comparator<Dataset>() {
+                    @Override
+                    public int compare(Dataset o1, Dataset o2) {
+                        return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
+                    }
+                });
+
+                datasetListStore.setData(filteredDatasets);
+
+                updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
+
+                abortController = null;
+
+                return null;
+            }).catch_(error -> {
+                console.log(error);
+                return null;
+            });
+        });
         topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(textBox)).element());
 
-        TableConfig<Dataset> tableConfig = new TableConfig<>();
+        // Configuration of the themepublication table
+        TableConfig<ThemePublicationDTO> tableConfig = new TableConfig<>();
         tableConfig
-                .addColumn(ColumnConfig.<Dataset>create("title", messages.table_header_topic())
+                .addColumn(ColumnConfig.<ThemePublicationDTO>create("title", messages.table_header_topic())
                         .setShowTooltip(false)
                         .textAlign("left")
                         .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().getTitle()))
 
                 )
-                .addColumn(ColumnConfig.<Dataset>create("lastEditingDate", messages.table_header_publication_date())
+                .addColumn(ColumnConfig.<ThemePublicationDTO>create("lastPublishingDate", messages.table_header_publication_date())
                         .setShowTooltip(false)
                         .textAlign("left")
                         .setCellRenderer(cell -> {
                             Date date = DateTimeFormat.getFormat("yyyy-MM-dd")
-                                    .parse(cell.getTableRow().getRecord().getLastEditingDate());
+                                    .parse(cell.getTableRow().getRecord().getLastPublishingDate());
                             String dateString = DateTimeFormat.getFormat("dd.MM.yyyy").format(date);
                             return TextNode.of(dateString);
                         }))
-                .addColumn(ColumnConfig.<Dataset>create("metadata", messages.table_header_metadata())
+                .addColumn(ColumnConfig.<ThemePublicationDTO>create("metadata", messages.table_header_metadata())
                         .setShowTooltip(false)
                         .textAlign("center")
                         .setCellRenderer(cell -> {
@@ -359,35 +348,48 @@ public class App implements EntryPoint {
                             metadataLinkElement.addEventListener("click", new EventListener() {
                                 @Override
                                 public void handleEvent(Event evt) {
-                                    openMetadataDialog(cell.getRecord());
+                                    //openMetadataDialog(cell.getRecord());
                                 }
                             });
                             return metadataLinkElement;
                         }))
-                .addColumn(ColumnConfig.<Dataset>create("formats", messages.table_header_data_download())
+                .addColumn(ColumnConfig.<ThemePublicationDTO>create("formats", messages.table_header_data_download())
                         .setShowTooltip(false)
                         .textAlign("left")
                         .setCellRenderer(cell -> {
                             HTMLElement badgesElement = div().element();
-
-                            if (cell.getRecord().getSubunits() != null) {
+                            
+                            if (cell.getRecord().isHasSubunits()) {
                                 HTMLElement regionSelectionElement = a().css("default-link")
                                         .textContent(messages.table_subunit_selection())
                                         .element();
                                 regionSelectionElement.addEventListener("click", new EventListener() {
                                     @Override
                                     public void handleEvent(Event evt) {
-                                        openRegionSelectionDialog(cell.getRecord());
+                                        //openRegionSelectionDialog(cell.getRecord());
                                     }
                                 });
                                 return regionSelectionElement;
                             } else {
-                                for (String fileStr : cell.getRecord().getFileFormats()) {
+                                List<FileFormatDTO> sortedFileFormats = cell.getRecord()
+                                        .getFileFormats()
+                                        .stream()
+                                        .sorted(new Comparator<FileFormatDTO>() {
+                                            @Override
+                                            public int compare(FileFormatDTO o1, FileFormatDTO o2) {
+                                                return ((Integer) fileFormatList.indexOf(o1.getAbbreviation()))
+                                                        .compareTo(((Integer) fileFormatList
+                                                                .indexOf(o2.getAbbreviation())));
+                                            }
+                                        })
+                                        .collect(Collectors.toList());
+
+                                for (FileFormatDTO fileFormat : sortedFileFormats) {
                                     badgesElement.appendChild(a().css("badge-link")
-                                            .attr("href",
-                                                    "/dataset/" + cell.getRecord().getId() + "_" + fileStr + ".zip")
+                                            .attr("href", // TODO fixme
+                                                    "/dataset/" + cell.getRecord().getIdentifier() + "_" + fileFormat.getAbbreviation() + ".zip")
                                             .attr("target", "_blank")
-                                            .add(Badge.create(formatLookUp.get(fileStr))
+                                            .add(Badge.create(formatLookUp.get(fileFormat.getAbbreviation()))
                                                     .setBackground(Color.GREY_LIGHTEN_2)
                                                     .style()
                                                     .setMarginRight("10px")
@@ -399,41 +401,27 @@ public class App implements EntryPoint {
                                 }
                                 return badgesElement;
                             }
-                        }))
-                .addColumn(ColumnConfig.<Dataset>create("services", "Servicelinks")
-                        .setShowTooltip(false)
-                        .textAlign("center")
-                        .setCellRenderer(cell -> {
-                            HTMLElement serviceLinkElement = div()
-                                    .add(Icons.ALL.information_outline_mdi().style().setCursor("pointer"))
-                                    .element();
-                            serviceLinkElement.addEventListener("click", new EventListener() {
-                                @Override
-                                public void handleEvent(Event evt) {
-                                    openServiceLinkDialog(cell.getRecord());
-                                }
-                            });
-                            return serviceLinkElement;
                         }));
 
-        listStore = new LocalListDataStore<>();
-        listStore.setData(datasets);
-
-        datasetTable = new DataTable<>(tableConfig, listStore);
-        datasetTable.setId("dataset-table");
-        datasetTable.noStripes();
-        //datasetTable.noHover();
-        datasetTable.load();
-
-        topLevelContent.appendChild(datasetTable.element()); 
+        themePublicationListStore = new LocalListDataStore<>();
+        themePublicationListStore.setData(themePublications);
         
-//        if (ident != null && ident.trim().length() > 0) {
-//            textBox.setValue(ident);
-//            textBox.element().dispatchEvent(new KeyboardEvent("keyup"));
-//            
-//            ident = null;
-//            removeQueryParam(QUERY_PARAM_KEY);
-//        } else 
+//        datasetListStore = new LocalListDataStore<>();
+//        //listStore.setData(datasets);
+
+//        datasetTable = new DataTable<>(tableConfig, datasetListStore);
+//        datasetTable.setId("dataset-table");
+//        datasetTable.noStripes();
+//        //datasetTable.noHover();
+//        datasetTable.load();
+        
+        themePublicationTable = new DataTable<>(tableConfig, themePublicationListStore);
+        themePublicationTable.setId("dataset-table");
+        themePublicationTable.noStripes();
+        themePublicationTable.load();
+
+        topLevelContent.appendChild(themePublicationTable.element()); 
+        
         if (filter != null && filter.trim().length() > 0) {
             textBox.setValue(filter);
             textBox.element().dispatchEvent(new KeyboardEvent("keyup"));

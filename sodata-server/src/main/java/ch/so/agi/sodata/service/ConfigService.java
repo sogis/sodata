@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,17 +132,20 @@ public class ConfigService {
                     
                     log.info("**"+ themePublication.getIdentifier());
                     
+                    ThemePublicationDTO themePublicationDTO = modelMapper.map(themePublication, ThemePublicationDTO.class);
+
                     // Die GeoJson-Datei mit den Subunits zur Auswahl im Client 
                     // wird nur benötigt, falls es wirklich etwas auszuwählen gibt.
                     // D.h. wenn es mindestens 2 Items (=Subunits) gibt.
                     if (items.size() > 1) {
+                        themePublicationDTO.setHasSubunits(true);
+                        
                         File geoJsonFile = Paths.get(itemsGeoJsonDir, identifier + ".json").toFile();
                         var gsw = new GeoJsonWriter();
                         gsw.write(geoJsonFile, items); 
                         log.debug("GeoJSON file written: " + geoJsonFile);
                     }
 
-                    ThemePublicationDTO themePublicationDTO = modelMapper.map(themePublication, ThemePublicationDTO.class);
 
                     //themePublicationRepository.save(themePublicationDTO);
                     themePublicationMap.put(identifier, themePublicationDTO);
