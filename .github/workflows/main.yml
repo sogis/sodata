@@ -118,7 +118,7 @@ jobs:
       - name: Test and build Jar
         run: |
           ./mvnw clean test
-          ./mvnw -DskipTests -Penv-prod package
+          ./mvnw clean -DskipTests -Penv-prod package
           ls -la sodata-server/target
 
       - name: Set up QEMU for amd64 and arm64

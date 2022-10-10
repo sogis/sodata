@@ -72,11 +72,11 @@ In diesem Fall muss das native image auf Linux gebuildet werden.
 
 ### JVM
 ```
-java -jar sodata-server/target/sodata.jar --spring.config.location=classpath:/application.yml,optional:file:/Users/stefan/tmp/datasets.yml
+java -jar sodata-server/target/sodata.jar --spring.config.location=path/to/datasearch.xml
 ```
 
 ```
-docker run -p8080:8080 -v /Users/stefan/tmp:/config sogis/sodata-jvm:latest
+docker run -p8080:8080 -v /path/to/datasearch.xml:/config/datasearch.xml sogis/sodata-jvm:latest
 ```
 
 ### Native

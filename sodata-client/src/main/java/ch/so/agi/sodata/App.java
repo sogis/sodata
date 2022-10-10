@@ -643,8 +643,6 @@ public class App implements EntryPoint {
                         Feature f = feature.clone();
                         f.setStyle(style);
                         selectedSource.addFeature(f);
-                        
-                        console.log(f);
                     }
                     return false;
                 }
