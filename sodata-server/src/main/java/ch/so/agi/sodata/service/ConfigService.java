@@ -114,7 +114,7 @@ public class ConfigService {
                         var gsw = new GeoJsonWriter();
                         gsw.write(geoJsonFile, items); 
                         log.debug("GeoJSON file written: " + geoJsonFile);
-                    }
+                    } 
 
                     themePublicationMap.put(identifier, themePublicationDTO);
                     themePublicationList.add(themePublicationDTO);

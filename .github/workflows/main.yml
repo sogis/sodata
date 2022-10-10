@@ -32,7 +32,7 @@ jobs:
           version: '22.2.0'
           java-version: '17'
           components: 'native-image'
-          native-image-musl: 'true'
+          #native-image-musl: 'true'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build native image
@@ -59,7 +59,7 @@ jobs:
           labels: |
             org.opencontainers.image.title=${{ env.DOCKER_REPO }}
             org.opencontainers.image.version=${{ env.VERSION }}
-            org.opencontainers.image.base.name=docker.io/alpine:3.16
+            org.opencontainers.image.base.name=docker.io/bellsoft/alpaquita-linux-base:stream-glibc
           tags: |
             type=raw,value=${{ env.VERSION }},enable=true,priority=200
             type=raw,value=0.0,enable=true,priority=200
@@ -78,7 +78,8 @@ jobs:
         with:
           platforms: linux/amd64
           context: sodata-server
-          file: sodata-server/Dockerfile.native-alpine
+          file: sodata-server/Dockerfile.native-alpaquita
+          #file: sodata-server/Dockerfile.native-alpine
           #file: sodata-server/Dockerfile.native-micro
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
