@@ -34,6 +34,12 @@ public interface MyMessages extends Messages {
     @DefaultMessage("Content")
     String meta_content();
     
+    @DefaultMessage("Complete metadata")
+    String meta_complete_meta();
+
+    @DefaultMessage("Datasheet")
+    String meta_complete_meta_datasheet();
+
     @DefaultMessage("Tabelle")
     String meta_details_p_header_table();
 

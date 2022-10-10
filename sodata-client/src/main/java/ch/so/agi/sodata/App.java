@@ -442,12 +442,11 @@ public class App implements EntryPoint {
         }
     }
 
-    // TODO
     private void openMetadataDialog(ThemePublicationDTO themePublication) {
         ModalDialog modal = ModalDialog.create(themePublication.getTitle()).setAutoClose(true);
         modal.css("modal-object");
 
-        MetadataElement metaDataElement = new MetadataElement(themePublication, messages);
+        MetadataElement metaDataElement = new MetadataElement(themePublication, FILES_SERVER_URL, messages);
         modal.add(metaDataElement);
 
         Button closeButton = Button.create(messages.close().toUpperCase()).linkify();
@@ -456,9 +455,11 @@ public class App implements EntryPoint {
         EventListener closeModalListener = (evt) -> modal.close();
         closeButton.addClickListener(closeModalListener);
         modal.appendFooterChild(closeButton);
+        
+        // Links und rechts aligniert.
+        //modal.appendFooterChild(div().add(div().style("float:left;").textContent("foo")).add(div().style("float:right;").textContent("bar")));
+      
         modal.open();
-
-        closeButton.blur();
     }
 
     private void openRegionSelectionDialog(ThemePublicationDTO themePublication) {

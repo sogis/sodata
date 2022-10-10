@@ -11,6 +11,9 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.*;
 
+import org.dominokit.domino.ui.badges.Badge;
+import org.dominokit.domino.ui.icons.Icons;
+import org.dominokit.domino.ui.style.Color;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 
 public class MetadataElement implements IsElement<HTMLElement> {
@@ -18,12 +21,11 @@ public class MetadataElement implements IsElement<HTMLElement> {
 
     private final HTMLElement root;
 
-    public MetadataElement(ThemePublicationDTO themePublication, MyMessages messages) {
+    public MetadataElement(ThemePublicationDTO themePublication, String filesServerUrl, MyMessages messages) {
         root = div().element();
         
         root.appendChild(h(4, messages.meta_description()).element());
         
-        //root.appendChild(p().css("meta-dataset-description-paragraph").textContent(themePublication.getShortDescription()).element());
         root.appendChild(p().css("meta-dataset-description-paragraph").innerHtml(SafeHtmlUtils.fromTrustedString(themePublication.getShortDescription())).element());
         
         if (themePublication.getTablesInfo() != null) {
@@ -56,15 +58,27 @@ public class MetadataElement implements IsElement<HTMLElement> {
                                         .textContent(messages.meta_details_p_header_description() + ": "))
                                 .add(div().innerHtml(SafeHtmlUtils.fromTrustedString(tableInfo.getShortDescription()))))
                         .element();               
-                
-                
-                
+
                 details.appendChild(summary);
                 details.appendChild(p);
                 tables.appendChild(details);
             }
 
             root.appendChild(p().css("meta-tables-paragraph").add(tables).element()); 
+            
+            root.appendChild(h(4, messages.meta_complete_meta()).element());
+
+            String fileUrl = filesServerUrl + "/data/" + themePublication.getIdentifier()
+            + "/aktuell/meta/datenbeschreibung.html";
+
+            root.appendChild(p().css("meta-dataset-description-paragraph")
+                    .add(a().css("default-link")
+                            .attr("href", fileUrl)
+                            .attr("target", "_blank")
+                            .textContent(messages.meta_complete_meta_datasheet() + " ").add(Icons.ALL.launch_mdi().size18().style().setCursor("pointer"))
+                            .element())
+                    .element());
+
         }
     }
      
