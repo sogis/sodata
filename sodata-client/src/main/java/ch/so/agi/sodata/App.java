@@ -447,8 +447,8 @@ public class App implements EntryPoint {
         ModalDialog modal = ModalDialog.create(themePublication.getTitle()).setAutoClose(true);
         modal.css("modal-object");
 
-//        MetadataElement metaDataElement = new MetadataElement(dataset);
-//        modal.add(metaDataElement);
+        MetadataElement metaDataElement = new MetadataElement(themePublication);
+        modal.add(metaDataElement);
 
         Button closeButton = Button.create(messages.close().toUpperCase()).linkify();
         closeButton.removeWaves();

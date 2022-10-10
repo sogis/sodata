@@ -1,4 +1,4 @@
-FROM FROM bellsoft/alpaquita-linux-base:stream-glibc
+FROM bellsoft/alpaquita-linux-base:stream-glibc
 
 ARG UID=1001
 RUN adduser -S sodata -u $UID
