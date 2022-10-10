@@ -41,8 +41,18 @@ public interface MyMessages extends Messages {
     @DefaultMessage("Selection")
     String subunits_tab_selection();
 
-    @DefaultMessage("Herunterladen")
+    @DefaultMessage("Download")
     String subunits_tab_download();
+
+    @DefaultMessage("Name")
+    String subunits_download_table_name();
+    
+    @DefaultMessage("Publication date")
+    String subunits_download_table_publication_date();
+    
+    @DefaultMessage("Download data")
+    String subunits_download_table_download();
+
     
     
     

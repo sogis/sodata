@@ -442,6 +442,7 @@ public class App implements EntryPoint {
         }
     }
 
+    // TODO
     private void openMetadataDialog(ThemePublicationDTO themePublication) {
         ModalDialog modal = ModalDialog.create(themePublication.getTitle()).setAutoClose(true);
         modal.css("modal-object");
@@ -461,6 +462,19 @@ public class App implements EntryPoint {
     }
 
     private void openRegionSelectionDialog(ThemePublicationDTO themePublication) {
+        List<FileFormatDTO> sortedFileFormats = themePublication
+                .getFileFormats()
+                .stream()
+                .sorted(new Comparator<FileFormatDTO>() {
+                    @Override
+                    public int compare(FileFormatDTO o1, FileFormatDTO o2) {
+                        return ((Integer) fileFormatList.indexOf(o1.getAbbreviation()))
+                                .compareTo(((Integer) fileFormatList
+                                        .indexOf(o2.getAbbreviation())));
+                    }
+                })
+                .collect(Collectors.toList());
+        
         ModalDialog modal = ModalDialog.create(messages.subunits_title_selection() + ": " + themePublication.getTitle()).setAutoClose(true);
         modal.css("modal-object");
 
@@ -509,9 +523,9 @@ public class App implements EntryPoint {
         // TODO i18n
         TableConfig<Feature> tableConfig = new TableConfig<>();
         tableConfig
-            .addColumn(ColumnConfig.<Feature>create("title", "Name").setShowTooltip(false).textAlign("left")
+            .addColumn(ColumnConfig.<Feature>create("title", messages.subunits_download_table_name()).setShowTooltip(false).textAlign("left")
                 .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().get("title"))))
-            .addColumn(ColumnConfig.<Feature>create("lastEditingDate", "Aktualisiert").setShowTooltip(false).textAlign("left")
+            .addColumn(ColumnConfig.<Feature>create("lastEditingDate", messages.subunits_download_table_publication_date()).setShowTooltip(false).textAlign("left")
                 .setCellRenderer(cell -> {
                     Date date;
                     String dateString;
@@ -524,22 +538,28 @@ public class App implements EntryPoint {
                     }
                     return TextNode.of(dateString);
                 }))
-            .addColumn(ColumnConfig.<Feature>create("formats", "Daten herunterladen").setShowTooltip(false).textAlign("left")
+            .addColumn(ColumnConfig.<Feature>create("formats", messages.subunits_download_table_download()).setShowTooltip(false).textAlign("left")
                 .setCellRenderer(cell -> {
                     HTMLElement badgesElement = div().element();
-//                    for (String fileFormatsStr : dataset.getFileFormats()) {
-//                        badgesElement.appendChild(a().css("badge-link")
-//                                .attr("href", "/dataset/" + cell.getRecord().getId() + "_" + fileFormatsStr + ".zip") // TODO Was kommt woher?
-//                                .attr("target", "_blank")
-//                                .add(Badge.create(formatLookUp.get(fileFormatsStr))
-//                                        .setBackground(Color.GREY_LIGHTEN_2).style()
-//                                        .setMarginRight("10px").setMarginTop("5px")
-//                                        .setMarginBottom("5px").get().element())
-//                                .element());
-//                     
-//                    }
-//                    return badgesElement;
-                    return TextNode.of("fubar");
+
+                    for (FileFormatDTO fileFormat : sortedFileFormats) {
+                        String themeIdentifier = themePublication.getIdentifier();
+                        String itemIdentifier = cell.getRecord().get("identifier");
+                        String fileUrl = FILES_SERVER_URL + "/data/" + themeIdentifier
+                        + "/aktuell/" + itemIdentifier + "." + themeIdentifier + "."
+                        + fileFormat.getAbbreviation() + ".zip";
+
+                        badgesElement.appendChild(a().css("badge-link")
+                                .attr("href", fileUrl)                                 
+                                .attr("target", "_blank")
+                                .add(Badge.create(formatLookUp.get(fileFormat.getAbbreviation()))
+                                        .setBackground(Color.GREY_LIGHTEN_2).style()
+                                        .setMarginRight("10px").setMarginTop("5px")
+                                        .setMarginBottom("5px").get().element())
+                                .element());
+                     
+                    }
+                    return badgesElement;
                 }));
 
         LocalListDataStore<Feature> subunitListStore = new LocalListDataStore<>();
@@ -566,13 +586,20 @@ public class App implements EntryPoint {
                     featuresList.add(feature);
                 }
                 
-                // TODO: Umlaute
-//                Collections.sort(featuresList, new Comparator<Feature>() {
-//                    @Override
-//                    public int compare(Feature o1, Feature o2) {
-//                        return o1.get("title").toString().toLowerCase().compareTo(o2.get("title").toString().toLowerCase());
-//                    }
-//                });
+                Collections.sort(featuresList, new Comparator<Feature>() {
+                    @Override
+                    public int compare(Feature o1, Feature o2) {
+                        String string0 = o1.get("title").toString().toLowerCase();
+                        String string1 = o2.get("title").toString().toLowerCase();
+                        string0 = string0.replace("ä", "a");
+                        string0 = string0.replace("ö", "o");
+                        string0 = string0.replace("ü", "u");
+                        string1 = string1.replace("ä", "a");
+                        string1 = string1.replace("ö", "o");
+                        string1 = string1.replace("ü", "u");
+                        return string0.compareTo(string1);
+                    }
+                });
                 
                 subunitListStore.setData(featuresList);
             }
