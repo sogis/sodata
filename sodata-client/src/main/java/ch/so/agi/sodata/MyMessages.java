@@ -34,6 +34,12 @@ public interface MyMessages extends Messages {
     @DefaultMessage("Content")
     String meta_content();
     
+    @DefaultMessage("Tabelle")
+    String meta_details_p_header_table();
+
+    @DefaultMessage("Description")
+    String meta_details_p_header_description();
+
     // Subunits
     @DefaultMessage("Area selection")
     String subunits_title_selection();

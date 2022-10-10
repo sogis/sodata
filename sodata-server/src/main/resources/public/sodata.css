@@ -151,8 +151,13 @@ h4, .h4 {
     padding-bottom: 20px;
 }
 
+.meta-table-description-paragraph-title {
+    font-style: italic;
+    padding-bottom: 10px;
+}
+
 .meta-details {
-	padding-bottom: 5px;
+	padding-bottom: 15px;
 }
 
 .meta-summary {
@@ -169,3 +174,25 @@ h4, .h4 {
 .meta-tables-paragraph {
     padding-bottom: 20px;
 }
+
+.meta-table {
+    display: grid;
+    grid-template-columns: 1fr 80%; 
+    max-width: 100%;
+}
+
+.meta-table > div {
+  margin: 2px;
+  /*background: powderblue;*/
+  padding: 5px;
+}
+
+.meta-table > div:nth-child(3n+2) {
+  /*background: lemonchiffon;*/
+}
+
+.meta-table > div:nth-child(3n+3) {
+  /*background: palegreen;*/
+}
+
+
