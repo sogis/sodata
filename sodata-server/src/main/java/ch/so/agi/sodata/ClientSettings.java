@@ -7,18 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "app")
-public class ClientSettings {
-    private String myVar;
-    
+public class ClientSettings {   
     private String filesServerUrl;
-
-    public String getMyVar() {
-        return myVar;
-    }
-
-    public void setMyVar(String myVar) {
-        this.myVar = myVar;
-    }
 
     public String getFilesServerUrl() {
         return filesServerUrl;

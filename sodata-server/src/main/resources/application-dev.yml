@@ -1,3 +1,2 @@
 app:
     configFile: ${CONFIG_FILE:./datasearch.xml}
-    myVar: ${VAR:defaultValue}

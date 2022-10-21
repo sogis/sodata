@@ -459,7 +459,7 @@ public class App implements EntryPoint {
         // Links und rechts aligniert.
         //modal.appendFooterChild(div().add(div().style("float:left;").textContent("foo")).add(div().style("float:right;").textContent("bar")));
       
-        modal.open();
+        modal.large().open();
     }
 
     private void openRegionSelectionDialog(ThemePublicationDTO themePublication) {
@@ -521,7 +521,6 @@ public class App implements EntryPoint {
             return null;
         });
 
-        // TODO i18n
         TableConfig<Feature> tableConfig = new TableConfig<>();
         tableConfig
             .addColumn(ColumnConfig.<Feature>create("title", messages.subunits_download_table_name()).setShowTooltip(false).textAlign("left")
