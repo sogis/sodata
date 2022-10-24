@@ -549,6 +549,8 @@ public class App implements EntryPoint {
                         + "/aktuell/" + itemIdentifier + "." + themeIdentifier + "."
                         + fileFormat.getAbbreviation() + ".zip";
 
+                        // TODO: Sieh oben. Zip funktioniert nicht bei Rasterdaten, da die nicht gezippt sind. Abbrevation muss wohl der Extension entsprechen.
+                        
                         badgesElement.appendChild(a().css("badge-link")
                                 .attr("href", fileUrl)                                 
                                 .attr("target", "_blank")
