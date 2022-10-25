@@ -543,23 +543,17 @@ public class App implements EntryPoint {
                     HTMLElement badgesElement = div().element();
 
                     for (FileFormatDTO fileFormat : sortedFileFormats) {
+                        String fileExtension = "zip";
+                        if (themePublication.getModel() == null) {
+                            fileExtension = fileFormat.getAbbreviation();
+                        }
+                        
                         String themeIdentifier = themePublication.getIdentifier();
                         String itemIdentifier = cell.getRecord().get("identifier");
                         String fileUrl = FILES_SERVER_URL + "/data/" + themeIdentifier
                         + "/aktuell/" + itemIdentifier + "." + themeIdentifier + "."
-                        + fileFormat.getAbbreviation() + ".zip";
+                        + fileFormat.getAbbreviation() + "." + fileExtension;
 
-                        /*
-                        Oder Collection.size() == 0.
-                        Irgendwie sowas bedeutet Rasterdaten.
-                        Oder kein INTERLIS-Modell?
-                        if (themePublication.getTablesInfo() == null) {
-                            
-                        }
-                        Und wenn Raster ist Extension nicht zip, sondern Abbrevation.
-                        */
-                        
-                        // TODO: Siehe oben. Zip funktioniert nicht bei Rasterdaten, da die nicht gezippt sind. Abbrevation muss wohl der Extension entsprechen.
                         
                         badgesElement.appendChild(a().css("badge-link")
                                 .attr("href", fileUrl)                                 
