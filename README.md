@@ -85,7 +85,7 @@ docker run -p8080:8080 -v /path/to/datasearch.xml:/config/datasearch.xml sogis/s
 ```
 
 ```
-docker run -p8080:8080 -v /Users/stefan/tmp:/config sogis/sodata:latest
+docker run -p8080:8080 -v /path/to/datasearch.xml:/config/datasearch.xml sogis/sodata:latest
 ```
 
 ## Konfiguration (Umgebungsvariablen)

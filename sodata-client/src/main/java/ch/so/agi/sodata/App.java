@@ -549,7 +549,17 @@ public class App implements EntryPoint {
                         + "/aktuell/" + itemIdentifier + "." + themeIdentifier + "."
                         + fileFormat.getAbbreviation() + ".zip";
 
-                        // TODO: Sieh oben. Zip funktioniert nicht bei Rasterdaten, da die nicht gezippt sind. Abbrevation muss wohl der Extension entsprechen.
+                        /*
+                        Oder Collection.size() == 0.
+                        Irgendwie sowas bedeutet Rasterdaten.
+                        Oder kein INTERLIS-Modell?
+                        if (themePublication.getTablesInfo() == null) {
+                            
+                        }
+                        Und wenn Raster ist Extension nicht zip, sondern Abbrevation.
+                        */
+                        
+                        // TODO: Siehe oben. Zip funktioniert nicht bei Rasterdaten, da die nicht gezippt sind. Abbrevation muss wohl der Extension entsprechen.
                         
                         badgesElement.appendChild(a().css("badge-link")
                                 .attr("href", fileUrl)                                 
