@@ -1516,6 +1516,25 @@ Die Ökomorphologie beschreibt die Gestaltung des Lebensraums Bach. Eine ökomor
       <identifier>ch.so.afu.gewaesserschutz</identifier>
       <title>Gewässerschutz</title>
     </wgcPreviewLayer>
+    <keywords>
+      <keyword>Grundwasserschutzareal</keyword>
+      <keyword>Grundwasserschutzzone</keyword>
+      <keyword>Zuströmbereiche</keyword>
+      <keyword>Gewässerschutzbereich</keyword>
+      <keyword>S1</keyword>
+      <keyword>S2</keyword>
+      <keyword>S3 SA</keyword>
+      <keyword>Sh</keyword>
+      <keyword>Sm</keyword>
+      <keyword>Zu</keyword>
+      <keyword>Zo</keyword>
+      <keyword>Au</keyword>
+      <keyword>Ao</keyword>
+      <keyword>üB</keyword>
+    </keywords>
+    <synonyms>
+      <synonym>Planerischer Gewässerschutz</synonym>
+    </synonyms>  
     <fileFormats>
       <fileFormat>
         <name>DXF (Autocad)</name>
