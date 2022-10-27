@@ -1512,6 +1512,10 @@ Die Ökomorphologie beschreibt die Gestaltung des Lebensraums Bach. Eine ökomor
       <right>2644760.0</right>
       <top>1261330.0</top>
     </bbox>
+    <wgcPreviewLayer>
+      <identifier>ch.so.afu.gewaesserschutz</identifier>
+      <title>Gewässerschutz</title>
+    </wgcPreviewLayer>
     <fileFormats>
       <fileFormat>
         <name>DXF (Autocad)</name>
