@@ -1,5 +1,12 @@
 # sodata
 
+## stac
+
+```
+gu install python
+graalpy --version
+```
+
 
 ## Docs
 - Suchindex beim Hochfahren. Index im Pod, nicht persistent.

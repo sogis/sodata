@@ -1,4 +1,4 @@
-package ch.so.agi.sodata;
+ package ch.so.agi.sodata;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
