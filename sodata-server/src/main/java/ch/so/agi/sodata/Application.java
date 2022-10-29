@@ -31,13 +31,19 @@ public class Application extends SpringBootServletInitializer {
         return new ForwardedHeaderFilter();
     } 
         
-    // Anwendung ist fertig gestartet.
+    // Anwendung ist fertig gestartet. Live aber nicht ready.
     // Importieren der Konfiguration. D.h. der XML-Datei mit den vorhandenen
     // Themapublikationen (aka Datensätzen).
     @Bean
     CommandLineRunner init(ConfigService configService) {
         return args -> {
-            configService.readXml();
+            
+            
+            // Testeshalber stac hier.
+            // gewässerschutz noch ins xml
+            
+                        
+            //configService.readXml();
         };
     }
 }
