@@ -31,7 +31,8 @@ public class Application extends SpringBootServletInitializer {
         return new ForwardedHeaderFilter();
     } 
         
-    // Anwendung ist fertig gestartet. Live aber nicht ready.
+    // Anwendung ist fertig gestartet. 
+    // Kubernetes: Live aber nicht ready.
     // Importieren der Konfiguration. D.h. der XML-Datei mit den vorhandenen
     // Themapublikationen (aka Datensätzen).
     @Bean
