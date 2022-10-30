@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.graalvm.polyglot.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,9 +64,7 @@ public class MainController {
     @RequestMapping(value = "/themepublications", method = RequestMethod.GET, produces = { "application/json" })
     public List<ThemePublicationDTO> searchThemePublications(@RequestParam(value="query", required=false) String searchTerms) {
         
-        
-        StacService stacService = new StacService();
-        stacService.foo();
+        Context context = Context.create();
         
         
         if (searchTerms == null || searchTerms.trim().length() == 0) {
