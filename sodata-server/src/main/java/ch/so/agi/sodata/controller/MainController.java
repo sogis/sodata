@@ -29,6 +29,7 @@ import ch.so.agi.sodata.repository.InvalidLuceneQueryException;
 import ch.so.agi.sodata.repository.LuceneSearcherException;
 import ch.so.agi.sodata.repository.LuceneThemePublicationRepository;
 import ch.so.agi.sodata.service.ConfigService;
+import ch.so.agi.sodata.service.StacService;
 
 @RestController
 public class MainController {
@@ -60,7 +61,13 @@ public class MainController {
     }
 
     @RequestMapping(value = "/themepublications", method = RequestMethod.GET, produces = { "application/json" })
-    public List<ThemePublicationDTO> searchThemePublications(@RequestParam(value="query", required=false) String searchTerms) { 
+    public List<ThemePublicationDTO> searchThemePublications(@RequestParam(value="query", required=false) String searchTerms) {
+        
+        
+        StacService stacService = new StacService();
+        stacService.foo();
+        
+        
         if (searchTerms == null || searchTerms.trim().length() == 0) {
             return configService.getThemePublicationList();
         } else {

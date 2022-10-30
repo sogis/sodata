@@ -18,12 +18,13 @@ public class ThemePublicationDTO {
     private boolean hasSubunits;
     private String lastPublishingDate;
     private String secondToLastPublishingDate;
+    private BboxDTO bbox; // Stac. Benötigt es nicht für Datensuche.
     private OfficeDTO owner;
     private OfficeDTO servicer;
     private String furtherInformation;
     private String previewUrl;
-    private List<String> keywords;
-    private List<String> synonyms;
+    private List<String> keywords; // Backend. Benötigt es nicht für Datensuche.
+    private List<String> synonyms; // Backend. Benötigt es nicht für Datensuche.
     private List<FileFormatDTO> fileFormats;
     private List<TableInfoDTO> tablesInfo;
     
@@ -68,6 +69,12 @@ public class ThemePublicationDTO {
     }
     public void setSecondToLastPublishingDate(String secondToLastPublishingDate) {
         this.secondToLastPublishingDate = secondToLastPublishingDate;
+    }
+    public BboxDTO getBbox() {
+        return bbox;
+    }
+    public void setBbox(BboxDTO bbox) {
+        this.bbox = bbox;
     }
     public OfficeDTO getOwner() {
         return owner;

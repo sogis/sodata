@@ -101,7 +101,7 @@ public class ConfigService {
                     var items = themePublication.getItems();
                     
                     log.debug("Identifier: "+ themePublication.getIdentifier());
-                    
+                                        
                     ThemePublicationDTO themePublicationDTO = modelMapper.map(themePublication, ThemePublicationDTO.class);
 
                     // Die GeoJSON-Datei mit den Subunits zur Auswahl im Client 
