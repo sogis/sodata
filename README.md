@@ -1,24 +1,49 @@
 # sodata
 
-
-## Docs
-- Suchindex beim Hochfahren. Index im Pod, nicht persistent.
-- Suchindex: Leading wildcard ist momentan nicht umgesetzt -> Feedback abwarten. Falls notwendig, siehe "modelfinder".
-- base64 to json: werden in system temp gespeichert. sämtliche json aus diesem Verzeichnis sind exponiert.
-
-## TODO
-- Testing!!!
+## todo
+- Doku
+ * Suchindex beim Hochfahren. Index im Pod, nicht persistent.
+- Testing
  * https://stackoverflow.com/questions/39690094/spring-boot-default-profile-for-integration-tests/56442693
-- ~~application.yml ausserhalb Pod verwenden.~~
-- LiDAR-Vektorlayer ist leicht käsig -> Abklären, ob WebGL-Renderer funktioniert und vorhanden ist oder mit VectorImageSource (o.ä.).
-- ~~Bug: Suchen -> backspace alle Zeichen -> nicht komplette Liste~~ Id war in yml falsch resp. doppelt. Aus diesem Grund kam es zu doppelten Einträgen.
-- ~~Bug: Firefox zeigt Aufklappen-Zeichen nicht bei Tabellen~~
-- ~~Link/Icon zu geocat.ch sollte auch beim hovern rot erscheinen.~~ Nein. War eher ungewollt, da a:hover noch im css file vorhanden war.
-- ilidata.xml: Gebietsauswahl adaptieren. Raster -> Verweis auf Subunits, dito bei Vektor?
-- ~~Lucene Suche~~
-- Link zur Karte (siehe Mockup)
-- versionierte Datensätze?
 - ...
+
+## Beschreibung
+
+Das Repository verwaltet den Quellcode der Datensuche. Die Datensuche ist das Web-GUI zum Beziehen von Geodaten.
+
+## Komponenten
+
+Die Datensuche besteht aus einer einzelnen Komponente (einer Webanwendung). Sie wiederum ist Bestandteil der funktionalen Einheit "Datenbezug" (https://github.com/sogis/dok/blob/dok/dok_funktionale_einheiten/Documents/Datenbezug/Datenbezug.md).
+
+## Konfigurieren und Starten
+
+Die Anwendung kann am einfachsten mittels Env-Variablen gesteuert werden. Es stehen aber auch die normalen Spring Boot Konfigurationsmöglichkeiten zur Verfügung (siehe "Externalized Configuration").
+
+| Name | Beschreibung | Standard |
+|-----|-----|-----|
+| `CONFIG_FILE` | Vollständiger, absoluter Pfad der Themebereitstellungs-Konfigurations-XML-Datei. | `/config/datasearch.xml` |
+| `ITEMS_GEOJSON_DIR` | Verzeichnis in das die GeoJSON-Dateien der Regionen gespeichert werden. Sämtliche JSON-Dateien in diesem Verzeichnis werden öffentlich exponiert. | `#{systemProperties['java.io.tmpdir']}` (= Temp-Verzeichnis des OS) |
+| `FILES_SERVER_URL` | Url des Servers, auf dem die Geodaten gespeichert sind. | `https://files.geo.so.ch` |
+
+
+### Java
+
+
+
+### Docker
+
+
+
+
+
+## Externe Abhängigkeiten
+
+## Konfiguration und Betrieb in der GDI
+
+## Interne Struktur
+
+gwt... json... ..native
+
 
 ## Development
 
