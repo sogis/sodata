@@ -272,12 +272,13 @@ public class App implements EntryPoint {
 
         topLevelContent.appendChild(div().css("sodata-title").textContent("Geodaten Kanton Solothurn").element());
 
-        String infoString = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
-                + "<a class='default-link' href='https://geoweb.so.ch/geodaten/index.php' target='_blank'>https://geoweb.so.ch/geodaten/index.php</a> eirmod "
-                + "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et "
-                + "justo <a class='default-link' href='https://files.geo.so.ch' target='_blank'>https://geo.so.ch/geodata</a> "
-                + "duo dolores et ea rebum. Stet clita kasd gubergren <a class='default-link' href='sftp://sftp.geo.so.ch/' target='_blank'>ftp://geo.so.ch/</a>, "
-                + "no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+        String infoString = "Geodaten vom Kanton Solothurn können kostenlos heruntergeladen werden. Die Vektordaten sowie die Rasterdaten werden "
+                + "in vordefinierten Formaten und Gebieten (Kanton, Gemeinde oder andere) angeboten. Bei der Gebietseinteilung Gemeinde oder andere "
+                + "kann der Benutzer das gewünschte Gebiet selber wählen. Weitere Informationen zur Datenliste und alternativen Bezugsmöglichkeiten "
+                + "finden Sie <a class='default-link' href='https://geo.so.ch/' target='_blank'>hier</a>."
+                + "<br><br>"
+                + "Der Aufbau des Datenangebotes wird im Frühjahr 2023 abgeschlossen. Ab dann sind alle öffentlichen Geodaten des Kantons enthalten.";
+
         topLevelContent.appendChild(div().css("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
 
         TextBox textBox = TextBox.create().setLabel(messages.search_terms());
@@ -488,10 +489,8 @@ public class App implements EntryPoint {
         HTMLDivElement mapDiv = div().id("map").element();
         modal.getBodyElement()
                 .appendChild(div().css("modal-body-paragraph")
-                        .textContent("Sie können einzelne Datensätze mit einem Klick in die Karte aus- und abwählen. "
-                                + "Im Reiter 'Herunterladen' können Sie die Daten anschliessend herunterladen. "
-                                + "Wünschen Sie viele Datensätze herunterzuladen ... Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor "
-                                + "invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et."));
+                        .textContent("Sie können einzelne Gebiete mit einem Klick in die Karte aus- und abwählen. "
+                                + "Im Reiter 'Herunterladen' können Sie die Daten anschliessend herunterladen. "));
 
         selectionTab.appendChild(mapDiv);
 

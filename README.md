@@ -2,9 +2,9 @@
 
 ## todo
 - Doku
- * Suchindex beim Hochfahren. Index im Pod, nicht persistent.
+  * Suchindex beim Hochfahren. Index im Pod, nicht persistent.
 - Testing
- * https://stackoverflow.com/questions/39690094/spring-boot-default-profile-for-integration-tests/56442693
+  * https://stackoverflow.com/questions/39690094/spring-boot-default-profile-for-integration-tests/56442693
 - ...
 
 ## Beschreibung
@@ -15,7 +15,7 @@ Das Repository verwaltet den Quellcode der Datensuche. Die Datensuche ist das We
 
 Die Datensuche besteht aus einer einzelnen Komponente (einer Webanwendung). Sie wiederum ist Bestandteil der funktionalen Einheit "Datenbezug" (https://github.com/sogis/dok/blob/dok/dok_funktionale_einheiten/Documents/Datenbezug/Datenbezug.md).
 
-## Konfigurieren und Starten
+## Konfigurieren und Starten
 
 Die Anwendung kann am einfachsten mittels Env-Variablen gesteuert werden. Es stehen aber auch die normalen Spring Boot Konfigurationsmöglichkeiten zur Verfügung (siehe "Externalized Configuration").
 
