@@ -612,7 +612,7 @@ app:
           #lastEditingDate: 2020-08-29
           title: Nutzungsplanung
           shortDescription: 
-          keywords: ARP
+          keywords: ARP,Baulinien
           provider: Amt für Raumplanung
           ownerUrl: https://arp.so.ch
           servicer: https://agi.so.ch
