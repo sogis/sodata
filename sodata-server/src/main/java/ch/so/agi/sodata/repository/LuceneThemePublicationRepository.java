@@ -84,6 +84,7 @@ public class LuceneThemePublicationRepository {
     
     public void saveAll(List<ThemePublicationDTO> themePublicationList) throws IOException {
         for (ThemePublicationDTO themePublication : themePublicationList) {
+            log.debug("Write Lucene index: {}", themePublication.getIdentifier());
             Document document = new Document();
             document.add(new TextField("id", themePublication.getIdentifier(), Store.YES));
             document.add(new TextField("model", themePublication.getModel(), Store.YES));
