@@ -87,7 +87,7 @@ public class LuceneThemePublicationRepository {
             log.debug("Write Lucene index: {}", themePublication.getIdentifier());
             Document document = new Document();
             document.add(new TextField("id", themePublication.getIdentifier(), Store.YES));
-            document.add(new TextField("model", themePublication.getModel(), Store.YES));
+            if(themePublication.getModel() != null) document.add(new TextField("model", themePublication.getModel(), Store.YES));
             document.add(new TextField("title", themePublication.getTitle(), Store.YES));
             document.add(new TextField("shortdescription", themePublication.getShortDescription(), Store.YES));
             String ownerLuceneString = themePublication.getOwner().getAgencyName();

@@ -39,16 +39,7 @@ public class MetadataElement implements IsElement<HTMLElement> {
                 HTMLElement summary = (HTMLElement) DomGlobal.document.createElement("summary");
                 summary.className = "meta-summary";
                 summary.textContent = tableInfo.getTitle();
-                
-//                HTMLElement p = p().css("meta-table-description-paragraph")
-//                        .add(div().style("padding-top:10px;").element())
-//                        .add(span().css("meta-table-description-paragraph-title").textContent("Tabelle: ").element())
-//                        .add(span().textContent(tableInfo.getSqlName()).element())
-//                        .add(div().style("padding-bottom:15px;").element())
-//                        .add(span().css("meta-table-description-paragraph-title").textContent("Beschreibung: ").element())
-//                        .add(span().textContent(tableInfo.getShortDescription()).element())
-//                        .element();
-                               
+                                               
                 HTMLElement p = p().css("meta-table-description-paragraph")
                         .add(div().css("meta-table")
                                 .add(div().style("font-style: italic;")
@@ -65,21 +56,20 @@ public class MetadataElement implements IsElement<HTMLElement> {
             }
 
             root.appendChild(p().css("meta-tables-paragraph").add(tables).element()); 
-            
-            root.appendChild(h(4, messages.meta_complete_meta()).element());
-
-            String fileUrl = filesServerUrl + "/data/" + themePublication.getIdentifier()
-            + "/aktuell/meta/datenbeschreibung.html";
-
-            root.appendChild(p().css("meta-dataset-description-paragraph")
-                    .add(a().css("default-link")
-                            .attr("href", fileUrl)
-                            .attr("target", "_blank")
-                            .textContent(messages.meta_complete_meta_datasheet() + " ").add(Icons.ALL.launch_mdi().size18().style().setCursor("pointer"))
-                            .element())
-                    .element());
-
         }
+
+        root.appendChild(h(4, messages.meta_complete_meta()).element());
+
+        String fileUrl = filesServerUrl + "/" + themePublication.getIdentifier()
+        + "/aktuell/meta/datenbeschreibung.html";
+
+        root.appendChild(p().css("meta-dataset-description-paragraph")
+                .add(a().css("default-link")
+                        .attr("href", fileUrl)
+                        .attr("target", "_blank")
+                        .textContent(messages.meta_complete_meta_datasheet() + " ").add(Icons.ALL.launch_mdi().size18().style().setCursor("pointer"))
+                        .element())
+                .element());
     }
      
     @Override

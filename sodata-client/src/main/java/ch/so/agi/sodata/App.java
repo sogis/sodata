@@ -407,7 +407,7 @@ public class App implements EntryPoint {
                                         .collect(Collectors.toList());
 
                                 for (FileFormatDTO fileFormat : sortedFileFormats) {
-                                    String fileUrl = FILES_SERVER_URL + "/data/" + cell.getRecord().getIdentifier()
+                                    String fileUrl = FILES_SERVER_URL + "/" + cell.getRecord().getIdentifier()
                                             + "/aktuell/" + cell.getRecord().getIdentifier() + "."
                                             + fileFormat.getAbbreviation() + ".zip";
                                     badgesElement.appendChild(a().css("badge-link")
@@ -549,11 +549,21 @@ public class App implements EntryPoint {
                         
                         String themeIdentifier = themePublication.getIdentifier();
                         String itemIdentifier = cell.getRecord().get("identifier");
-                        String fileUrl = FILES_SERVER_URL + "/data/" + themeIdentifier
-                        + "/aktuell/" + itemIdentifier + "." + themeIdentifier + "."
-                        + fileFormat.getAbbreviation() + "." + fileExtension;
-
                         
+                        String fileUrl = null;
+                        if (themePublication.getModel() == null) {
+                            // Rasterdaten
+                            fileExtension = fileFormat.getAbbreviation();
+                            fileUrl = FILES_SERVER_URL + "/" + themeIdentifier
+                                    + "/aktuell/" + itemIdentifier + "." + themeIdentifier + "."
+                                    + fileFormat.getAbbreviation();                     
+                        } else {
+                            // Vektordaten
+                            fileUrl = FILES_SERVER_URL + "/" + themeIdentifier
+                                    + "/aktuell/" + itemIdentifier + "." + themeIdentifier + "."
+                                    + fileFormat.getAbbreviation() + "." + fileExtension;
+                        }
+                       
                         badgesElement.appendChild(a().css("badge-link")
                                 .attr("href", fileUrl)                                 
                                 .attr("target", "_blank")
@@ -619,9 +629,6 @@ public class App implements EntryPoint {
     public final class MapSingleClickListener implements ol.event.EventListener<MapBrowserEvent> {
         @Override
         public void onEvent(MapBrowserEvent event) {
-            
-            console.log("clicked");
-            
             AtPixelOptions featureAtPixelOptions = new AtPixelOptions();
             map.forEachFeatureAtPixel(event.getPixel(), new FeatureAtPixelFunction() {
                 @Override
@@ -654,30 +661,6 @@ public class App implements EntryPoint {
             }, featureAtPixelOptions);
         }
     }
-
-    // TODO remove
-    // Dient eventuell noch als Inspiration
-//    private void openServiceLinkDialog(Dataset dataset) {
-//        ModalDialog modal = ModalDialog.create("Servicelinks").setAutoClose(true);
-//
-//        modal.appendChild(
-//                InfoBox.create(Icons.ALL.map(), "WMS", "https://geo.so.ch/wms").setIconBackground(Color.RED_DARKEN_3));
-//        modal.appendChild(InfoBox.create(Icons.ALL.file_download_mdi(), "WFS", "https://geo.so.ch/wfs")
-//                .setIconBackground(Color.RED_DARKEN_3));
-//        modal.appendChild(
-//                InfoBox.create(Icons.ALL.file_download_mdi(), "Data Service", "https://geo.so.ch/api/data/v1/api/")
-//                        .setIconBackground(Color.RED_DARKEN_3));
-//
-//        Button closeButton = Button.create("SCHLIESSEN").linkify();
-//        closeButton.removeWaves();
-//        closeButton.setBackground(Color.RED_DARKEN_3);
-//        EventListener closeModalListener = (evt) -> modal.close();
-//        closeButton.addClickListener(closeModalListener);
-//        modal.appendFooterChild(closeButton);
-//        modal.open();
-//
-//        closeButton.blur();
-//    }
 
     private void createVectorLayers(Feature[] features) {
         removeVectorLayer(SUBUNIT_VECTOR_LAYER_ID);
