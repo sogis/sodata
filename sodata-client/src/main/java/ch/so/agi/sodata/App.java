@@ -123,7 +123,7 @@ public class App implements EntryPoint {
             put("shp", "Shapefile");
             put("dxf", "DXF");
             put("gpkg", "GeoPackage");
-            put("tiff", "GeoTIFF");
+            put("tif", "GeoTIFF");
         }
     };
 
@@ -134,7 +134,7 @@ public class App implements EntryPoint {
             add("gpkg");
             add("shp");
             add("dxf");
-            add("tiff");
+            add("tif");
         }
     };
 
