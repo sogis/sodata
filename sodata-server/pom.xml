@@ -117,12 +117,15 @@
           <skip>false</skip>
         </configuration>
       </plugin>
+      <!-- removeSpelSupport=false: Wegen geojson dir in application.yml. Sonst mit ENV-Variable arbeiten. -->
+      <!-- Static files werden mit aktiviertem Plugin nicht mehr nach einer Änderung kompiliert, d.h. in den 
+      target/classes/public-Ordner kopiert.-->
       <plugin>
         <groupId>org.springframework.experimental</groupId>
         <artifactId>spring-aot-maven-plugin</artifactId>
         <version>${spring-native.version}</version>
         <configuration>
-          <removeSpelSupport>false</removeSpelSupport> <!-- Wegen geojson dir in application.yml. Sonst mit ENV-Variable arbeiten. -->
+          <removeSpelSupport>false</removeSpelSupport> 
           <removeXmlSupport>false</removeXmlSupport>
           <removeYamlSupport>false</removeYamlSupport>
         </configuration>

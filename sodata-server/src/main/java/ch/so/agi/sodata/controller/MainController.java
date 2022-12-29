@@ -111,6 +111,7 @@ public class MainController {
                         return layerConfigService.getDataproductsMap().get(r.get("ident"));
                     })
                     .collect(Collectors.toList());
+            System.out.println();
             return resultList;
         }   
     }

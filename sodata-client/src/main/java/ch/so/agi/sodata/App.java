@@ -298,20 +298,9 @@ public class App implements EntryPoint {
             @Override
             public void handleEvent(Event evt) {
                 
-                // TODO:
-                console.log("RESET...");
                 if (dataElement != null) {
                     dataElement.resetStore();
                 }
-                
-                
-                CustomEventInit eventInit = CustomEventInit.create();
-                eventInit.setDetail("");
-                eventInit.setBubbles(true);
-                CustomEvent cevent = new CustomEvent("searchStringChanged", eventInit);
-                topLevelContent.dispatchEvent(cevent);
-
-                
                 
                 textBox.clear();
                 themePublicationListStore.setData(themePublications);
@@ -364,13 +353,14 @@ public class App implements EntryPoint {
         topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(textBox)).element());
 
         // Add tabs
-        TabsPanel tabsPanel = TabsPanel.create().setColor(Color.RED_DARKEN_3).setMarginTop("30px");
+        TabsPanel tabsPanel = TabsPanel.create().setColor(Color.RED_DARKEN_3).setMarginTop("45px");
         Tab mapsTab = Tab.create(Icons.ALL.map_outline_mdi(), "KARTEN").setWidth("180px").id("maps-tab");
         Tab dataTab = Tab.create(Icons.ALL.file_download_outline_mdi(), "DATEN").setWidth("180px");
         tabsPanel.appendChild(mapsTab);
         tabsPanel.appendChild(dataTab);
 
         dataElement = new DataElement(messages, FILES_SERVER_URL, textBox);
+        dataElement.element().style.marginTop = CSSProperties.MarginTopUnionType.of("15px");
         dataTab.appendChild(dataElement.element());
         
         topLevelContent.appendChild(tabsPanel.element());
