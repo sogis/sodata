@@ -45,6 +45,8 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import elemental2.core.Global;
 import elemental2.dom.AbortController;
 import elemental2.dom.CSSProperties;
+import elemental2.dom.CustomEvent;
+import elemental2.dom.CustomEventInit;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.Event;
@@ -108,6 +110,9 @@ public class App implements EntryPoint {
     private HTMLElement container;
     private HTMLElement topLevelContent;
     private HTMLElement datasetContent;
+    
+    // Data-/Maplayers container elements
+    private DataElement dataElement;
 
     // Theme publications vars
     private ThemePublicationMapper mapper;
@@ -208,7 +213,7 @@ public class App implements EntryPoint {
         }).then(json -> {
             themePublications = mapper.read(json);
             Collections.sort(themePublications, new ThemePublicationComparator());
-
+            
             init();
 
             return null;
@@ -269,7 +274,7 @@ public class App implements EntryPoint {
         });
         topLevelContent.appendChild(breadcrumb.element());
 
-        topLevelContent.appendChild(div().css("sodata-title").textContent("Geodaten Kanton Solothurn").element());
+        topLevelContent.appendChild(div().css("sodata-title").textContent("Karten und Geodaten Kanton Solothurn").element());
 
         String infoString = "Geodaten vom Kanton Solothurn können kostenlos heruntergeladen werden. Die Vektordaten sowie die Rasterdaten werden "
                 + "in vordefinierten Formaten und Gebieten (Kanton, Gemeinde oder andere) angeboten. Bei der Gebietseinteilung Gemeinde oder andere "
@@ -292,56 +297,87 @@ public class App implements EntryPoint {
         resetIcon.addEventListener("click", new EventListener() {
             @Override
             public void handleEvent(Event evt) {
+                
+                // TODO:
+                console.log("RESET...");
+                if (dataElement != null) {
+                    dataElement.resetStore();
+                }
+                
+                
+                CustomEventInit eventInit = CustomEventInit.create();
+                eventInit.setDetail("");
+                eventInit.setBubbles(true);
+                CustomEvent cevent = new CustomEvent("searchStringChanged", eventInit);
+                topLevelContent.dispatchEvent(cevent);
+
+                
+                
                 textBox.clear();
                 themePublicationListStore.setData(themePublications);
                 removeQueryParam(FILTER_PARAM_KEY);
             }
-        });
+        }, true);
         textBox.addRightAddOn(resetIcon);
-
+        
         textBox.addEventListener("keyup", event -> {
-            if (textBox.getValue().trim().length() > 0 && textBox.getValue().trim().length() <= 2) {
-                themePublicationListStore.setData(themePublications);
-                return;
-            }
+//            if (textBox.getValue().trim().length() > 0 && textBox.getValue().trim().length() <= 2) {
+//                themePublicationListStore.setData(themePublications);
+//                return;
+//            }
+//
+//            if (textBox.getValue().trim().length() == 0) {
+//                themePublicationListStore.setData(themePublications);
+//                removeQueryParam(FILTER_PARAM_KEY);
+//                return;
+//            }
+//
+//            if (abortController != null) {
+//                abortController.abort();
+//            }
+//
+//            abortController = new AbortController();
+//            final RequestInit init = RequestInit.create();
+//            init.setSignal(abortController.signal);
 
-            if (textBox.getValue().trim().length() == 0) {
-                themePublicationListStore.setData(themePublications);
-                removeQueryParam(FILTER_PARAM_KEY);
-                return;
-            }
-
-            if (abortController != null) {
-                abortController.abort();
-            }
-
-            abortController = new AbortController();
-            final RequestInit init = RequestInit.create();
-            init.setSignal(abortController.signal);
-
-            DomGlobal.fetch("/themepublications?query=" + textBox.getValue().toLowerCase(), init).then(response -> {
-                if (!response.ok) {
-                    return null;
-                }
-                return response.text();
-            }).then(json -> {
-                List<ThemePublicationDTO> filteredThemePublications = mapper.read(json);
-                filteredThemePublications.sort(new ThemePublicationComparator());
-
-                themePublicationListStore.setData(filteredThemePublications);
-
-                updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
-
-                abortController = null;
-
-                return null;
-            }).catch_(error -> {
-                console.log(error);
-                return null;
-            });
+//            DomGlobal.fetch("/themepublications?query=" + textBox.getValue().toLowerCase(), init).then(response -> {
+//                if (!response.ok) {
+//                    return null;
+//                }
+//                return response.text();
+//            }).then(json -> {
+//                List<ThemePublicationDTO> filteredThemePublications = mapper.read(json);
+//                filteredThemePublications.sort(new ThemePublicationComparator());
+//
+//                themePublicationListStore.setData(filteredThemePublications);
+//
+//                updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
+//
+//                abortController = null;
+//
+//                return null;
+//            }).catch_(error -> {
+//                console.log(error);
+//                return null;
+//            });
         });
         topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(textBox)).element());
 
+        // Add tabs
+        TabsPanel tabsPanel = TabsPanel.create().setColor(Color.RED_DARKEN_3).setMarginTop("30px");
+        Tab mapsTab = Tab.create(Icons.ALL.map_outline_mdi(), "KARTEN").setWidth("180px").id("maps-tab");
+        Tab dataTab = Tab.create(Icons.ALL.file_download_outline_mdi(), "DATEN").setWidth("180px");
+        tabsPanel.appendChild(mapsTab);
+        tabsPanel.appendChild(dataTab);
+
+        dataElement = new DataElement(messages, FILES_SERVER_URL, textBox);
+        dataTab.appendChild(dataElement.element());
+        
+        topLevelContent.appendChild(tabsPanel.element());
+
+        
+        
+        
         // Configuration of the theme publication table
         TableConfig<ThemePublicationDTO> tableConfig = new TableConfig<>();
         tableConfig
@@ -434,7 +470,7 @@ public class App implements EntryPoint {
         themePublicationTable.noStripes();
         themePublicationTable.load();
 
-        topLevelContent.appendChild(themePublicationTable.element());
+        //topLevelContent.appendChild(themePublicationTable.element());
 
         if (filter != null && filter.trim().length() > 0) {
             textBox.setValue(filter);
