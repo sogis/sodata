@@ -157,7 +157,6 @@ public class App implements EntryPoint {
     }
 
     public void onModuleLoad() {
-//        datasetMapper = GWT.create(DatasetMapper.class);   
         mapper = GWT.create(ThemePublicationMapper.class);
 
         // Change Domino UI color scheme.

@@ -50,3 +50,5 @@ app:
   configFile: ${CONFIG_FILE:/config/datasearch.xml}
   itemsGeoJsonDir: ${ITEMS_GEOJSON_DIR:#{systemProperties['java.io.tmpdir']}}
   filesServerUrl: ${FILES_SERVER_URL:https://files.geo.so.ch}
+  searchServiceUrl: ${SEARCH_SERVICE_URL:https://geo.so.ch/api/search/v2/?searchtext=ch.so&filter=foreground&limit=5000}  
+  dataproductServiceUrl: ${DATAPRODUCT_SERVICE_URL:https://geo.so.ch/api/dataproduct/v1/weblayers?filter=}

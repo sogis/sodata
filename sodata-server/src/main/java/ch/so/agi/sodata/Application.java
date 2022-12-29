@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.ForwardedHeaderFilter;
 
 import ch.so.agi.sodata.service.ConfigService;
+import ch.so.agi.sodata.service.LayerConfigService;
 
 @SpringBootApplication
 @ServletComponentScan
@@ -35,9 +36,10 @@ public class Application extends SpringBootServletInitializer {
     // Importieren der Konfiguration. D.h. der XML-Datei mit den vorhandenen
     // Themapublikationen (aka Datensätzen).
     @Bean
-    CommandLineRunner init(ConfigService configService) {
+    CommandLineRunner init(ConfigService configService, LayerConfigService layerConfigService) {
         return args -> {
             configService.readXml();
+            layerConfigService.readJson();
         };
     }
 }

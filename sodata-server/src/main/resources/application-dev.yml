@@ -1,2 +1,4 @@
 app:
-    configFile: ${CONFIG_FILE:./datasearch.xml}
+  configFile: ${CONFIG_FILE:./datasearch.xml}
+  searchServiceUrl: ${SEARCH_SERVICE_URL:https://geo-i.so.ch/api/search/v2/?searchtext=ch.so&filter=foreground&limit=5000}
+  dataproductServiceUrl: ${DATAPRODUCT_SERVICE_URL:https://geo-i.so.ch/api/dataproduct/v1/weblayers?filter=}

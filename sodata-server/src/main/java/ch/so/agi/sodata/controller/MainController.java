@@ -2,6 +2,7 @@ package ch.so.agi.sodata.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -24,11 +25,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import ch.so.agi.sodata.ClientSettings;
+import ch.so.agi.sodata.dto.DataproductDTO;
 import ch.so.agi.sodata.dto.ThemePublicationDTO;
 import ch.so.agi.sodata.repository.InvalidLuceneQueryException;
+import ch.so.agi.sodata.repository.LuceneDataproductRepository;
 import ch.so.agi.sodata.repository.LuceneSearcherException;
 import ch.so.agi.sodata.repository.LuceneThemePublicationRepository;
 import ch.so.agi.sodata.service.ConfigService;
+import ch.so.agi.sodata.service.LayerConfigService;
 
 @RestController
 public class MainController {
@@ -44,10 +48,16 @@ public class MainController {
     private LuceneThemePublicationRepository themePublicationsRepository;
     
     @Autowired
+    private LuceneDataproductRepository dataproductRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
     
     @Autowired
     private ConfigService configService;
+    
+    @Autowired
+    private LayerConfigService layerConfigService;
         
     @GetMapping("/ping")
     public ResponseEntity<String> ping() {
@@ -78,8 +88,31 @@ public class MainController {
                     })
                     .collect(Collectors.toList());
             return resultList;
-
         }
+    }
+    
+    @RequestMapping(value = "/layers", method = RequestMethod.GET, produces = { "application/json" })
+    public List<DataproductDTO> searchDataproducs(@RequestParam(value="query", required=false) String searchTerms) {
+        if (searchTerms == null || searchTerms.trim().length() == 0) {
+            return layerConfigService.getDataproductList();
+        } else {
+            List<Map<String, String>> results = null;
+            try {
+                results = dataproductRepository.findByQuery(searchTerms, QUERY_MAX_RECORDS);
+                log.debug("Search for '" + searchTerms +"' found " + results.size() + " records");
+            } catch (LuceneSearcherException | InvalidLuceneQueryException e) {
+                throw new IllegalStateException(e);
+            }
+            List<DataproductDTO> resultList = results.stream()
+                    .filter(r -> {
+                        return Objects.nonNull(layerConfigService.getDataproductsMap().get(r.get("ident")));
+                    })
+                    .map(r -> {
+                        return layerConfigService.getDataproductsMap().get(r.get("ident"));
+                    })
+                    .collect(Collectors.toList());
+            return resultList;
+        }   
     }
         
     @GetMapping(value="/opensearchdescription.xml", produces=MediaType.APPLICATION_XML_VALUE) 

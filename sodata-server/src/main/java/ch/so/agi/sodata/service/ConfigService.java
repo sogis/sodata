@@ -53,17 +53,17 @@ public class ConfigService {
         return themePublicationMap;
     }
 
-    public void setThemePublicationMap(Map<String, ThemePublicationDTO> themePublicationMap) {
-        this.themePublicationMap = themePublicationMap;
-    }
+//    public void setThemePublicationMap(Map<String, ThemePublicationDTO> themePublicationMap) {
+//        this.themePublicationMap = themePublicationMap;
+//    }
 
     public List<ThemePublicationDTO> getThemePublicationList() {
         return themePublicationList;
     }
 
-    public void setThemePublicationList(List<ThemePublicationDTO> themePublicationList) {
-        this.themePublicationList = themePublicationList;
-    }
+//    public void setThemePublicationList(List<ThemePublicationDTO> themePublicationList) {
+//        this.themePublicationList = themePublicationList;
+//    }
 
 
     /*
