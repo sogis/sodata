@@ -114,12 +114,6 @@ public class App implements EntryPoint {
     // Data-/Maplayers container elements
     private DataTabElement dataTabElement;
 
-    // Theme publications vars
-    private ThemePublicationMapper mapper;
-    private List<ThemePublicationDTO> themePublications;
-    private LocalListDataStore<ThemePublicationDTO> themePublicationListStore;
-    private DataTable<ThemePublicationDTO> themePublicationTable;
-
     // Format lookup and sort order
     private HashMap<String, String> formatLookUp = new HashMap<String, String>() {
         {
@@ -146,12 +140,7 @@ public class App implements EntryPoint {
     // Abort controller for fetching from server
     private AbortController abortController = null;
 
-    // Create model mapper interfaces
-    public static interface ThemePublicationMapper extends ObjectMapper<List<ThemePublicationDTO>> {
-    }
-
     public void onModuleLoad() {
-        mapper = GWT.create(ThemePublicationMapper.class);
 
         // Change Domino UI color scheme.
         Theme theme = new Theme(ColorScheme.RED);
@@ -191,26 +180,8 @@ public class App implements EntryPoint {
         });
 
         httpRequest.send();
-
-        // Get themes publications json from server and initialize the site.
-        DomGlobal.fetch("/themepublications").then(response -> {
-            if (!response.ok) {
-                DomGlobal.window.alert(response.statusText + ": " + response.body);
-                return null;
-            }
-            return response.text();
-        }).then(json -> {
-            themePublications = mapper.read(json);
-            Collections.sort(themePublications, new ThemePublicationComparator());
-            
-            init();
-
-            return null;
-        }).catch_(error -> {
-            console.log(error);
-            DomGlobal.window.alert(error.toString());
-            return null;
-        });
+        
+        init();
     }
 
     public void init() {
@@ -292,53 +263,38 @@ public class App implements EntryPoint {
                 }
                 
                 textBox.clear();
-                themePublicationListStore.setData(themePublications);
                 removeQueryParam(FILTER_PARAM_KEY);
             }
         }, true);
         textBox.addRightAddOn(resetIcon);
         
-//        textBox.addEventListener("keyup", event -> {
-//            if (textBox.getValue().trim().length() > 0 && textBox.getValue().trim().length() <= 2) {
-//                themePublicationListStore.setData(themePublications);
-//                return;
-//            }
-//
-//            if (textBox.getValue().trim().length() == 0) {
-//                themePublicationListStore.setData(themePublications);
-//                removeQueryParam(FILTER_PARAM_KEY);
-//                return;
-//            }
-//
-//            if (abortController != null) {
-//                abortController.abort();
-//            }
-//
-//            abortController = new AbortController();
-//            final RequestInit init = RequestInit.create();
-//            init.setSignal(abortController.signal);
-
-//            DomGlobal.fetch("/themepublications?query=" + textBox.getValue().toLowerCase(), init).then(response -> {
-//                if (!response.ok) {
-//                    return null;
-//                }
-//                return response.text();
-//            }).then(json -> {
-//                List<ThemePublicationDTO> filteredThemePublications = mapper.read(json);
-//                filteredThemePublications.sort(new ThemePublicationComparator());
-//
-//                themePublicationListStore.setData(filteredThemePublications);
-//
-//                updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
-//
-//                abortController = null;
-//
-//                return null;
-//            }).catch_(error -> {
-//                console.log(error);
-//                return null;
-//            });
-//        });
+        textBox.addEventListener("keyup", event -> {
+            if (textBox.getValue().trim().length() > 0 && textBox.getValue().trim().length() <= 2) {
+                if (dataTabElement != null) {
+                    dataTabElement.resetStore();
+                }
+                // TODO MapLayer
+                return;
+            }
+            
+            if (textBox.getValue().trim().length() == 0) {
+                if (dataTabElement != null) {
+                    dataTabElement.resetStore();
+                }
+                // TODO MapLayer
+                removeQueryParam(FILTER_PARAM_KEY);
+                return;
+            }
+            
+            updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
+            
+            if (dataTabElement != null) {
+                dataTabElement.updateStore();
+            }
+            
+            // TODO Wie funktioniert das mit dem AbortController wenn fetch nicht hier und mehrfach gemacht wird?            
+        });
+        
         topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(textBox)).element());
 
         // Add tabs

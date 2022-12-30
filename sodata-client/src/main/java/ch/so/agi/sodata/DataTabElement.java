@@ -34,7 +34,6 @@ import com.github.nmorel.gwtjackson.client.ObjectMapper;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
-import ch.so.agi.sodata.App.ThemePublicationMapper;
 import ch.so.agi.sodata.dto.FileFormatDTO;
 import ch.so.agi.sodata.dto.ThemePublicationDTO;
 import elemental2.dom.AbortController;
@@ -150,47 +149,47 @@ public class DataTabElement implements IsElement<HTMLElement> {
     
     private void init() {
         // Keyup-Event der Suche hinzufügen.
-        textBox.addEventListener("keyup", event -> {
-            if (textBox.getValue().trim().length() > 0 && textBox.getValue().trim().length() <= 2) {
-                themePublicationListStore.setData(themePublications);
-                return;
-            }
-
-            if (textBox.getValue().trim().length() == 0) {
-                themePublicationListStore.setData(themePublications);
-                //removeQueryParam(FILTER_PARAM_KEY);
-                return;
-            }
-
-            if (abortController != null) {
-                abortController.abort();
-            }
-
-            abortController = new AbortController();
-            final RequestInit init = RequestInit.create();
-            init.setSignal(abortController.signal);
-
-            DomGlobal.fetch("/themepublications?query=" + textBox.getValue().toLowerCase(), init).then(response -> {
-                if (!response.ok) {
-                    return null;
-                }
-                return response.text();
-            }).then(json -> {
-                List<ThemePublicationDTO> filteredThemePublications = mapper.read(json);
-                filteredThemePublications.sort(new ThemePublicationComparator());
-
-                themePublicationListStore.setData(filteredThemePublications);
-
-                //updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
-
-                abortController = null;
-
-                return null;
-            }).catch_(error -> {
-                console.log(error);
-                return null;
-            });
-        });
+//        textBox.addEventListener("keyup", event -> {
+//            if (textBox.getValue().trim().length() > 0 && textBox.getValue().trim().length() <= 2) {
+//                themePublicationListStore.setData(themePublications);
+//                return;
+//            }
+//
+//            if (textBox.getValue().trim().length() == 0) {
+//                themePublicationListStore.setData(themePublications);
+//                //removeQueryParam(FILTER_PARAM_KEY);
+//                return;
+//            }
+//
+//            if (abortController != null) {
+//                abortController.abort();
+//            }
+//
+//            abortController = new AbortController();
+//            final RequestInit init = RequestInit.create();
+//            init.setSignal(abortController.signal);
+//
+//            DomGlobal.fetch("/themepublications?query=" + textBox.getValue().toLowerCase(), init).then(response -> {
+//                if (!response.ok) {
+//                    return null;
+//                }
+//                return response.text();
+//            }).then(json -> {
+//                List<ThemePublicationDTO> filteredThemePublications = mapper.read(json);
+//                filteredThemePublications.sort(new ThemePublicationComparator());
+//
+//                themePublicationListStore.setData(filteredThemePublications);
+//
+//                //updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
+//
+//                abortController = null;
+//
+//                return null;
+//            }).catch_(error -> {
+//                console.log(error);
+//                return null;
+//            });
+//        });
         
         // Configuration of the theme publication table
         TableConfig<ThemePublicationDTO> tableConfig = new TableConfig<>();
@@ -582,6 +581,38 @@ public class DataTabElement implements IsElement<HTMLElement> {
             }
         }
         return null;
+    }
+    
+    public void updateStore() {
+        if (abortController != null) {
+            abortController.abort();
+        }
+
+        abortController = new AbortController();
+        final RequestInit init = RequestInit.create();
+        init.setSignal(abortController.signal);
+
+        DomGlobal.fetch("/themepublications?query=" + textBox.getValue().toLowerCase(), init).then(response -> {
+            if (!response.ok) {
+                return null;
+            }
+            return response.text();
+        }).then(json -> {
+            List<ThemePublicationDTO> filteredThemePublications = mapper.read(json);
+            filteredThemePublications.sort(new ThemePublicationComparator());
+
+            themePublicationListStore.setData(filteredThemePublications);
+
+            //updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim()); // Wohin? ins keyup event?
+
+            abortController = null;
+
+            return null;
+        }).catch_(error -> {
+            console.log(error);
+            return null;
+        });
+
     }
     
     public void resetStore() {
