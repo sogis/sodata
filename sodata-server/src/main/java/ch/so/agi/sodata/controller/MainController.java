@@ -77,7 +77,7 @@ public class MainController {
             List<Map<String, String>> results = null;
             try {
                 results = themePublicationsRepository.findByQuery(searchTerms, QUERY_MAX_RECORDS);
-                log.debug("Search for '" + searchTerms +"' found " + results.size() + " records");            
+                log.debug("Theme publication search for '" + searchTerms +"' found " + results.size() + " records");            
             } catch (LuceneSearcherException | InvalidLuceneQueryException e) {
                 throw new IllegalStateException(e);
             }
@@ -99,7 +99,7 @@ public class MainController {
             List<Map<String, String>> results = null;
             try {
                 results = dataproductRepository.findByQuery(searchTerms, QUERY_MAX_RECORDS);
-                log.debug("Search for '" + searchTerms +"' found " + results.size() + " records");
+                log.debug("Map layer search for '" + searchTerms +"' found " + results.size() + " records");
             } catch (LuceneSearcherException | InvalidLuceneQueryException e) {
                 throw new IllegalStateException(e);
             }
