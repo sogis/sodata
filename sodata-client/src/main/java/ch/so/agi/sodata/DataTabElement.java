@@ -65,9 +65,10 @@ import ol.style.Style;
 public class DataTabElement implements IsElement<HTMLElement> {
     private final HTMLElement root;
 
-    // search box
     private MyMessages messages;
     private String filesServerUrl;
+
+    // search box
     private TextBox textBox;
     
     private ThemePublicationMapper mapper;
@@ -104,12 +105,9 @@ public class DataTabElement implements IsElement<HTMLElement> {
     // ol3 vector layer
     private String ID_ATTR_NAME = "id";
     private String SUBUNIT_VECTOR_LAYER_ID = "subunit_vector_layer";
-    private String SUBUNIT_VECTOR_FEATURE_ID = "subunit_fid";
     private String SELECTED_VECTOR_LAYER_ID = "selected_vector_layer";
-    private String SELECTED_VECTOR_FEATURE_ID = "selected_fid";
     
     // ol3 map
-    private String MAP_DIV_ID = "map";
     private Map map;
 
     // Create model mapper interfaces
@@ -147,50 +145,7 @@ public class DataTabElement implements IsElement<HTMLElement> {
         });
     }
     
-    private void init() {
-        // Keyup-Event der Suche hinzufügen.
-//        textBox.addEventListener("keyup", event -> {
-//            if (textBox.getValue().trim().length() > 0 && textBox.getValue().trim().length() <= 2) {
-//                themePublicationListStore.setData(themePublications);
-//                return;
-//            }
-//
-//            if (textBox.getValue().trim().length() == 0) {
-//                themePublicationListStore.setData(themePublications);
-//                //removeQueryParam(FILTER_PARAM_KEY);
-//                return;
-//            }
-//
-//            if (abortController != null) {
-//                abortController.abort();
-//            }
-//
-//            abortController = new AbortController();
-//            final RequestInit init = RequestInit.create();
-//            init.setSignal(abortController.signal);
-//
-//            DomGlobal.fetch("/themepublications?query=" + textBox.getValue().toLowerCase(), init).then(response -> {
-//                if (!response.ok) {
-//                    return null;
-//                }
-//                return response.text();
-//            }).then(json -> {
-//                List<ThemePublicationDTO> filteredThemePublications = mapper.read(json);
-//                filteredThemePublications.sort(new ThemePublicationComparator());
-//
-//                themePublicationListStore.setData(filteredThemePublications);
-//
-//                //updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
-//
-//                abortController = null;
-//
-//                return null;
-//            }).catch_(error -> {
-//                console.log(error);
-//                return null;
-//            });
-//        });
-        
+    private void init() {        
         // Configuration of the theme publication table
         TableConfig<ThemePublicationDTO> tableConfig = new TableConfig<>();
         tableConfig
@@ -583,7 +538,7 @@ public class DataTabElement implements IsElement<HTMLElement> {
         return null;
     }
     
-    public void updateStore() {
+    public void updateTable() {
         if (abortController != null) {
             abortController.abort();
         }
@@ -603,8 +558,6 @@ public class DataTabElement implements IsElement<HTMLElement> {
 
             themePublicationListStore.setData(filteredThemePublications);
 
-            //updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim()); // Wohin? ins keyup event?
-
             abortController = null;
 
             return null;
@@ -612,10 +565,9 @@ public class DataTabElement implements IsElement<HTMLElement> {
             console.log(error);
             return null;
         });
-
     }
     
-    public void resetStore() {
+    public void resetTable() {
         themePublicationListStore.setData(themePublications);
     } 
     

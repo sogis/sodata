@@ -79,8 +79,8 @@ public class LuceneDataproductRepository {
                     sublayerDocument.add(new TextField("abstract", sublayer.getTheAbstract(), Store.YES));
                     sublayerDocument.add(new StoredField("visibility", Boolean.toString(sublayer.isVisibility())));
                     sublayerDocument.add(new StoredField("opacity", String.valueOf(sublayer.getOpacity())));
-                    sublayerDocument.add(new StoredField("parentIdent", sublayer.getParentIdent()));
-                    sublayerDocument.add(new StoredField("parentTitle", sublayer.getParentTitle()));
+                    sublayerDocument.add(new StoredField("parentident", sublayer.getParentIdent()));
+                    sublayerDocument.add(new StoredField("parenttitle", sublayer.getParentTitle()));
                     if (sublayer.getThemeTitle() != null) sublayerDocument.add(new TextField("themetitle", sublayer.getThemeTitle(), Store.YES));
                     writer.addDocument(sublayerDocument);
                 }
@@ -142,7 +142,6 @@ public class LuceneDataproductRepository {
                 }
                 mapList.add(docMap);
             }
-
             return mapList;
             
         } catch (ParseException e) {

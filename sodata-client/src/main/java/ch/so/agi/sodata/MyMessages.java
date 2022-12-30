@@ -11,6 +11,13 @@ public interface MyMessages extends Messages {
     @DefaultMessage("Search terms")
     String search_terms();
     
+    // Maps and data tabs
+    @DefaultMessage("Maps")
+    String tabs_header_maps();
+
+    @DefaultMessage("Data")
+    String tabs_header_data();
+    
     // Table
     @DefaultMessage("Topic")
     String table_header_topic();

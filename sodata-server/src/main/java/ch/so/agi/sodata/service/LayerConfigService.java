@@ -87,7 +87,7 @@ public class LayerConfigService {
             var weblayerRootNode = objectMapper.readTree(response.body());
             var weblayerArray = weblayerRootNode.get(dataproductId);
             var weblayerNode = weblayerArray.get(0);
-            var ident = weblayerNode.get("name").asText();
+            //var ident = weblayerNode.get("name").asText();
             var title = weblayerNode.get("title").asText();
             var theAbstract = weblayerNode.get("abstract").asText("-");
             var visibility = weblayerNode.get("visibility").asBoolean(false);
@@ -132,19 +132,21 @@ public class LayerConfigService {
                         // Warscheinlich weil externe Quellen?!
                         // Zeit wohl ein wenig unsere Layergruppen vs. Map 
                         // Problematik.
-                        if (dataproduct.getThemeTitle() == null) {
-                            dataproduct.setThemeTitle(sublayerThemeTitle);
-                        }
+                        // Mmmmh, heikel. Lidar zum Beispiel: Nur ein Sublayer hat ein Thema.
+                        // Aus diesem Grund nicht so machen.
+                        // Wir haben ein Chaos...
+//                        if (dataproduct.getThemeTitle() == null) {
+//                            dataproduct.setThemeTitle(sublayerThemeTitle);
+//                        }
                     }
                     
                     sublayers.add(sublayerDataproduct);
                 }
-                Collections.sort(sublayers, new UmlautComparatorDataproduct());
+                //Collections.sort(sublayers, new UmlautComparatorDataproduct());
                 
-                dataproduct.setSublayers(sublayers);
-                
-                dataproductList.add(dataproduct);
+                dataproduct.setSublayers(sublayers);                
             }
+            dataproductList.add(dataproduct);
         }
         
         for (DataproductDTO dataproduct : dataproductList) {

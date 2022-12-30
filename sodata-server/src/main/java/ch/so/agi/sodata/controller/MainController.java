@@ -91,7 +91,7 @@ public class MainController {
         }
     }
     
-    @RequestMapping(value = "/layers", method = RequestMethod.GET, produces = { "application/json" })
+    @RequestMapping(value = "/maplayers", method = RequestMethod.GET, produces = { "application/json" })
     public List<DataproductDTO> searchDataproducs(@RequestParam(value="query", required=false) String searchTerms) {
         if (searchTerms == null || searchTerms.trim().length() == 0) {
             return layerConfigService.getDataproductList();
@@ -103,15 +103,34 @@ public class MainController {
             } catch (LuceneSearcherException | InvalidLuceneQueryException e) {
                 throw new IllegalStateException(e);
             }
+            
+            // Achtung: So werden Layergruppen ausgeschlossen, die kein Thema haben, da
+            // da die Dataproduct-Map hierachisch aufgebaut ist, sprich die Sublayer halt
+            // wirklich auch Sublayer sind.
+            // Im Lucene Index wird zwar "MOpublic" gefunden aber nur für die Sublayer. 
+            // r.get("ident") ist ident des Sublayers. Den gibt es abe nicht in der Map.
+            // Ist aber auch bei anderen Suchattributen so: Wenn die Layergruppe quasi
+            // nicht ein Superset der Suchattribute aller Sublayer ist, gehen diese
+            // Layer(gruppen) verloren.
+            
+            // Bedarf eine gewissen Überarbeitung...
             List<DataproductDTO> resultList = results.stream()
                     .filter(r -> {
-                        return Objects.nonNull(layerConfigService.getDataproductsMap().get(r.get("ident")));
+                        if (r.get("parentident") != null) {
+                            return Objects.nonNull(layerConfigService.getDataproductsMap().get(r.get("parentident")));
+                        } else {
+                            return Objects.nonNull(layerConfigService.getDataproductsMap().get(r.get("ident")));
+                        }
                     })
                     .map(r -> {
-                        return layerConfigService.getDataproductsMap().get(r.get("ident"));
+                        if (r.get("parentident") != null) {
+                            return layerConfigService.getDataproductsMap().get(r.get("parentident"));
+                        } else {
+                            return layerConfigService.getDataproductsMap().get(r.get("ident"));
+                        }
                     })
+                    .distinct()
                     .collect(Collectors.toList());
-            System.out.println();
             return resultList;
         }   
     }

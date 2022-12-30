@@ -62,31 +62,6 @@ import elemental2.dom.URLSearchParams;
 import elemental2.dom.XMLHttpRequest;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import ol.AtPixelOptions;
-import ol.Extent;
-import ol.Map;
-import ol.MapBrowserEvent;
-import ol.OLFactory;
-import ol.Pixel;
-import ol.events.condition.Condition;
-import ol.Feature;
-import ol.FeatureAtPixelFunction;
-import ol.format.GeoJson;
-import ol.interaction.Select;
-import ol.interaction.SelectOptions;
-import ol.layer.Base;
-import ol.layer.Layer;
-import ol.layer.VectorLayerOptions;
-import ol.proj.Projection;
-import ol.proj.ProjectionOptions;
-import ol.source.Vector;
-import ol.source.VectorOptions;
-import ol.style.Fill;
-import ol.style.Stroke;
-import ol.style.Style;
-
-import ch.so.agi.sodata.dto.FileFormatDTO;
-import ch.so.agi.sodata.dto.ThemePublicationDTO;
 
 public class App implements EntryPoint {
     // Internationalization
@@ -113,6 +88,7 @@ public class App implements EntryPoint {
     
     // Data-/Maplayers container elements
     private DataTabElement dataTabElement;
+    private MapLayerTabElement mapLayerTabElement;
 
     // Format lookup and sort order
     private HashMap<String, String> formatLookUp = new HashMap<String, String>() {
@@ -259,29 +235,38 @@ public class App implements EntryPoint {
             public void handleEvent(Event evt) {
                 
                 if (dataTabElement != null) {
-                    dataTabElement.resetStore();
+                    dataTabElement.resetTable();
                 }
-                
+                if (mapLayerTabElement != null) {
+                    mapLayerTabElement.resetTable();
+                }
+
                 textBox.clear();
                 removeQueryParam(FILTER_PARAM_KEY);
             }
         }, true);
         textBox.addRightAddOn(resetIcon);
         
+        // FIXME: textBox braucht es nicht in den Element. Den Wert kann man mit den update-Methoden übergeben.
+        
         textBox.addEventListener("keyup", event -> {
             if (textBox.getValue().trim().length() > 0 && textBox.getValue().trim().length() <= 2) {
                 if (dataTabElement != null) {
-                    dataTabElement.resetStore();
+                    dataTabElement.resetTable();
                 }
-                // TODO MapLayer
+                if (mapLayerTabElement != null) {
+                    mapLayerTabElement.resetTable();
+                }
                 return;
             }
             
             if (textBox.getValue().trim().length() == 0) {
                 if (dataTabElement != null) {
-                    dataTabElement.resetStore();
+                    dataTabElement.resetTable();
                 }
-                // TODO MapLayer
+                if (mapLayerTabElement != null) {
+                    mapLayerTabElement.resetTable();
+                }
                 removeQueryParam(FILTER_PARAM_KEY);
                 return;
             }
@@ -289,25 +274,31 @@ public class App implements EntryPoint {
             updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
             
             if (dataTabElement != null) {
-                dataTabElement.updateStore();
-            }
+                dataTabElement.updateTable();
+            }            
             
-            // TODO Wie funktioniert das mit dem AbortController wenn fetch nicht hier und mehrfach gemacht wird?            
+            if (mapLayerTabElement != null) {
+                mapLayerTabElement.updateTable(textBox.getValue().trim());
+            }
         });
         
         topLevelContent.appendChild(div().id("search-panel").add(div().id("suggestbox-div").add(textBox)).element());
 
         // Add tabs
         TabsPanel tabsPanel = TabsPanel.create().setColor(Color.RED_DARKEN_3).setMarginTop("45px");
-        Tab mapsTab = Tab.create(Icons.ALL.map_outline_mdi(), "KARTEN").setWidth("180px").id("maps-tab");
-        Tab dataTab = Tab.create(Icons.ALL.file_download_outline_mdi(), "DATEN").setWidth("180px");
+        Tab mapsTab = Tab.create(Icons.ALL.map_outline_mdi(), messages.tabs_header_maps().toUpperCase()).setWidth("180px").id("maps-tab");
+        Tab dataTab = Tab.create(Icons.ALL.file_download_outline_mdi(), messages.tabs_header_data().toUpperCase()).setWidth("180px");
         tabsPanel.appendChild(mapsTab);
         tabsPanel.appendChild(dataTab);
+
+        mapLayerTabElement = new MapLayerTabElement(messages);
+        mapLayerTabElement.element().style.marginTop = CSSProperties.MarginTopUnionType.of("15px");
+        mapsTab.appendChild(mapLayerTabElement.element());
 
         dataTabElement = new DataTabElement(messages, FILES_SERVER_URL, textBox);
         dataTabElement.element().style.marginTop = CSSProperties.MarginTopUnionType.of("15px");
         dataTab.appendChild(dataTabElement.element());
-        
+                
         topLevelContent.appendChild(tabsPanel.element());
 
         if (filter != null && filter.trim().length() > 0) {

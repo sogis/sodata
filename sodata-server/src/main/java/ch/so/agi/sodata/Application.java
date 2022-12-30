@@ -39,7 +39,7 @@ public class Application extends SpringBootServletInitializer {
     CommandLineRunner init(ConfigService configService, LayerConfigService layerConfigService) {
         return args -> {
             configService.readXml();
-            //layerConfigService.readJson();
+            layerConfigService.readJson();
         };
     }
 }

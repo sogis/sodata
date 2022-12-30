@@ -195,4 +195,51 @@ h4, .h4 {
   /*background: palegreen;*/
 }
 
+/* 
+ * MapLayerElement 
+ */
+ 
+#maps-table {
+    /*margin-top: 40px;*/
+    width: 100%;
+    font-size: 16px;    
+}
+
+#maps-table th {
+    padding: 10px;
+}
+
+#maps-table tr {
+    line-height: 1.5;
+    border-bottom: 1px solid rgb(238,238,238);
+}
+
+#maps-table td {
+    padding: 10px 10px 10px 10px !important;
+}
+
+#maps-table tr:hover {
+  background-color: rgb(245,245,245) !important;
+}
+
+.hide {
+    display: none;
+}
+
+a.icon-link {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #333333; 
+    text-decoration: none !important;
+}
+
+a.icon-link:hover {
+    color: #333333;
+    text-decoration: none !important;
+}  
+
+a.icon-link:visited {
+    color: #333333; 
+    text-decoration: none !important;
+}  
 
