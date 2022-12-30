@@ -274,7 +274,7 @@ public class App implements EntryPoint {
             updateUrlLocation(FILTER_PARAM_KEY, textBox.getValue().trim());
             
             if (dataTabElement != null) {
-                dataTabElement.updateTable();
+                dataTabElement.updateTable(textBox.getValue().trim());
             }            
             
             if (mapLayerTabElement != null) {
@@ -295,7 +295,7 @@ public class App implements EntryPoint {
         mapLayerTabElement.element().style.marginTop = CSSProperties.MarginTopUnionType.of("15px");
         mapsTab.appendChild(mapLayerTabElement.element());
 
-        dataTabElement = new DataTabElement(messages, FILES_SERVER_URL, textBox);
+        dataTabElement = new DataTabElement(messages, FILES_SERVER_URL);
         dataTabElement.element().style.marginTop = CSSProperties.MarginTopUnionType.of("15px");
         dataTab.appendChild(dataTabElement.element());
                 

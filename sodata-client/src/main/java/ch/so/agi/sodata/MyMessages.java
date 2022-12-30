@@ -72,6 +72,20 @@ public interface MyMessages extends Messages {
     @DefaultMessage("Download data")
     String subunits_download_table_download();
 
+    /* Maps */
+    // Table
+    @DefaultMessage("Map layer name")
+    String map_table_header_maplayer();
+    
+    @DefaultMessage("Topic")
+    String map_table_header_topic();
+
+    @DefaultMessage("Description")
+    String map_table_header_description();
+
+    @DefaultMessage("View")
+    String map_table_header_view();
+    
     
     
     

@@ -102,11 +102,11 @@ public class MapLayerTabElement implements IsElement<HTMLElement> {
         HTMLTableSectionElement mapsTableHead = thead()
                 .add(tr()
                         .add(th().add(""))
-                        .add(th().attr("colspan", "2").add("Kartenebene"))
-                        .add(th().add("Thema")) // Können mehrere sein....
-                        .add(th().add("Beschreibung"))
+                        .add(th().attr("colspan", "2").add(messages.map_table_header_maplayer()))
+                        .add(th().add(messages.map_table_header_topic())) // Können mehrere sein....
+                        .add(th().add(messages.map_table_header_description()))
 //                        .add(th().add("Vorschau"))
-                        .add(th().add("Ansicht")))
+                        .add(th().add(messages.map_table_header_view())))
                 .element();
         rootTable.appendChild(mapsTableHead);
         

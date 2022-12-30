@@ -67,9 +67,6 @@ public class DataTabElement implements IsElement<HTMLElement> {
 
     private MyMessages messages;
     private String filesServerUrl;
-
-    // search box
-    private TextBox textBox;
     
     private ThemePublicationMapper mapper;
     private List<ThemePublicationDTO> themePublications;
@@ -114,13 +111,12 @@ public class DataTabElement implements IsElement<HTMLElement> {
     public static interface ThemePublicationMapper extends ObjectMapper<List<ThemePublicationDTO>> {
     }
 
-    public DataTabElement(MyMessages messages, String filesServerUrl, TextBox textBox) {
+    public DataTabElement(MyMessages messages, String filesServerUrl) {
         root = div().element();
         
         this.messages = messages;
         this.filesServerUrl = filesServerUrl;
-        this.textBox = textBox;
-                
+        
         // Mapper for mapping server json response to objects
         mapper = GWT.create(ThemePublicationMapper.class);
         
@@ -538,7 +534,7 @@ public class DataTabElement implements IsElement<HTMLElement> {
         return null;
     }
     
-    public void updateTable() {
+    public void updateTable(String queryString) {
         if (abortController != null) {
             abortController.abort();
         }
@@ -547,7 +543,7 @@ public class DataTabElement implements IsElement<HTMLElement> {
         final RequestInit init = RequestInit.create();
         init.setSignal(abortController.signal);
 
-        DomGlobal.fetch("/themepublications?query=" + textBox.getValue().toLowerCase(), init).then(response -> {
+        DomGlobal.fetch("/themepublications?query=" + queryString.toLowerCase(), init).then(response -> {
             if (!response.ok) {
                 return null;
             }
