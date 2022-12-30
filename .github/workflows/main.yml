@@ -8,7 +8,7 @@ jobs:
   build-native:
     env:
       DOCKER_ACCOUNT: sogis
-      DOCKER_REPO: sodata
+      DOCKER_REPO: sodata-2_0
       DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}} 
       #DIGITALOCEAN_TOKEN: ${{secrets.DIGITALOCEAN_TOKEN}}
@@ -79,12 +79,11 @@ jobs:
           platforms: linux/amd64
           context: sodata-server
           file: sodata-server/Dockerfile.native-alpaquita
-          #file: sodata-server/Dockerfile.native-alpine
-          #file: sodata-server/Dockerfile.native-micro
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           pull: true
-          push: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
+          push: true
+          #push: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
 
       - name: Deploy to Digital Ocean App Platform
         run: |
@@ -94,7 +93,7 @@ jobs:
   build-jvm:
     env:
       DOCKER_ACCOUNT: sogis
-      DOCKER_REPO: sodata-jvm
+      DOCKER_REPO: sodata-2_0-jvm
       DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}} 
       #DIGITALOCEAN_TOKEN: ${{secrets.DIGITALOCEAN_TOKEN}}
@@ -160,4 +159,5 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           pull: true
-          push: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
+          push: true
+          #push: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
