@@ -39,7 +39,14 @@ public class MetadataElement implements IsElement<HTMLElement> {
                 HTMLElement summary = (HTMLElement) DomGlobal.document.createElement("summary");
                 summary.className = "meta-summary";
                 summary.textContent = tableInfo.getTitle();
-                                               
+                        
+                String shortDescription;
+                if (tableInfo.getShortDescription()!= null) {
+                    shortDescription = tableInfo.getShortDescription();
+                } else {
+                    shortDescription = "";
+                }
+                
                 HTMLElement p = p().css("meta-table-description-paragraph")
                         .add(div().css("meta-table")
                                 .add(div().style("font-style: italic;")
@@ -47,7 +54,7 @@ public class MetadataElement implements IsElement<HTMLElement> {
                                 .add(div().textContent(tableInfo.getSqlName()))
                                 .add(div().style("font-style: italic;")
                                         .textContent(messages.meta_details_p_header_description() + ": "))
-                                .add(div().innerHtml(SafeHtmlUtils.fromTrustedString(tableInfo.getShortDescription()))))
+                                .add(div().innerHtml(SafeHtmlUtils.fromTrustedString(shortDescription))))
                         .element();               
 
                 details.appendChild(summary);
