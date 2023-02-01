@@ -42,7 +42,7 @@ public class MetadataElement implements IsElement<HTMLElement> {
                         
                 String shortDescription;
                 if (tableInfo.getShortDescription()!= null) {
-                    shortDescription = tableInfo.getShortDescription();
+                    shortDescription = tableInfo.getShortDescription().replace("a href", "a class=\"default-link\" href");
                 } else {
                     shortDescription = "";
                 }
