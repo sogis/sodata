@@ -115,26 +115,29 @@ public class App implements EntryPoint {
     private LocalListDataStore<ThemePublicationDTO> themePublicationListStore;
     private DataTable<ThemePublicationDTO> themePublicationTable;
 
-    // Format lookup and sort order
+    // Used for naming the badges based on format abbreviation.
     private HashMap<String, String> formatLookUp = new HashMap<String, String>() {
         {
-            put("xtf", "INTERLIS");
-            put("itf", "INTERLIS");
-            put("shp", "Shapefile");
-            put("dxf", "DXF");
-            put("gpkg", "GeoPackage");
+            put("xtf.zip", "INTERLIS");
+            put("itf.zip", "INTERLIS");
+            put("gpkg.zip", "GeoPackage");
+            put("shp.zip", "Shapefile");
+            put("dxf.zip", "DXF");
             put("tif", "GeoTIFF");
+            put("laz", "LAZ");
         }
     };
 
+    // Used for sorting based on format abbreviation.
     private ArrayList<String> fileFormatList = new ArrayList<String>() {
         {
-            add("xtf");
-            add("itf");
-            add("gpkg");
-            add("shp");
-            add("dxf");
+            add("xtf.zip");
+            add("itf.zip");
+            add("gpkg.zip");
+            add("shp.zip");
+            add("dxf.zip");
             add("tif");
+            add("laz");
         }
     };
 
@@ -392,13 +395,13 @@ public class App implements EntryPoint {
                                     }
                                 });
                                 return regionSelectionElement;
-                            } else {
+                            } else {                               
                                 List<FileFormatDTO> sortedFileFormats = cell.getRecord()
                                         .getFileFormats()
                                         .stream()
                                         .sorted(new Comparator<FileFormatDTO>() {
                                             @Override
-                                            public int compare(FileFormatDTO o1, FileFormatDTO o2) {
+                                            public int compare(FileFormatDTO o1, FileFormatDTO o2) {                                                
                                                 return ((Integer) fileFormatList.indexOf(o1.getAbbreviation()))
                                                         .compareTo(((Integer) fileFormatList
                                                                 .indexOf(o2.getAbbreviation())));
@@ -409,7 +412,7 @@ public class App implements EntryPoint {
                                 for (FileFormatDTO fileFormat : sortedFileFormats) {
                                     String fileUrl = FILES_SERVER_URL + "/" + cell.getRecord().getIdentifier()
                                             + "/aktuell/" + cell.getRecord().getIdentifier() + "."
-                                            + fileFormat.getAbbreviation() + ".zip";
+                                            + fileFormat.getAbbreviation();
                                     badgesElement.appendChild(a().css("badge-link")
                                             .attr("href", fileUrl)
                                             .attr("target", "_blank")
@@ -543,6 +546,8 @@ public class App implements EntryPoint {
 
                     for (FileFormatDTO fileFormat : sortedFileFormats) {
                         String fileExtension = "zip";
+                        
+                        // Raster data if no model is defined.
                         if (themePublication.getModel() == null) {
                             fileExtension = fileFormat.getAbbreviation();
                         }
@@ -561,7 +566,7 @@ public class App implements EntryPoint {
                             // Vektordaten
                             fileUrl = FILES_SERVER_URL + "/" + themeIdentifier
                                     + "/aktuell/" + itemIdentifier + "." + themeIdentifier + "."
-                                    + fileFormat.getAbbreviation() + "." + fileExtension;
+                                    + fileFormat.getAbbreviation();
                         }
                        
                         badgesElement.appendChild(a().css("badge-link")
