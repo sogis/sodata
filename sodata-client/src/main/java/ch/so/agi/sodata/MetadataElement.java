@@ -26,7 +26,7 @@ public class MetadataElement implements IsElement<HTMLElement> {
         
         root.appendChild(h(4, messages.meta_description()).element());
         
-        root.appendChild(p().css("meta-dataset-description-paragraph").innerHtml(SafeHtmlUtils.fromTrustedString(themePublication.getShortDescription())).element());
+        root.appendChild(p().css("meta-dataset-description-paragraph").innerHtml(SafeHtmlUtils.fromTrustedString(themePublication.getShortDescription().replace("a href", "a class=\"default-link\" href"))).element());
         
         if (themePublication.getTablesInfo() != null) {
             root.appendChild(h(4, messages.meta_content()).element());
