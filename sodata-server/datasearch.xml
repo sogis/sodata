@@ -1440,6 +1440,60 @@
     </items>
     <tablesInfo>
       <tableInfo>
+        <sqlName>zzzzz_mopublic_bodenbedeckung</sqlName>
+        <title>ZZZZZZZZZ Bodenbedeckung (amtliche Vermessung)</title>
+        <shortDescription><![CDATA[Die Bodenbedeckung ist Bestandteil der amtlichen Vermessung und bildet natürliche gewachsene Objekte (Wald, Gewässer, …) und künstliche Objekte (Gebäude, Strassen, …) ab.]]></shortDescription>
+        <attributesInfo>
+          <attributeInfo>
+            <name>geometrie</name>
+            <alias>geometrie</alias>
+            <datatype>POLYGON</datatype>
+            <mandatory>true</mandatory>
+          </attributeInfo>
+          <attributeInfo>
+            <name>art_txt</name>
+            <alias>Art</alias>
+            <shortDescription>Bodenbedeckungsart (Text-Repräsentation)</shortDescription>
+            <datatype>Text</datatype>
+            <mandatory>true</mandatory>
+          </attributeInfo>
+          <attributeInfo>
+            <name>egid</name>
+            <alias>EGID</alias>
+            <shortDescription>Eidgenössischer Gebäudeidentifikator</shortDescription>
+            <datatype>Integer</datatype>
+            <mandatory>false</mandatory>
+          </attributeInfo>
+        </attributesInfo>
+      </tableInfo>
+      <tableInfo>
+        <sqlName>ööööömopublic_bodenbedeckung</sqlName>
+        <title>ÖÖÖÖÖ Bodenbedeckung (amtliche Vermessung)</title>
+        <shortDescription><![CDATA[Die Bodenbedeckung ist Bestandteil der amtlichen Vermessung und bildet natürliche gewachsene Objekte (Wald, Gewässer, …) und künstliche Objekte (Gebäude, Strassen, …) ab.]]></shortDescription>
+        <attributesInfo>
+          <attributeInfo>
+            <name>geometrie</name>
+            <alias>geometrie</alias>
+            <datatype>POLYGON</datatype>
+            <mandatory>true</mandatory>
+          </attributeInfo>
+          <attributeInfo>
+            <name>art_txt</name>
+            <alias>Art</alias>
+            <shortDescription>Bodenbedeckungsart (Text-Repräsentation)</shortDescription>
+            <datatype>Text</datatype>
+            <mandatory>true</mandatory>
+          </attributeInfo>
+          <attributeInfo>
+            <name>egid</name>
+            <alias>EGID</alias>
+            <shortDescription>Eidgenössischer Gebäudeidentifikator</shortDescription>
+            <datatype>Integer</datatype>
+            <mandatory>false</mandatory>
+          </attributeInfo>
+        </attributesInfo>
+      </tableInfo>
+      <tableInfo>
         <sqlName>mopublic_bodenbedeckung</sqlName>
         <title>Bodenbedeckung (amtliche Vermessung)</title>
         <shortDescription><![CDATA[Die Bodenbedeckung ist Bestandteil der amtlichen Vermessung und bildet natürliche gewachsene Objekte (Wald, Gewässer, …) und künstliche Objekte (Gebäude, Strassen, …) ab.]]></shortDescription>

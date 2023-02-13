@@ -11,6 +11,9 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.*;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.dominokit.domino.ui.badges.Badge;
 import org.dominokit.domino.ui.icons.Icons;
 import org.dominokit.domino.ui.style.Color;
@@ -33,7 +36,10 @@ public class MetadataElement implements IsElement<HTMLElement> {
 
             HTMLElement tables = div().element();
 
-            for (TableInfoDTO tableInfo : themePublication.getTablesInfo()) {
+            List<TableInfoDTO> tablesInfo = themePublication.getTablesInfo();
+            Collections.sort(tablesInfo, new TableInfoComparator());
+
+            for (TableInfoDTO tableInfo : tablesInfo) {
                 HTMLElement details = (HTMLElement) DomGlobal.document.createElement("details");
                 details.className = "meta-details";
                 HTMLElement summary = (HTMLElement) DomGlobal.document.createElement("summary");
