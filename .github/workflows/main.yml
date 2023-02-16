@@ -86,6 +86,21 @@ jobs:
           pull: true
           push: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
 
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@3a3bb3a81753dc99f090d24ee7e5343838b73a96  # v3.5.0 (2021-10-22)
+        with:
+          images: ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}
+          labels: |
+            org.opencontainers.image.title=${{ env.DOCKER_REPO }}
+            org.opencontainers.image.version=${{ env.VERSION }}
+            org.opencontainers.image.base.name=docker.io/bellsoft/liberica-openjdk-alpine-musl:17.0.4
+          tags: |
+            type=raw,value=${{ env.VERSION }},enable=true,priority=200
+            type=raw,value=0.0,enable=true,priority=200
+            type=raw,value=0,enable=true,priority=200
+            type=raw,value=latest,enable=true,priority=200
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
@@ -181,6 +196,21 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           pull: true
           push: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@3a3bb3a81753dc99f090d24ee7e5343838b73a96  # v3.5.0 (2021-10-22)
+        with:
+          images: ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}
+          labels: |
+            org.opencontainers.image.title=${{ env.DOCKER_REPO }}
+            org.opencontainers.image.version=${{ env.VERSION }}
+            org.opencontainers.image.base.name=docker.io/bellsoft/liberica-openjdk-alpine-musl:17.0.4
+          tags: |
+            type=raw,value=${{ env.VERSION }},enable=true,priority=200
+            type=raw,value=0.0,enable=true,priority=200
+            type=raw,value=0,enable=true,priority=200
+            type=raw,value=latest,enable=true,priority=200
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
