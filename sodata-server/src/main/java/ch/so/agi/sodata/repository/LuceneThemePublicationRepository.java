@@ -11,6 +11,8 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.TextField;
@@ -39,7 +41,11 @@ public class LuceneThemePublicationRepository {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private Directory fsIndex;
-    private StandardAnalyzer analyzer;
+    //private StandardAnalyzer analyzer;
+    // Debugging: https://util.unicode.org/UnicodeJsps/breaks.jsp
+    // https://www.baeldung.com/lucene-analyzers
+    // Auch die Synonyme scheinen zu greifen.
+    private WhitespaceAnalyzer analyzer;
     private QueryParser queryParser;
     private IndexWriter writer;
     //private IndexWriterConfig indexWriterConfig;
@@ -54,7 +60,8 @@ public class LuceneThemePublicationRepository {
         log.info("Index folder: " + tempDirWithPrefix);
         
         fsIndex = new NIOFSDirectory(tempDirWithPrefix);
-        analyzer = new StandardAnalyzer();
+        //analyzer = new StandardAnalyzer();
+        analyzer = new WhitespaceAnalyzer();
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         //IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         writer = new IndexWriter(fsIndex, indexWriterConfig);
@@ -86,15 +93,15 @@ public class LuceneThemePublicationRepository {
         for (ThemePublicationDTO themePublication : themePublicationList) {
             log.debug("Write Lucene index: {}", themePublication.getIdentifier());
             Document document = new Document();
-            document.add(new TextField("id", themePublication.getIdentifier(), Store.YES));
-            if(themePublication.getModel() != null) document.add(new TextField("model", themePublication.getModel(), Store.YES));
-            document.add(new TextField("title", themePublication.getTitle(), Store.YES));
-            document.add(new TextField("shortdescription", themePublication.getShortDescription(), Store.YES));
-            String ownerLuceneString = themePublication.getOwner().getAgencyName();
-            if (themePublication.getOwner().getAbbreviation() != null) ownerLuceneString += ", " + themePublication.getOwner().getAbbreviation();
+            document.add(new TextField("id", themePublication.getIdentifier().toLowerCase(), Store.YES));
+            if(themePublication.getModel() != null) document.add(new TextField("model", themePublication.getModel().toLowerCase(), Store.YES));
+            document.add(new TextField("title", themePublication.getTitle().toLowerCase(), Store.YES));
+            document.add(new TextField("shortdescription", themePublication.getShortDescription().toLowerCase(), Store.YES));
+            String ownerLuceneString = themePublication.getOwner().getAgencyName().toLowerCase();
+            if (themePublication.getOwner().getAbbreviation() != null) ownerLuceneString += ", " + themePublication.getOwner().getAbbreviation().toLowerCase();
             document.add(new TextField("owner", ownerLuceneString, Store.YES));
-            if (themePublication.getKeywords() != null) document.add(new TextField("keywords", String.join(", ", themePublication.getKeywords()), Store.YES));
-            if (themePublication.getSynonyms() != null) document.add(new TextField("synonyms", String.join(", ", themePublication.getSynonyms()), Store.YES));
+            if (themePublication.getKeywords() != null) document.add(new TextField("keywords", String.join(", ", themePublication.getKeywords()).toLowerCase(), Store.YES));
+            if (themePublication.getSynonyms() != null) document.add(new TextField("synonyms", String.join(", ", themePublication.getSynonyms()).toLowerCase(), Store.YES));
             
             writer.addDocument(document);
         }
@@ -106,7 +113,7 @@ public class LuceneThemePublicationRepository {
     
     /**
      * Search Lucene Index for records matching querystring
-     * @param querystring - human written query string from e.g. a search form
+     * @param querystring - human written query string from e.g. a search form. Must be lower case.
      * @param numRecords - number of requested records 
      * @return Lucene query results as a List of Maps object
      * @throws LuceneSearcherException 
@@ -117,7 +124,7 @@ public class LuceneThemePublicationRepository {
         IndexSearcher indexSearcher = null;
         Query query;
         TopDocs documents;
-
+        
         try {
             reader = DirectoryReader.open(fsIndex);
             indexSearcher = new IndexSearcher(reader);

@@ -278,7 +278,7 @@ public class App implements EntryPoint {
         String infoString = "Geodaten vom Kanton Solothurn können kostenlos heruntergeladen werden. Die Vektordaten sowie die Rasterdaten werden "
                 + "in vordefinierten Formaten und Gebieten (Kanton, Gemeinde oder andere) angeboten. Bei der Gebietseinteilung Gemeinde oder andere "
                 + "kann der Benutzer das gewünschte Gebiet selber wählen. Weitere Informationen zur Datenliste und alternativen Bezugsmöglichkeiten "
-                + "finden Sie <a class='default-link' href='https://geo.so.ch/' target='_blank'>hier</a>."
+                + "finden Sie <a class='default-link' href='https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-geoinformation/geoportal/geodaten-herunterladen/' target='_blank'>hier</a>."
                 + "<br><br>"
                 + "Der Aufbau des Datenangebotes wird im Frühjahr 2023 abgeschlossen. Ab dann sind alle öffentlichen Geodaten des Kantons enthalten.";
 
