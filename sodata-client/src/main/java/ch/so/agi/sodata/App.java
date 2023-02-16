@@ -92,6 +92,7 @@ public class App implements EntryPoint {
 
     // Client application settings
     private String myVar;
+    @Deprecated
     private String FILES_SERVER_URL;
 
     // Format settings
@@ -410,7 +411,7 @@ public class App implements EntryPoint {
                                         .collect(Collectors.toList());
 
                                 for (FileFormatDTO fileFormat : sortedFileFormats) {
-                                    String fileUrl = FILES_SERVER_URL + "/" + cell.getRecord().getIdentifier()
+                                    String fileUrl = cell.getRecord().getDownloadHostUrl() + "/" + cell.getRecord().getIdentifier()
                                             + "/aktuell/" + cell.getRecord().getIdentifier() + "."
                                             + fileFormat.getAbbreviation();
                                     badgesElement.appendChild(a().css("badge-link")
@@ -450,7 +451,7 @@ public class App implements EntryPoint {
         ModalDialog modal = ModalDialog.create(themePublication.getTitle()).setAutoClose(true);
         modal.css("modal-object");
 
-        MetadataElement metaDataElement = new MetadataElement(themePublication, FILES_SERVER_URL, messages);
+        MetadataElement metaDataElement = new MetadataElement(themePublication, themePublication.getDownloadHostUrl(), messages);
         modal.add(metaDataElement);
 
         Button closeButton = Button.create(messages.close().toUpperCase()).linkify();
@@ -559,12 +560,12 @@ public class App implements EntryPoint {
                         if (themePublication.getModel() == null) {
                             // Rasterdaten
                             fileExtension = fileFormat.getAbbreviation();
-                            fileUrl = FILES_SERVER_URL + "/" + themeIdentifier
+                            fileUrl = themePublication.getDownloadHostUrl() + "/" + themeIdentifier
                                     + "/aktuell/" + itemIdentifier + "." + themeIdentifier + "."
                                     + fileFormat.getAbbreviation();                     
                         } else {
                             // Vektordaten
-                            fileUrl = FILES_SERVER_URL + "/" + themeIdentifier
+                            fileUrl = themePublication.getDownloadHostUrl() + "/" + themeIdentifier
                                     + "/aktuell/" + itemIdentifier + "." + themeIdentifier + "."
                                     + fileFormat.getAbbreviation();
                         }

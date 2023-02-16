@@ -21,6 +21,7 @@ public class ThemePublicationDTO {
     private OfficeDTO owner;
     private OfficeDTO servicer;
     private String furtherInformation;
+    private String downloadHostUrl;
     private String previewUrl;
     private List<String> keywords;
     private List<String> synonyms;
@@ -86,6 +87,12 @@ public class ThemePublicationDTO {
     }
     public void setFurtherInformation(String furtherInformation) {
         this.furtherInformation = furtherInformation;
+    }
+    public String getDownloadHostUrl() {
+        return downloadHostUrl;
+    }
+    public void setDownloadHostUrl(String downloadHostUrl) {
+        this.downloadHostUrl = downloadHostUrl;
     }
     public String getPreviewUrl() {
         return previewUrl;

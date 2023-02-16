@@ -65,7 +65,6 @@ public class ConfigService {
         this.themePublicationList = themePublicationList;
     }
 
-
     /*
      * - Kann ich überhaupt ganz einfach POJO machen, d.h. ohne Annotationen?
      * - 1. Versuch (ohne Memory-Optimierung): Benötigter Inhalt in Memory-Map vorhalten.

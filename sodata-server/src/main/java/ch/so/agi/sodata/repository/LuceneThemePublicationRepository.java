@@ -63,7 +63,6 @@ public class LuceneThemePublicationRepository {
         //analyzer = new StandardAnalyzer();
         analyzer = new WhitespaceAnalyzer();
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
-        //IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         writer = new IndexWriter(fsIndex, indexWriterConfig);
     }
     

@@ -92,7 +92,7 @@
     <dependency>
       <groupId>io.github.sogis</groupId>
       <artifactId>meta2file</artifactId>
-      <version>1.0.71</version>
+      <version>1.0.92</version>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
