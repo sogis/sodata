@@ -77,11 +77,11 @@ jobs:
           push: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
           tags: |
             ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:latest
-            ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:0.0.${{ env.VERSION }}
+            ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:{{ env.VERSION }}
             ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:0.0
             ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:0
             ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:latest
-            ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:0.0.${{ env.VERSION }}
+            ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:${{ env.VERSION }}
             ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:0.0
             ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:0
 
@@ -154,10 +154,10 @@ jobs:
           push: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
           tags: |
             ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:latest
-            ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:0.0.${{ env.VERSION }}
+            ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:${{ env.VERSION }}
             ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:0.0
             ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:0
             ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:latest
-            ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:0.0.${{ env.VERSION }}
+            ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:${{ env.VERSION }}
             ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:0.0
             ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:0
