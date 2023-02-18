@@ -49,4 +49,5 @@ lucene:
 app:
   configFile: ${CONFIG_FILE:/config/datasearch.xml}
   itemsGeoJsonDir: ${ITEMS_GEOJSON_DIR:#{systemProperties['java.io.tmpdir']}}
+  ilidataDir: ${ILIDATA_DIR:#{systemProperties['java.io.tmpdir']}}
   filesServerUrl: ${FILES_SERVER_URL:https://files.geo.so.ch}

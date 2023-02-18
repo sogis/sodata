@@ -3,7 +3,10 @@ package ch.so.agi.sodata.service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -29,6 +33,17 @@ import ch.so.agi.meta2file.model.ThemePublication;
 import ch.so.agi.sodata.dto.ThemePublicationDTO;
 import ch.so.agi.sodata.repository.LuceneThemePublicationRepository;
 import ch.so.agi.sodata.util.GeoJsonWriter;
+import ch.interlis.ili2c.Ili2c;
+import ch.interlis.ili2c.Ili2cFailure;
+import ch.interlis.ili2c.metamodel.TransferDescription;
+import ch.interlis.iom_j.Iom_jObject;
+import ch.interlis.iom_j.xtf.XtfWriter;
+import ch.interlis.iox.IoxException;
+import ch.interlis.iox.IoxWriter;
+import ch.interlis.iox_j.EndBasketEvent;
+import ch.interlis.iox_j.EndTransferEvent;
+import ch.interlis.iox_j.StartBasketEvent;
+import ch.interlis.iox_j.StartTransferEvent;
 
 @Service
 public class ConfigService {
@@ -39,7 +54,10 @@ public class ConfigService {
     
     @Value("${app.configFile}")
     private String CONFIG_FILE;   
-    
+
+    @Value("${app.ilidataDir}")
+    private String ilidataDir;
+
     @Autowired
     private LuceneThemePublicationRepository luceneThemePublicationRepository;
     
@@ -65,13 +83,11 @@ public class ConfigService {
         this.themePublicationList = themePublicationList;
     }
 
-    /*
-     * - Kann ich überhaupt ganz einfach POJO machen, d.h. ohne Annotationen?
-     * - 1. Versuch (ohne Memory-Optimierung): Benötigter Inhalt in Memory-Map vorhalten.
-     * - 2. Memory-optimized: Anstelle einer Memory-Map eine h2-db. Das Java-Objekt wird rein-serialisiert und ident
-     * als Schlüssel nach der Lucene-Suche.
-     * 
-     */
+    // Alternative Variante, falls Map/List zu gross wird (zu viel Speicher benötigt): 
+    // Im Container lokal vorliegende H2-Datenbank. Das Java-Objekt wird rein-serialisiert und identifier
+    // als Schlüssel nach der Lucene-Suche.
+    
+    // TODO rename method
     public void readXml() throws XMLStreamException, IOException, ParseException {
         // Falls der XmlMapper als Bean definiert wird, überschreibt er den Default-Object-Mapper,
         // welcher Json-Output liefert. Falls der XmlMapper als Bean benötigt wird, muss ich nochmals
@@ -81,12 +97,8 @@ public class ConfigService {
         var xmlMapper = new XmlMapper();
         xmlMapper.registerModule(new JavaTimeModule());
         xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // TODO: wieder entfernen, wenn stabil? Oder tolerant sein?
-        //xmlMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        //xmlMapper.registerModule(new JavaTimeModule());
 
         log.debug("config file: " + new File(CONFIG_FILE).getAbsolutePath());
-//        System.out.println("config file: " + new File(CONFIG_FILE).getAbsolutePath());
-//        System.err.println("config file: " + new File(CONFIG_FILE).getAbsolutePath());
                 
         var xif = XMLInputFactory.newInstance();
         var xr = xif.createXMLStreamReader(new FileInputStream( new File(CONFIG_FILE)));
@@ -121,5 +133,66 @@ public class ConfigService {
             }
         }
         luceneThemePublicationRepository.saveAll(themePublicationList);
+        
+        // In einem zweiten Durchlauf erstellen wir die ilidata.xml-Datei.     
+        try {
+            this.createIlidataXml();
+        } catch (Ili2cFailure | IOException | IoxException e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            throw new IllegalStateException(e);
+        }
+        
+    }
+    
+    // FIXME DTO reichen nicht, da die subunits nicht mehr vorhanden sind.
+    // Entweder ein 2. Mal parsen (XmlMapper in postconstruct) oder direkt
+    // beim ersten mal die ilidata.xml-Datei schreiben (ohne ein Geheu zu machen).
+    
+    private void createIlidataXml() throws IOException, Ili2cFailure, IoxException {
+        String ILIDATA16 = "DatasetIdx16.ili";
+        
+        String tmpdir = System.getProperty("java.io.tmpdir");
+        File ilidataFile = Paths.get(tmpdir, ILIDATA16).toFile();
+        InputStream resource = new ClassPathResource("ili/"+ILIDATA16).getInputStream();
+        Files.copy(resource, ilidataFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        
+        ArrayList<String> filev = new ArrayList<>(List.of(ilidataFile.getAbsolutePath()));
+        TransferDescription td = Ili2c.compileIliFiles(filev, null);
+
+        String ILI_TOPIC="IliRepository09.RepositoryIndex";
+        String BID="DatasetIdx16.DataIndex";
+
+        File outputFile = Paths.get(ilidataDir, "ilidata.xml").toFile();
+        IoxWriter ioxWriter = new XtfWriter(outputFile, td);
+
+        ioxWriter.write(new StartTransferEvent("SOGIS-20230218", "", null));
+        ioxWriter.write(new StartBasketEvent(ILI_TOPIC,BID));
+        
+        // i separat, wegen subunits
+        
+        int tid = 1;
+        for (ThemePublicationDTO themePublication : themePublicationList) {
+//            themePublication.it
+//            if () {
+//                
+//            }
+            
+            
+            Iom_jObject iomObj = new Iom_jObject("DatasetIdx16.DataIndex.DatasetMetadata", String.valueOf(tid+1));
+            iomObj.setattrvalue("id", themePublication.getIdentifier());
+            iomObj.setattrvalue("originalId", themePublication.getIdentifier());
+            iomObj.setattrvalue("version", "current");
+            iomObj.setattrvalue("owner", themePublication.getOwner().getOfficeAtWeb());
+
+            
+            ioxWriter.write(new ch.interlis.iox_j.ObjectEvent(iomObj));
+        }
+
+        
+        ioxWriter.write(new EndBasketEvent());
+        ioxWriter.write(new EndTransferEvent());
+        ioxWriter.flush();
+        ioxWriter.close();
     }
 }

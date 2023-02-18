@@ -12,11 +12,15 @@ public class AppWebMvcConfig implements WebMvcConfigurer {
     @Value("${app.itemsGeoJsonDir}")
     private String itemsGeoJsonDir;
 
+    @Value("${app.ilidataDir}")
+    private String ilidataDir;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // File.seperator wird benötigt, weil tmpdir im Dockerimage diesen im Gegensatz zu macOS
-        // weglässt (auch wenn man TMPDIR=/tmp/ explizit setzt) und Spring Boot diesen bei einer
+        // File.separator wird benötigt, weil tmpdir im Dockerimage diesen im Gegensatz zu macOS
+        // weglässt (auch wenn explizit gesetzt) und Spring Boot diesen bei einer
         // Verzeichnisangabe explizit verlangt.
         registry.addResourceHandler("/subunits/*.json").addResourceLocations("file:"+itemsGeoJsonDir+File.separator);
+        registry.addResourceHandler("/ilidata.xml").addResourceLocations("file:"+ilidataDir+File.separator);
     }
 }
