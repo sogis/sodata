@@ -30,6 +30,18 @@ class ApplicationTests {
                 .contains("Datenbezug • Kanton Solothurn");
     }
     
+    // Reminder to write tests for data repository
+    // ilisite
+    // ilimodels
+    // ilidata
+    // download file (?)
+    @Test
+    public void fail() {
+        assertThat("foo".contains("bar"));
+    }
+    
+    // Warum auskommentiert?
+    
 //    @Test
 //    public void search_Ok() throws Exception {
 //        assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/themepublications?query=afu", String.class))
