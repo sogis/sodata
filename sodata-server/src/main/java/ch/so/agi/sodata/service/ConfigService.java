@@ -147,7 +147,6 @@ public class ConfigService {
                         }                         
                         themePublicationMap.put(identifier, themePublicationDTO);
                         themePublicationList.add(themePublicationDTO);
-
                     }
                     
                     // ilidata.xml
