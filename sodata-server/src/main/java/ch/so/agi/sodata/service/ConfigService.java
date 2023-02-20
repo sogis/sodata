@@ -156,7 +156,6 @@ public class ConfigService {
                             
                             Iom_jObject iomObj = new Iom_jObject("DatasetIdx16.DataIndex.DatasetMetadata", String.valueOf(tid));
                             iomObj.setattrvalue("id", themePublication.getIdentifier());
-                            //iomObj.setattrvalue("originalId", themePublication.getIdentifier());
                             iomObj.setattrvalue("version", "current");
                             iomObj.setattrvalue("owner", themePublication.getOwner().getOfficeAtWeb().toString());
                             
