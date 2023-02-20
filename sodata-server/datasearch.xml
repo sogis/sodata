@@ -33,22 +33,22 @@
       <fileFormat>
         <name>Geopackage</name>
         <mimetype>application/geopackage+sqlite3</mimetype>
-        <abbreviation>gpkg</abbreviation>
+        <abbreviation>gpkg.zip</abbreviation>
       </fileFormat>
       <fileFormat>
         <name>Shapefile</name>
         <mimetype>application/vnd.esri_shapefile</mimetype>
-        <abbreviation>shp</abbreviation>
+        <abbreviation>shp.zip</abbreviation>
       </fileFormat>
       <fileFormat>
         <name>INTERLIS 2</name>
         <mimetype>application/vnd.ili2+xml</mimetype>
-        <abbreviation>xtf</abbreviation>
+        <abbreviation>xtf.zip</abbreviation>
       </fileFormat>
       <fileFormat>
         <name>DXF (Autocad)</name>
         <mimetype>application/dxf+text</mimetype>
-        <abbreviation>dxf</abbreviation>
+        <abbreviation>dxf.zip</abbreviation>
       </fileFormat>
     </fileFormats>
     <items>
@@ -1541,22 +1541,22 @@ Die Ökomorphologie beschreibt die Gestaltung des Lebensraums Bach. Eine ökomor
       <fileFormat>
         <name>DXF (Autocad)</name>
         <mimetype>application/dxf+text</mimetype>
-        <abbreviation>dxf</abbreviation>
+        <abbreviation>dxf.zip</abbreviation>
       </fileFormat>
       <fileFormat>
         <name>INTERLIS 2</name>
         <mimetype>application/vnd.ili2+xml</mimetype>
-        <abbreviation>xtf</abbreviation>
+        <abbreviation>xtf.zip</abbreviation>
       </fileFormat>
       <fileFormat>
         <name>Geopackage</name>
         <mimetype>application/geopackage+sqlite3</mimetype>
-        <abbreviation>gpkg</abbreviation>
+        <abbreviation>gpkg.zip</abbreviation>
       </fileFormat>
       <fileFormat>
         <name>Shapefile</name>
         <mimetype>application/vnd.esri_shapefile</mimetype>
-        <abbreviation>shp</abbreviation>
+        <abbreviation>shp.zip</abbreviation>
       </fileFormat>
     </fileFormats>
     <items>
@@ -2098,22 +2098,22 @@ Die Ökomorphologie beschreibt die Gestaltung des Lebensraums Bach. Eine ökomor
       <fileFormat>
         <name>INTERLIS 2</name>
         <mimetype>application/vnd.ili2+xml</mimetype>
-        <abbreviation>xtf</abbreviation>
+        <abbreviation>xtf.zip</abbreviation>
       </fileFormat>
       <fileFormat>
         <name>Geopackage</name>
         <mimetype>application/geopackage+sqlite3</mimetype>
-        <abbreviation>gpkg</abbreviation>
+        <abbreviation>gpkg.zip</abbreviation>
       </fileFormat>
       <fileFormat>
         <name>DXF (Autocad)</name>
         <mimetype>application/dxf+text</mimetype>
-        <abbreviation>dxf</abbreviation>
+        <abbreviation>dxf.zip</abbreviation>
       </fileFormat>
       <fileFormat>
         <name>Shapefile</name>
         <mimetype>application/vnd.esri_shapefile</mimetype>
-        <abbreviation>shp</abbreviation>
+        <abbreviation>shp.zip</abbreviation>
       </fileFormat>
     </fileFormats>
     <items>
