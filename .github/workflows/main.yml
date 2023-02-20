@@ -37,7 +37,7 @@ jobs:
 
       - name: Build native image
         run: |
-          export CONFIG_FILE=$PWD/sodata-server/datasearch.xml 
+          export CONFIG_FILE=$PWD/sodata-server/src/test/resources/datasearch.xml 
           export ITEMS_GEOJSON_DIR=/tmp/
           ./mvnw -Pnative test
           ./mvnw -DskipTests -Penv-prod,native package
