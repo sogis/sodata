@@ -23,7 +23,6 @@ Die Anwendung kann am einfachsten mittels Env-Variablen gesteuert werden. Es ste
 | `ITEMS_GEOJSON_DIR` | Verzeichnis, in das die GeoJSON-Dateien der Regionen gespeichert werden. Sämtliche JSON-Dateien in diesem Verzeichnis werden öffentlich exponiert. | `#{systemProperties['java.io.tmpdir']}` (= Temp-Verzeichnis des OS) |
 | ~~`FILES_SERVER_URL`~~ | ~~Url des Servers, auf dem die Geodaten gespeichert sind.~~ | ~~`https://files.geo.so.ch`~~ |
 
-
 ### Java
 
 Falls die _datasearch.xml_-Datei im Verzeichnis _/config/_ vorliegt, reicht:
@@ -69,14 +68,17 @@ Keine.
 
 ## Interne Struktur
 
-@Stefan: todo
+Die Anwendung ist mit GWT und Spring Boot in Java geschrieben. Typischerweise ist eine solche Anwendung in drei Maven-Module unterteilt:
 
-- GWT
-- Maven Multimodule Projekt: Was ist wo?
-- datasearch.xml: Parsen -> Lucene. Kann nur hochgefahrne werden, falls vorhanden (bewusster Entscheid)
-- Native Image
-- Lucene-Index ist nicht persistiert. Wenn zwei Container hochgefahren werden, gibt es zwei (hoffentlich) gleiche Indizes.
-- Zum Entwicklen und Testen wird mit Profil-spezifischen application.yml-Dateien gearbeitet.
+- sodata-server: Serverseitige Businesslogik. Erstellen des Suchindexes und Bereitstellen einer Such-API.
+- sodata-client: GWT-Code aus dem die clientseitige Javascript-Anwendung transpiliert wird.
+- sodata-shared: Gemeinsamer Code (Server und Client), insbesonderen DTO.
+
+Die _datasearch.xml_-Datei wird zum Hochfahren benötigt, d.h. ohne Datei fährt die Anwendung nicht hoch. Dies ist ein bewusster Entscheid, kann aber auch wieder geändert werden. Es soll vor allem verhindert werden, dass die Anwendung vermeintlich korrekt funktioniert aber gar keine Liste anzeigt. Die _datasearch.xml_-Datei wird mit den Modell-Java-Klassen des _meta2file_-Projektes geparsed. Es wird eine Lucene-Index erzeugt. Der Index ist nur im Container persistiert und wird nach jedem Neustart des Containers neu erstellt, d.h. falls zwei Container/Pods laufen, verwenden sie nicht den identischen Index.
+
+Für das Native Image sind entweder genügend Tests notwendig, damit die benötigte Information zusammengesammelt werden kann, oder die Anwendung muss mit dem Agent gestartet werden und manuell rumgeklickt werden.
+
+Zum Entwicklen und Testen wird mit Profil-spezifischen application.yml-Dateien gearbeitet.
 
 ## Entwicklung
 
