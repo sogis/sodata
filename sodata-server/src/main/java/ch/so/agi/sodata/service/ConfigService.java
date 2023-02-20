@@ -218,7 +218,7 @@ public class ConfigService {
                                     furtherWS.setattrvalue("value", service.getEndpoint().toString());
                                     iomObj.addattrobj("furtherWS", furtherWS);
                                 } else if (service.getType().equals(ServiceType.WGC)) {
-                                    Iom_jObject knownPortal = new Iom_jObject("DatasetIdx16.WebService_", null);
+                                    Iom_jObject knownPortal = new Iom_jObject("DatasetIdx16.WebSite_", null);
                                     knownPortal.setattrvalue("value", service.getEndpoint().toString() + "?l=" + service.getLayers().get(0).getIdentifier());
                                     iomObj.addattrobj("knownPortal", knownPortal);
                                 }
