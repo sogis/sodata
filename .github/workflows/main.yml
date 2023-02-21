@@ -3,6 +3,8 @@ name: CI/CD
 on:
   workflow_dispatch:
   push:
+    paths-ignore:
+      - '**.md'
 
 jobs:
   build-native:
@@ -37,8 +39,9 @@ jobs:
 
       - name: Build native image
         run: |
-          export CONFIG_FILE=$PWD/sodata-server/datasearch.xml 
+          export CONFIG_FILE=$PWD/sodata-server/src/test/resources/datasearch.xml 
           export ITEMS_GEOJSON_DIR=/tmp/
+          ./mvnw versions:set -DnewVersion=${{ env.VERSION }}
           ./mvnw -Pnative test
           ./mvnw -DskipTests -Penv-prod,native package
           ls -la sodata-server/target
@@ -116,6 +119,7 @@ jobs:
 
       - name: Test and build Jar
         run: |
+          ./mvnw versions:set -DnewVersion=${{ env.VERSION }}
           ./mvnw clean test
           ./mvnw clean -DskipTests -Penv-prod package
           ls -la sodata-server/target

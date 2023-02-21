@@ -38,6 +38,10 @@
   </dependencyManagement>
   <build>
     <plugins>
+      <plugin>  
+        <groupId>org.codehaus.mojo</groupId>  
+        <artifactId>versions-maven-plugin</artifactId>  
+      </plugin>        
       <plugin>
         <groupId>net.ltgt.gwt.maven</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
