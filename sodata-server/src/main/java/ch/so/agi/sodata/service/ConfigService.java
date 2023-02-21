@@ -100,175 +100,185 @@ public class ConfigService {
     // als Schlüssel nach der Lucene-Suche.
     
     // TODO rename method
-    public void readXml() throws XMLStreamException, IOException, ParseException, Ili2cFailure, IoxException {
-        IoxWriter ioxWriter = createIlidataWriter();
-        ioxWriter.write(new StartTransferEvent("SOGIS-20230218", "", null));
-        ioxWriter.write(new StartBasketEvent(ILI_TOPIC,BID));
+    public void readXml() throws XMLStreamException, IOException, ParseException {
+        try {
+            IoxWriter ioxWriter = createIlidataWriter();
+            ioxWriter.write(new StartTransferEvent("SOGIS-20230218", "", null));
+            ioxWriter.write(new StartBasketEvent(ILI_TOPIC,BID));
+         
+            // Falls der XmlMapper als Bean definiert wird, überschreibt er den Default-Object-Mapper,
+            // welcher Json-Output liefert. Falls der XmlMapper als Bean benötigt wird, muss ich nochmals
+            // über die Bücher.
+            // Die Methode wird momentan nur ein einziges Mal direkt nach dem Hochfahren aufgerufen und
+            // somit scheint der XmlMapper nicht als Bean benötigt zu werden.
+            var xmlMapper = new XmlMapper();
+            xmlMapper.registerModule(new JavaTimeModule());
+            xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // TODO: wieder entfernen, wenn stabil? Oder tolerant sein?
 
-        // Falls der XmlMapper als Bean definiert wird, überschreibt er den Default-Object-Mapper,
-        // welcher Json-Output liefert. Falls der XmlMapper als Bean benötigt wird, muss ich nochmals
-        // über die Bücher.
-        // Die Methode wird momentan nur ein einziges Mal direkt nach dem Hochfahren aufgerufen und
-        // somit scheint der XmlMapper nicht als Bean benötigt zu werden.
-        var xmlMapper = new XmlMapper();
-        xmlMapper.registerModule(new JavaTimeModule());
-        xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // TODO: wieder entfernen, wenn stabil? Oder tolerant sein?
-
-        log.debug("config file: " + new File(CONFIG_FILE).getAbsolutePath());
-                
-        var xif = XMLInputFactory.newInstance();
-        var xr = xif.createXMLStreamReader(new FileInputStream( new File(CONFIG_FILE)));
-
-        int tid=0;
-        while (xr.hasNext()) {
-            xr.next();
-            if (xr.getEventType() == XMLStreamConstants.START_ELEMENT) {
-                if ("themePublication".equals(xr.getLocalName())) {
-                    var themePublication = xmlMapper.readValue(xr, ThemePublication.class);
-                    var identifier = themePublication.getIdentifier();
-                    var items = themePublication.getItems();
+            log.debug("config file: " + new File(CONFIG_FILE).getAbsolutePath());
                     
-                    log.debug("Identifier: {}", themePublication.getIdentifier());
-                    
-                    // Lucene and client
-                    {
-                        ThemePublicationDTO themePublicationDTO = modelMapper.map(themePublication, ThemePublicationDTO.class);
+            var xif = XMLInputFactory.newInstance();
+            var xr = xif.createXMLStreamReader(new FileInputStream( new File(CONFIG_FILE)));
 
-                        // Die GeoJSON-Datei mit den Subunits zur Auswahl im Client 
-                        // wird nur benötigt, falls es wirklich etwas auszuwählen gibt.
-                        // D.h. wenn es mindestens 2 Items (=Subunits) gibt.
-                        if (items.size() > 1) {
-                            themePublicationDTO.setHasSubunits(true);
-                            
-                            File geoJsonFile = Paths.get(itemsGeoJsonDir, identifier + ".json").toFile();
-                            var gsw = new GeoJsonWriter();
-                            gsw.write(geoJsonFile, items); 
-                            log.debug("GeoJSON file written: {}", geoJsonFile);
-                        }                         
-                        themePublicationMap.put(identifier, themePublicationDTO);
-                        themePublicationList.add(themePublicationDTO);
-                    }
-                    
-                    // ilidata.xml
-                    {
-                        if (themePublication.getModel() != null && themePublication.getModel().trim().length() > 0) {
-                            tid++;
-                            
-                            Iom_jObject iomObj = new Iom_jObject("DatasetIdx16.DataIndex.DatasetMetadata", String.valueOf(tid));
-                            iomObj.setattrvalue("id", themePublication.getIdentifier());
-                            //iomObj.setattrvalue("originalId", themePublication.getIdentifier());
-                            iomObj.setattrvalue("version", "current");
-                            iomObj.setattrvalue("owner", themePublication.getOwner().getOfficeAtWeb().toString());
-                            
-                            Iom_jObject model = new Iom_jObject("DatasetIdx16.ModelLink", null);
-                            model.setattrvalue("name", themePublication.getModel());
-                            model.setattrvalue("locationHint", "https://geo.so.ch/models");
-                            iomObj.addattrobj("model", model);
+            int tid=0;
+            while (xr.hasNext()) {
+                xr.next();
+                if (xr.getEventType() == XMLStreamConstants.START_ELEMENT) {
+                    if ("themePublication".equals(xr.getLocalName())) {
+                        var themePublication = xmlMapper.readValue(xr, ThemePublication.class);
+                        var identifier = themePublication.getIdentifier();
+                        var items = themePublication.getItems();
+                        
+                        log.debug("Identifier: {}", themePublication.getIdentifier());
+                        
+                        // Lucene and client
+                        {
+                            ThemePublicationDTO themePublicationDTO = modelMapper.map(themePublication, ThemePublicationDTO.class);
 
-                            iomObj.setattrvalue("epsgCode", "2056");
-                            iomObj.setattrvalue("publishingDate", themePublication.getLastPublishingDate().format(DateTimeFormatter.ISO_DATE));
+                            // Die GeoJSON-Datei mit den Subunits zur Auswahl im Client 
+                            // wird nur benötigt, falls es wirklich etwas auszuwählen gibt.
+                            // D.h. wenn es mindestens 2 Items (=Subunits) gibt.
+                            if (items.size() > 1) {
+                                themePublicationDTO.setHasSubunits(true);
+                                
+                                File geoJsonFile = Paths.get(itemsGeoJsonDir, identifier + ".json").toFile();
+                                var gsw = new GeoJsonWriter();
+                                gsw.write(geoJsonFile, items); 
+                                log.debug("GeoJSON file written: {}", geoJsonFile);
+                            }                         
+                            themePublicationMap.put(identifier, themePublicationDTO);
+                            themePublicationList.add(themePublicationDTO);
+                        }
+                        
+                        // ilidata.xml
+                        {
+                            if (themePublication.getModel() != null && themePublication.getModel().trim().length() > 0) {
+                                tid++;
+                                
+                                Iom_jObject iomObj = new Iom_jObject("DatasetIdx16.DataIndex.DatasetMetadata", String.valueOf(tid));
+                                iomObj.setattrvalue("id", themePublication.getIdentifier());
+                                //iomObj.setattrvalue("originalId", themePublication.getIdentifier());
+                                iomObj.setattrvalue("version", "current");
+                                iomObj.setattrvalue("owner", themePublication.getOwner().getOfficeAtWeb().toString());
+                                
+                                Iom_jObject model = new Iom_jObject("DatasetIdx16.ModelLink", null);
+                                model.setattrvalue("name", themePublication.getModel());
+                                model.setattrvalue("locationHint", "https://geo.so.ch/models");
+                                iomObj.addattrobj("model", model);
 
-                            Iom_jObject boundary = new Iom_jObject("DatasetIdx16.BoundingBox", null);
-                            
-                            double left = themePublication.getBbox().getLeft();
-                            double bottom = themePublication.getBbox().getBottom();
-                            double right = themePublication.getBbox().getRight();
-                            double top = themePublication.getBbox().getTop();
-                            
-                            String westlimit = String.valueOf(ApproxSwissProj.CHtoWGSlng(left, bottom));
-                            String southlimit = String.valueOf(ApproxSwissProj.CHtoWGSlat(left, bottom));
-                            String eastlimit = String.valueOf(ApproxSwissProj.CHtoWGSlng(right, top));
-                            String northlimit = String.valueOf(ApproxSwissProj.CHtoWGSlat(right, top));
+                                iomObj.setattrvalue("epsgCode", "2056");
+                                iomObj.setattrvalue("publishingDate", themePublication.getLastPublishingDate().format(DateTimeFormatter.ISO_DATE));
 
-                            boundary.setattrvalue("westlimit", westlimit);
-                            boundary.setattrvalue("southlimit", southlimit);
-                            boundary.setattrvalue("eastlimit", eastlimit);
-                            boundary.setattrvalue("northlimit", northlimit);
-                            iomObj.addattrobj("boundary", boundary);
+                                Iom_jObject boundary = new Iom_jObject("DatasetIdx16.BoundingBox", null);
+                                
+                                double left = themePublication.getBbox().getLeft();
+                                double bottom = themePublication.getBbox().getBottom();
+                                double right = themePublication.getBbox().getRight();
+                                double top = themePublication.getBbox().getTop();
+                                
+                                String westlimit = String.valueOf(ApproxSwissProj.CHtoWGSlng(left, bottom));
+                                String southlimit = String.valueOf(ApproxSwissProj.CHtoWGSlat(left, bottom));
+                                String eastlimit = String.valueOf(ApproxSwissProj.CHtoWGSlng(right, top));
+                                String northlimit = String.valueOf(ApproxSwissProj.CHtoWGSlat(right, top));
 
-                            Iom_jObject title = new Iom_jObject("DatasetIdx16.MultilingualText", null);
-                            Iom_jObject titleLocalisedText = new Iom_jObject("DatasetIdx16.LocalisedText", null);
-                            titleLocalisedText.setattrvalue("Language", "de");
-                            titleLocalisedText.setattrvalue("Text", themePublication.getTitle());
-                            title.addattrobj("LocalisedText", titleLocalisedText);
-                            iomObj.addattrobj("title", title);
-                            
-                            Iom_jObject shortDescription = new Iom_jObject("DatasetIdx16.MultilingualMText", null);
-                            Iom_jObject localisedMTextshortDescription = new Iom_jObject("DatasetIdx16.LocalisedMText", null);
-                            localisedMTextshortDescription.setattrvalue("Language", "de");
-                            localisedMTextshortDescription.setattrvalue("Text", "<![CDATA["+themePublication.getShortDescription()+"]]>");
-                            shortDescription.addattrobj("LocalisedText", localisedMTextshortDescription);
-                            iomObj.addattrobj("shortDescription", shortDescription);
+                                boundary.setattrvalue("westlimit", westlimit);
+                                boundary.setattrvalue("southlimit", southlimit);
+                                boundary.setattrvalue("eastlimit", eastlimit);
+                                boundary.setattrvalue("northlimit", northlimit);
+                                iomObj.addattrobj("boundary", boundary);
 
-                            if (themePublication.getKeywordsList() != null) iomObj.setattrvalue("keywords", String.join(",", themePublication.getKeywordsList()));
-                            iomObj.setattrvalue("technicalContact", themePublication.getServicer().getOfficeAtWeb().toString());
-                            if (themePublication.getFurtherInformation() != null) iomObj.setattrvalue("furtherInformation", themePublication.getFurtherInformation().toString());
+                                Iom_jObject title = new Iom_jObject("DatasetIdx16.MultilingualText", null);
+                                Iom_jObject titleLocalisedText = new Iom_jObject("DatasetIdx16.LocalisedText", null);
+                                titleLocalisedText.setattrvalue("Language", "de");
+                                titleLocalisedText.setattrvalue("Text", themePublication.getTitle());
+                                title.addattrobj("LocalisedText", titleLocalisedText);
+                                iomObj.addattrobj("title", title);
+                                
+                                Iom_jObject shortDescription = new Iom_jObject("DatasetIdx16.MultilingualMText", null);
+                                Iom_jObject localisedMTextshortDescription = new Iom_jObject("DatasetIdx16.LocalisedMText", null);
+                                localisedMTextshortDescription.setattrvalue("Language", "de");
+                                localisedMTextshortDescription.setattrvalue("Text", "<![CDATA["+themePublication.getShortDescription()+"]]>");
+                                shortDescription.addattrobj("LocalisedText", localisedMTextshortDescription);
+                                iomObj.addattrobj("shortDescription", shortDescription);
 
-                            for (ch.so.agi.meta2file.model.Service service : themePublication.getServices()) {
-                                if (service.getType().equals(ServiceType.WMS)) {
-                                    Iom_jObject knownWMS = new Iom_jObject("DatasetIdx16.WebService_", null);
-                                    knownWMS.setattrvalue("value", service.getEndpoint().toString());
-                                    iomObj.addattrobj("knownWMS", knownWMS);
-                                } else if (service.getType().equals(ServiceType.WFS)) {
-                                    Iom_jObject knownWFS = new Iom_jObject("DatasetIdx16.WebService_", null);
-                                    knownWFS.setattrvalue("value", service.getEndpoint().toString());
-                                    iomObj.addattrobj("knownWFS", knownWFS);
-                                } else if (service.getType().equals(ServiceType.DATA)) {
-                                    Iom_jObject furtherWS = new Iom_jObject("DatasetIdx16.WebService_", null);
-                                    furtherWS.setattrvalue("value", service.getEndpoint().toString());
-                                    iomObj.addattrobj("furtherWS", furtherWS);
-                                } else if (service.getType().equals(ServiceType.WGC)) {
-                                    Iom_jObject knownPortal = new Iom_jObject("DatasetIdx16.WebSite_", null);
-                                    knownPortal.setattrvalue("value", service.getEndpoint().toString() + "?l=" + service.getLayers().get(0).getIdentifier());
-                                    iomObj.addattrobj("knownPortal", knownPortal);
-                                }
-                            }
-                            
-                            // Testeshalber nur XTF/ITF
-                            for (FileFormat fileFormat : themePublication.getFileFormats()) {
-                                if (fileFormat.getName().contains("INTERLIS")) {
-                                    Iom_jObject files = new Iom_jObject("DatasetIdx16.DataFile", null); 
-                                  
-                                    String fileExt;
-                                    String mimeType;
-                                    if(fileFormat.getName().equalsIgnoreCase("INTERLIS 1")) {
-                                        mimeType = "application/interlis+txt;version=1.0";
-                                        fileExt = "itf";
-                                    } else {
-                                        mimeType = "application/interlis+xml;version=2.3";
-                                        fileExt = "xtf";
-                                    }
-                                    files.setattrvalue("fileFormat", mimeType);
-                                    
-                                    if (themePublication.getItems().size() > 1) {
-                                        for (Item item : themePublication.getItems()) {
-                                            Iom_jObject file = new Iom_jObject("DatasetIdx16.File", null);
-                                            file.setattrvalue("path", "files/"+item.getIdentifier() + "." + themePublication.getIdentifier()+"."+fileExt);
-                                            files.addattrobj("file", file);
+                                if (themePublication.getKeywordsList() != null) iomObj.setattrvalue("keywords", String.join(",", themePublication.getKeywordsList()));
+                                iomObj.setattrvalue("technicalContact", themePublication.getServicer().getOfficeAtWeb().toString());
+                                if (themePublication.getFurtherInformation() != null) iomObj.setattrvalue("furtherInformation", themePublication.getFurtherInformation().toString());
+
+                                if (themePublication.getServices() != null) {
+                                    for (ch.so.agi.meta2file.model.Service service : themePublication.getServices()) {
+                                        if (service.getType().equals(ServiceType.WMS)) {
+                                            Iom_jObject knownWMS = new Iom_jObject("DatasetIdx16.WebService_", null);
+                                            knownWMS.setattrvalue("value", service.getEndpoint().toString());
+                                            iomObj.addattrobj("knownWMS", knownWMS);
+                                        } else if (service.getType().equals(ServiceType.WFS)) {
+                                            Iom_jObject knownWFS = new Iom_jObject("DatasetIdx16.WebService_", null);
+                                            knownWFS.setattrvalue("value", service.getEndpoint().toString());
+                                            iomObj.addattrobj("knownWFS", knownWFS);
+                                        } else if (service.getType().equals(ServiceType.DATA)) {
+                                            Iom_jObject furtherWS = new Iom_jObject("DatasetIdx16.WebService_", null);
+                                            furtherWS.setattrvalue("value", service.getEndpoint().toString());
+                                            iomObj.addattrobj("furtherWS", furtherWS);
+                                        } else if (service.getType().equals(ServiceType.WGC)) {
+                                            Iom_jObject knownPortal = new Iom_jObject("DatasetIdx16.WebSite_", null);
+                                            knownPortal.setattrvalue("value", service.getEndpoint().toString() + "?l=" + service.getLayers().get(0).getIdentifier());
+                                            iomObj.addattrobj("knownPortal", knownPortal);
                                         }
-                                    } else  {
-                                        Iom_jObject file = new Iom_jObject("DatasetIdx16.File", null);
-                                        file.setattrvalue("path", "files/"+themePublication.getIdentifier()+"."+fileExt);
-                                        files.addattrobj("file", file);
-
-                                    }
-                                    iomObj.addattrobj("files", files);
+                                    }                                    
                                 }
+                                
+                                // Testeshalber nur XTF/ITF
+                                // Könnte eventuelle passieren, dass es zwar einen Eintrag gibt, aber ohne Files, falls
+                                // wir für dieses Theme kein INTERLIS anbieten (?).
+                                for (FileFormat fileFormat : themePublication.getFileFormats()) {
+                                    if (fileFormat.getName().contains("INTERLIS")) {
+                                        Iom_jObject files = new Iom_jObject("DatasetIdx16.DataFile", null); 
+                                      
+                                        String fileExt;
+                                        String mimeType;
+                                        if(fileFormat.getName().equalsIgnoreCase("INTERLIS 1")) {
+                                            mimeType = "application/interlis+txt;version=1.0";
+                                            fileExt = "itf";
+                                        } else {
+                                            mimeType = "application/interlis+xml;version=2.3";
+                                            fileExt = "xtf";
+                                        }
+                                        files.setattrvalue("fileFormat", mimeType);
+                                        
+                                        if (themePublication.getItems().size() > 1) {
+                                            for (Item item : themePublication.getItems()) {
+                                                Iom_jObject file = new Iom_jObject("DatasetIdx16.File", null);
+                                                file.setattrvalue("path", "files/"+item.getIdentifier() + "." + themePublication.getIdentifier()+"."+fileExt);
+                                                files.addattrobj("file", file);
+                                            }
+                                        } else  {
+                                            Iom_jObject file = new Iom_jObject("DatasetIdx16.File", null);
+                                            file.setattrvalue("path", "files/"+themePublication.getIdentifier()+"."+fileExt);
+                                            files.addattrobj("file", file);
+
+                                        }
+                                        iomObj.addattrobj("files", files);
+                                    }
+                                }
+      
+                                log.debug("ilidata for {} has object id: {}", identifier, iomObj.getobjectoid());
+                                ioxWriter.write(new ObjectEvent(iomObj));
                             }
-  
-                            log.debug("ilidata object id: {}", iomObj.getobjectoid());
-                            ioxWriter.write(new ObjectEvent(iomObj));
                         }
                     }
                 }
             }
+            luceneThemePublicationRepository.saveAll(themePublicationList);
+            
+            ioxWriter.write(new EndBasketEvent());
+            ioxWriter.write(new EndTransferEvent());
+            ioxWriter.flush();
+            ioxWriter.close();        
+        // At the moment, ilidata handling should not crash the rest.    
+        } catch (Ili2cFailure | IoxException e) {
+            log.error(e.getMessage());
+            log.error("Could not create ilidata.xml");
         }
-        luceneThemePublicationRepository.saveAll(themePublicationList);
-        
-        ioxWriter.write(new EndBasketEvent());
-        ioxWriter.write(new EndTransferEvent());
-        ioxWriter.flush();
-        ioxWriter.close();        
     }
     
     private IoxWriter createIlidataWriter() throws IOException, Ili2cFailure, IoxException {
