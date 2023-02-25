@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.dominokit.domino.ui.Typography.Paragraph;
 import org.dominokit.domino.ui.badges.Badge;
 import org.dominokit.domino.ui.breadcrumbs.Breadcrumb;
 import org.dominokit.domino.ui.button.Button;
@@ -21,11 +22,10 @@ import org.dominokit.domino.ui.datatable.DataTable;
 import org.dominokit.domino.ui.datatable.TableConfig;
 import org.dominokit.domino.ui.datatable.store.LocalListDataStore;
 import org.dominokit.domino.ui.forms.TextBox;
-import org.dominokit.domino.ui.grid.Column;
-import org.dominokit.domino.ui.grid.Row;
 import org.dominokit.domino.ui.icons.Icons;
-import org.dominokit.domino.ui.infoboxes.InfoBox;
 import org.dominokit.domino.ui.modals.ModalDialog;
+import org.dominokit.domino.ui.popover.Popover;
+import org.dominokit.domino.ui.popover.PopupPosition;
 import org.dominokit.domino.ui.style.Color;
 import org.dominokit.domino.ui.style.ColorScheme;
 import org.dominokit.domino.ui.tabs.Tab;
@@ -35,16 +35,15 @@ import org.dominokit.domino.ui.utils.TextNode;
 
 import com.google.gwt.core.client.GWT;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
+import org.jboss.elemento.HtmlContentBuilder;
 
 import com.github.nmorel.gwtjackson.client.ObjectMapper;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 import elemental2.core.Global;
 import elemental2.dom.AbortController;
-import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.Event;
@@ -61,22 +60,15 @@ import elemental2.dom.XMLHttpRequest;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import ol.AtPixelOptions;
-import ol.Extent;
 import ol.Map;
 import ol.MapBrowserEvent;
 import ol.OLFactory;
-import ol.Pixel;
-import ol.events.condition.Condition;
 import ol.Feature;
 import ol.FeatureAtPixelFunction;
 import ol.format.GeoJson;
-import ol.interaction.Select;
-import ol.interaction.SelectOptions;
 import ol.layer.Base;
 import ol.layer.Layer;
 import ol.layer.VectorLayerOptions;
-import ol.proj.Projection;
-import ol.proj.ProjectionOptions;
 import ol.source.Vector;
 import ol.source.VectorOptions;
 import ol.style.Fill;
@@ -395,7 +387,39 @@ public class App implements EntryPoint {
                                         openRegionSelectionDialog(cell.getRecord());
                                     }
                                 });
-                                return regionSelectionElement;
+                                
+                                HtmlContentBuilder<HTMLElement> spanBuilder = span().add(regionSelectionElement);
+                                
+                                if (cell.getRecord().getModel() == null || cell.getRecord().getModel().trim().length() == 0) {                                    
+                                    HTMLElement cog = Badge.create("Stream it")
+                                            .setBackground(Color.GREY_LIGHTEN_2)
+                                            .style()
+                                            .addCss("badge-stream")
+                                            .setMarginLeft("10px")
+                                            .setMarginTop("5px")
+                                            .setMarginBottom("5px")
+                                            .get()
+                                            .element();
+
+                                    String fileUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-dev/"+cell.getRecord().getIdentifier()+".tif";
+                                    
+                                    Popover popover = Popover.create(
+                                            cog,
+                                            "Link kopiert!",
+                                            Paragraph.create(fileUrl))
+                                        .position(PopupPosition.TOP);
+
+                                    cog.addEventListener("click", new EventListener() {
+                                        @Override
+                                        public void handleEvent(Event evt) {
+                                            copyToClipboard(fileUrl);                                                        
+                                            popover.show();
+                                        }
+                                    });
+                                    spanBuilder.add(cog);
+                                }
+                                
+                                return spanBuilder.element();
                             } else {                               
                                 List<FileFormatDTO> sortedFileFormats = cell.getRecord()
                                         .getFileFormats()
@@ -777,5 +801,13 @@ public class App implements EntryPoint {
     // Update the URL in the browser without reloading the page.
     private static native void updateUrlWithoutReloading(String newUrl) /*-{
         $wnd.history.pushState(newUrl, "", newUrl);
+    }-*/;
+    
+    private static native void copyToClipboard(String url) /*-{
+        if ($wnd.navigator.clipboard) {
+            $wnd.navigator.clipboard.writeText(url);          
+        } else {
+            console.log("cannot use clipboard");
+        }
     }-*/;
 }
