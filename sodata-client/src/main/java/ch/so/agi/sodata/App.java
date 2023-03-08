@@ -385,7 +385,21 @@ public class App implements EntryPoint {
                         .setCellRenderer(cell -> {
                             HTMLElement badgesElement = div().element();
 
+                            List<FileFormatDTO> sortedFileFormats = cell.getRecord()
+                                    .getFileFormats()
+                                    .stream()
+                                    .sorted(new Comparator<FileFormatDTO>() {
+                                        @Override
+                                        public int compare(FileFormatDTO o1, FileFormatDTO o2) {                                                
+                                            return ((Integer) fileFormatList.indexOf(o1.getAbbreviation()))
+                                                    .compareTo(((Integer) fileFormatList
+                                                            .indexOf(o2.getAbbreviation())));
+                                        }
+                                    })
+                                    .collect(Collectors.toList());
+
                             if (cell.getRecord().isHasSubunits()) {
+                                /*
                                 HTMLElement regionSelectionElement = a().css("default-link")
                                         .textContent(messages.table_subunit_selection())
                                         .element();
@@ -396,20 +410,40 @@ public class App implements EntryPoint {
                                     }
                                 });
                                 return regionSelectionElement;
-                            } else {                               
-                                List<FileFormatDTO> sortedFileFormats = cell.getRecord()
-                                        .getFileFormats()
-                                        .stream()
-                                        .sorted(new Comparator<FileFormatDTO>() {
-                                            @Override
-                                            public int compare(FileFormatDTO o1, FileFormatDTO o2) {                                                
-                                                return ((Integer) fileFormatList.indexOf(o1.getAbbreviation()))
-                                                        .compareTo(((Integer) fileFormatList
-                                                                .indexOf(o2.getAbbreviation())));
-                                            }
-                                        })
-                                        .collect(Collectors.toList());
+                                */
+                                for (FileFormatDTO fileFormat : sortedFileFormats) {
 
+                                    HTMLElement badge = Badge.create(formatLookUp.get(fileFormat.getAbbreviation()))
+                                    .setBackground(Color.GREY_LIGHTEN_2)
+                                    .style()
+                                    .setMarginRight("10px")
+                                    .setMarginTop("5px")
+                                    .setMarginBottom("5px")
+                                    .get()
+                                    .element();
+                                    
+                                    badge.id = fileFormat.getAbbreviation();
+                                    
+                                    badge.addEventListener("click", new EventListener() {
+                                        @Override
+                                        public void handleEvent(Event evt) {
+                                            HTMLElement clickedBadge = (HTMLElement) evt.currentTarget;
+                                            openRegionSelectionDialog(cell.getRecord(), clickedBadge);
+                                        }
+                                        
+                                    });
+
+                                    badgesElement.appendChild(
+                                            span()
+                                            .css("badge-link")
+                                            .style("cursor: pointer;")
+                                            .add(badge)
+                                            .element());
+                                    
+                                }
+
+                                return badgesElement;
+                            } else {                               
                                 for (FileFormatDTO fileFormat : sortedFileFormats) {
                                     String fileUrl = cell.getRecord().getDownloadHostUrl() + "/" + cell.getRecord().getIdentifier()
                                             + "/aktuell/" + cell.getRecord().getIdentifier() + "."
@@ -467,7 +501,10 @@ public class App implements EntryPoint {
         modal.large().open();
     }
 
-    private void openRegionSelectionDialog(ThemePublicationDTO themePublication) {
+    private void openRegionSelectionDialog(ThemePublicationDTO themePublication, HTMLElement clickedBadge) {
+        
+        console.log(clickedBadge.id);
+        
         List<FileFormatDTO> sortedFileFormats = themePublication
                 .getFileFormats()
                 .stream()
@@ -493,8 +530,8 @@ public class App implements EntryPoint {
         HTMLDivElement mapDiv = div().id("map").element();
         modal.getBodyElement()
                 .appendChild(div().css("modal-body-paragraph")
-                        .textContent("Sie können einzelne Gebiete mit einem Klick in die Karte aus- und abwählen. "
-                                + "Im Reiter 'Herunterladen' können Sie die Daten anschliessend herunterladen. "));
+                        .textContent("Sie können einzelne Gebiete mit einem Klick in die Karte herunterladen. "
+                                + "Im Reiter 'Liste' können Sie die Daten in Listenform herunterladen. "));
 
         selectionTab.appendChild(mapDiv);
 
@@ -639,6 +676,10 @@ public class App implements EntryPoint {
             map.forEachFeatureAtPixel(event.getPixel(), new FeatureAtPixelFunction() {
                 @Override
                 public boolean call(Feature feature, Layer layer) {
+                    
+                    console.log(feature.get("title").toString());
+                    console.log(feature.get("identifier").toString());
+                    
                     if (layer.get(ID_ATTR_NAME).toString().equalsIgnoreCase(SELECTED_VECTOR_LAYER_ID)) {
                         ol.layer.Vector selectedLayer = (ol.layer.Vector) getMapLayerById(SELECTED_VECTOR_LAYER_ID);
                         Vector selectedSource = (Vector) selectedLayer.getSource();
