@@ -35,6 +35,7 @@ import org.dominokit.domino.ui.utils.TextNode;
 
 import com.google.gwt.core.client.GWT;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
+import org.jboss.elemento.HtmlContentBuilder;
 
 import com.github.nmorel.gwtjackson.client.ObjectMapper;
 import com.google.gwt.core.client.EntryPoint;
@@ -49,6 +50,7 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.Event;
 import elemental2.dom.EventListener;
+import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLDocument;
 import elemental2.dom.HTMLElement;
@@ -249,6 +251,9 @@ public class App implements EntryPoint {
             filter = searchParams.get(FILTER_PARAM_KEY);
         }
 
+        // Add invisible download anchor element. Used for downloading file when clicking into map.
+        body().add(a().attr("download", "").id("download").element());
+        
         // Add our "root" container
         container = div().id("container").element();
         body().add(container);
@@ -421,14 +426,15 @@ public class App implements EntryPoint {
                                     .setMarginBottom("5px")
                                     .get()
                                     .element();
-                                    
+                                                                        
                                     badge.id = fileFormat.getAbbreviation();
                                     
                                     badge.addEventListener("click", new EventListener() {
                                         @Override
                                         public void handleEvent(Event evt) {
                                             HTMLElement clickedBadge = (HTMLElement) evt.currentTarget;
-                                            openRegionSelectionDialog(cell.getRecord(), clickedBadge);
+                                            String fileFormatAbbreviation = clickedBadge.id;
+                                            openRegionSelectionDialog(cell.getRecord(), fileFormatAbbreviation);
                                         }
                                         
                                     });
@@ -501,10 +507,7 @@ public class App implements EntryPoint {
         modal.large().open();
     }
 
-    private void openRegionSelectionDialog(ThemePublicationDTO themePublication, HTMLElement clickedBadge) {
-        
-        console.log(clickedBadge.id);
-        
+    private void openRegionSelectionDialog(ThemePublicationDTO themePublication, String fileFormatAbbreviation) {
         List<FileFormatDTO> sortedFileFormats = themePublication
                 .getFileFormats()
                 .stream()
@@ -530,8 +533,8 @@ public class App implements EntryPoint {
         HTMLDivElement mapDiv = div().id("map").element();
         modal.getBodyElement()
                 .appendChild(div().css("modal-body-paragraph")
-                        .textContent("Sie können einzelne Gebiete mit einem Klick in die Karte herunterladen. "
-                                + "Im Reiter 'Liste' können Sie die Daten in Listenform herunterladen. "));
+                        .textContent("Sie können Daten einzelner Gebiete mit einem Klick in die Karte herunterladen. "
+                                + "Im Reiter 'Liste' können Sie die Daten in einer Liste suchen und herunterladen. "));
 
         selectionTab.appendChild(mapDiv);
 
@@ -560,7 +563,10 @@ public class App implements EntryPoint {
             DomGlobal.window.alert(error.toString());
             return null;
         });
-
+        
+        // Teil des Downloadlinks. Wird in der Tabelle wie auch in der Karte benötigt.
+        String fileBaseUrl = themePublication.getDownloadHostUrl() + "/" + themePublication.getIdentifier() + "/aktuell/";
+        
         TableConfig<Feature> tableConfig = new TableConfig<>();
         tableConfig
             .addColumn(ColumnConfig.<Feature>create("title", messages.subunits_download_table_name()).setShowTooltip(false).textAlign("left")
@@ -595,15 +601,13 @@ public class App implements EntryPoint {
                         
                         String fileUrl = null;
                         if (themePublication.getModel() == null) {
+                            // TODO: Warum doppelt? Fehler? Wie ist es in der Haupttabelle?
                             // Rasterdaten
-                            fileExtension = fileFormat.getAbbreviation();
-                            fileUrl = themePublication.getDownloadHostUrl() + "/" + themeIdentifier
-                                    + "/aktuell/" + itemIdentifier + "." + themeIdentifier + "."
+                            fileUrl = fileBaseUrl + itemIdentifier + "." + themeIdentifier + "."
                                     + fileFormat.getAbbreviation();                     
                         } else {
                             // Vektordaten
-                            fileUrl = themePublication.getDownloadHostUrl() + "/" + themeIdentifier
-                                    + "/aktuell/" + itemIdentifier + "." + themeIdentifier + "."
+                            fileUrl = fileBaseUrl + itemIdentifier + "." + themeIdentifier + "."
                                     + fileFormat.getAbbreviation();
                         }
                        
@@ -664,12 +668,62 @@ public class App implements EntryPoint {
         });
 
         map = MapPresets.getBlakeAndWhiteMap(mapDiv.id);
-        map.addSingleClickListener(new MapSingleClickListener());
+        map.addSingleClickListener(new MapSingleClickListener(fileBaseUrl, themePublication.getIdentifier(), fileFormatAbbreviation));
 
         closeButton.blur();
     }
+    
+    // Notnagel...
+    private static native void downloadFileJs(String fileUrl, String fileName) /*-{
+        var link = $doc.getElementById('download');
 
-    public final class MapSingleClickListener implements ol.event.EventListener<MapBrowserEvent> {
+        fetch(fileUrl)
+          .then(function (response) {
+            return response.blob();
+          })
+          .then(function (blob) {
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            link.click();
+          });
+    }-*/;
+    
+
+    // Schade: click()-Methode existiert in Elemental2 nicht.
+    // Notfalls würde auch "DomGlobal.window.open(fileUrl, "_blank");"
+    // funktionieren. Dann wirkt es aber unruhig, weil kurz ein
+    // Tab aufpoppt.
+    private void downloadFile(String fileUrl, String fileName) {
+        HTMLAnchorElement link = (HTMLAnchorElement) DomGlobal.document.getElementById("download");
+        DomGlobal.fetch(fileUrl).then(response -> {
+            if (!response.ok) {
+                DomGlobal.window.alert(response.statusText + ": " + response.body);
+                return null;
+            }
+            return response.blob();
+        }).then(blob -> {
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            //link.click(); is missing: https://github.com/google/elemental2/issues/152
+            return null;
+        }).catch_(error -> {
+            console.log(error);
+            DomGlobal.window.alert(error.toString());
+            return null;
+        });
+    }
+
+    private final class MapSingleClickListener implements ol.event.EventListener<MapBrowserEvent> {
+        String fileBaseUrl;
+        String themeIdentifier;
+        String fileFormatAbbreviation;
+        
+        public MapSingleClickListener(String fileBaseUrl, String themeIdentifier, String fileFormatAbbreviation) {
+            this.fileBaseUrl = fileBaseUrl;
+            this.themeIdentifier = themeIdentifier;
+            this.fileFormatAbbreviation = fileFormatAbbreviation;
+        }
+        
         @Override
         public void onEvent(MapBrowserEvent event) {
             AtPixelOptions featureAtPixelOptions = new AtPixelOptions();
@@ -679,7 +733,19 @@ public class App implements EntryPoint {
                     
                     console.log(feature.get("title").toString());
                     console.log(feature.get("identifier").toString());
+                    console.log(fileBaseUrl);
+                    console.log(themeIdentifier);
+                    console.log(fileFormatAbbreviation);
                     
+                    String itemIdentifier = feature.get("identifier").toString();
+                    
+                    
+                    // TODO es wird ein proxy benötigt, wenn man mit fetch herunterlädt.
+                    String fileName = itemIdentifier + "." + themeIdentifier + "." + fileFormatAbbreviation;
+                    String fileUrl = fileBaseUrl + fileName;
+                    
+                    downloadFileJs(fileUrl, fileName);
+                    /*
                     if (layer.get(ID_ATTR_NAME).toString().equalsIgnoreCase(SELECTED_VECTOR_LAYER_ID)) {
                         ol.layer.Vector selectedLayer = (ol.layer.Vector) getMapLayerById(SELECTED_VECTOR_LAYER_ID);
                         Vector selectedSource = (Vector) selectedLayer.getSource();
@@ -703,6 +769,7 @@ public class App implements EntryPoint {
                         f.setStyle(style);
                         selectedSource.addFeature(f);
                     }
+                    */
                     return false;
                 }
             }, featureAtPixelOptions);
