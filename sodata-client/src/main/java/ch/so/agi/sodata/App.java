@@ -668,6 +668,7 @@ public class App implements EntryPoint {
                     String itemIdentifier = feature.get("identifier").toString();
                     String fileName = itemIdentifier + "." + themeIdentifier + "." + fileFormatAbbreviation;
                     String fileUrl = fileBaseUrl + fileName;
+                    fileUrl = "proxy?file=" + fileUrl;
                     DomGlobal.window.open(fileUrl, "_blank");
                                         
                     return false;
