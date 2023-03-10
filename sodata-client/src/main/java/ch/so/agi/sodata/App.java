@@ -19,7 +19,10 @@ import org.dominokit.domino.ui.button.Button;
 import org.dominokit.domino.ui.datatable.ColumnConfig;
 import org.dominokit.domino.ui.datatable.DataTable;
 import org.dominokit.domino.ui.datatable.TableConfig;
+import org.dominokit.domino.ui.datatable.plugins.BodyScrollPlugin;
+import org.dominokit.domino.ui.datatable.plugins.SortPlugin;
 import org.dominokit.domino.ui.datatable.store.LocalListDataStore;
+import org.dominokit.domino.ui.datatable.store.LocalListScrollingDataSource;
 import org.dominokit.domino.ui.forms.TextBox;
 import org.dominokit.domino.ui.grid.Column;
 import org.dominokit.domino.ui.grid.Row;
@@ -556,6 +559,7 @@ public class App implements EntryPoint {
         
         TableConfig<Feature> tableConfig = new TableConfig<>();
         tableConfig
+            .setFixed(true)
             .addColumn(ColumnConfig.<Feature>create("title", messages.subunits_download_table_name()).setShowTooltip(false).textAlign("left")
                 .setCellRenderer(cell -> TextNode.of(cell.getTableRow().getRecord().get("title"))))
             .addColumn(ColumnConfig.<Feature>create("lastEditingDate", messages.subunits_download_table_publication_date()).setShowTooltip(false).textAlign("left")
@@ -595,11 +599,12 @@ public class App implements EntryPoint {
                      
                     }
                     return badgesElement;
-                }));
+                })).addPlugin(new BodyScrollPlugin<>());
 
-        LocalListDataStore<Feature> subunitListStore = new LocalListDataStore<>();
+        LocalListScrollingDataSource<Feature> scrollingDataSource = new LocalListScrollingDataSource<Feature>(15);
+        //LocalListDataStore<Feature> subunitListStore = new LocalListDataStore<>();
 
-        DataTable<Feature> subunitFeatureTable = new DataTable<>(tableConfig, subunitListStore);
+        DataTable<Feature> subunitFeatureTable = new DataTable<>(tableConfig, scrollingDataSource);
         subunitFeatureTable.setId("dataset-table");
         subunitFeatureTable.noStripes();
         subunitFeatureTable.noHover();
@@ -637,7 +642,9 @@ public class App implements EntryPoint {
                     }
                 });
                 
-                subunitListStore.setData(featuresList);
+                //subunitListStore.setData(featuresList);
+                scrollingDataSource.setData(featuresList);
+                scrollingDataSource.load();
             }
         });
 
