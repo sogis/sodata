@@ -148,8 +148,6 @@ public class App implements EntryPoint {
     private String ID_ATTR_NAME = "id";
     private String SUBUNIT_VECTOR_LAYER_ID = "subunit_vector_layer";
     private String SUBUNIT_VECTOR_FEATURE_ID = "subunit_fid";
-    private String SELECTED_VECTOR_LAYER_ID = "selected_vector_layer";
-    private String SELECTED_VECTOR_FEATURE_ID = "selected_fid";
 
     // ol3 map
     private String MAP_DIV_ID = "map";
@@ -404,18 +402,6 @@ public class App implements EntryPoint {
                                     .collect(Collectors.toList());
 
                             if (cell.getRecord().isHasSubunits()) {
-                                /*
-                                HTMLElement regionSelectionElement = a().css("default-link")
-                                        .textContent(messages.table_subunit_selection())
-                                        .element();
-                                regionSelectionElement.addEventListener("click", new EventListener() {
-                                    @Override
-                                    public void handleEvent(Event evt) {
-                                        openRegionSelectionDialog(cell.getRecord());
-                                    }
-                                });
-                                return regionSelectionElement;
-                                */
                                 for (FileFormatDTO fileFormat : sortedFileFormats) {
 
                                     HTMLElement badge = Badge.create(formatLookUp.get(fileFormat.getAbbreviation()))
@@ -525,10 +511,10 @@ public class App implements EntryPoint {
         modal.css("modal-object");
 
         TabsPanel tabsPanel = TabsPanel.create().setColor(Color.RED_DARKEN_3);
-        Tab selectionTab = Tab.create(Icons.ALL.map_outline_mdi(), messages.subunits_tab_selection().toUpperCase());
-        Tab downloadTab = Tab.create(Icons.ALL.file_download_outline_mdi(), messages.subunits_tab_download().toUpperCase());
-        tabsPanel.appendChild(selectionTab);
-        tabsPanel.appendChild(downloadTab);
+        Tab mapTab = Tab.create(Icons.ALL.map_outline_mdi(), messages.subunits_tab_map().toUpperCase());
+        Tab listTab = Tab.create(Icons.ALL.file_download_outline_mdi(), messages.subunits_tab_list().toUpperCase());
+        tabsPanel.appendChild(mapTab);
+        tabsPanel.appendChild(listTab);
 
         HTMLDivElement mapDiv = div().id("map").element();
         modal.getBodyElement()
@@ -536,7 +522,7 @@ public class App implements EntryPoint {
                         .textContent("Sie können Daten einzelner Gebiete mit einem Klick in die Karte herunterladen. "
                                 + "Im Reiter 'Liste' können Sie die Daten in einer Liste suchen und herunterladen. "));
 
-        selectionTab.appendChild(mapDiv);
+        mapTab.appendChild(mapDiv);
 
         Button closeButton = Button.create(messages.close().toUpperCase()).linkify();
         closeButton.removeWaves();
@@ -588,28 +574,12 @@ public class App implements EntryPoint {
                 .setCellRenderer(cell -> {
                     HTMLElement badgesElement = div().element();
 
-                    for (FileFormatDTO fileFormat : sortedFileFormats) {
-                        String fileExtension = "zip";
-                        
-                        // Raster data if no model is defined.
-                        if (themePublication.getModel() == null) {
-                            fileExtension = fileFormat.getAbbreviation();
-                        }
-                        
+                    for (FileFormatDTO fileFormat : sortedFileFormats) {                        
                         String themeIdentifier = themePublication.getIdentifier();
                         String itemIdentifier = cell.getRecord().get("identifier");
                         
-                        String fileUrl = null;
-                        if (themePublication.getModel() == null) {
-                            // TODO: Warum doppelt? Fehler? Wie ist es in der Haupttabelle?
-                            // Rasterdaten
-                            fileUrl = fileBaseUrl + itemIdentifier + "." + themeIdentifier + "."
-                                    + fileFormat.getAbbreviation();                     
-                        } else {
-                            // Vektordaten
-                            fileUrl = fileBaseUrl + itemIdentifier + "." + themeIdentifier + "."
-                                    + fileFormat.getAbbreviation();
-                        }
+                        String fileUrl = fileBaseUrl + itemIdentifier + "." + themeIdentifier + "."
+                                + fileFormat.getAbbreviation();                     
                        
                         badgesElement.appendChild(a().css("badge-link")
                                 .attr("href", fileUrl)                                 
@@ -631,14 +601,15 @@ public class App implements EntryPoint {
         subunitFeatureTable.noStripes();
         subunitFeatureTable.noHover();
         subunitFeatureTable.load();
-        downloadTab.appendChild(subunitFeatureTable.element());
+                
+        listTab.appendChild(subunitFeatureTable.element());
 
         modal.getBodyElement().appendChild(tabsPanel);
-
-        downloadTab.addClickListener(new EventListener() {
+        
+        listTab.addClickListener(new EventListener() {
             @Override
             public void handleEvent(Event evt) {
-                ol.layer.Vector vectorLayer = (ol.layer.Vector) getMapLayerById(SELECTED_VECTOR_LAYER_ID);
+                ol.layer.Vector vectorLayer = (ol.layer.Vector) getMapLayerById(SUBUNIT_VECTOR_LAYER_ID);
                 ol.source.Vector vectorSource = vectorLayer.getSource();                                
                 Feature[] features = vectorSource.getFeatures();
 
@@ -667,52 +638,13 @@ public class App implements EntryPoint {
             }
         });
 
+        
         map = MapPresets.getBlakeAndWhiteMap(mapDiv.id);
         map.addSingleClickListener(new MapSingleClickListener(fileBaseUrl, themePublication.getIdentifier(), fileFormatAbbreviation));
-
+        
         closeButton.blur();
     }
     
-    // Notnagel...
-    private static native void downloadFileJs(String fileUrl, String fileName) /*-{
-        var link = $doc.getElementById('download');
-
-        fetch(fileUrl)
-          .then(function (response) {
-            return response.blob();
-          })
-          .then(function (blob) {
-            link.href = URL.createObjectURL(blob);
-            link.download = fileName;
-            link.click();
-          });
-    }-*/;
-    
-
-    // Schade: click()-Methode existiert in Elemental2 nicht.
-    // Notfalls würde auch "DomGlobal.window.open(fileUrl, "_blank");"
-    // funktionieren. Dann wirkt es aber unruhig, weil kurz ein
-    // Tab aufpoppt.
-    private void downloadFile(String fileUrl, String fileName) {
-        HTMLAnchorElement link = (HTMLAnchorElement) DomGlobal.document.getElementById("download");
-        DomGlobal.fetch(fileUrl).then(response -> {
-            if (!response.ok) {
-                DomGlobal.window.alert(response.statusText + ": " + response.body);
-                return null;
-            }
-            return response.blob();
-        }).then(blob -> {
-            link.href = URL.createObjectURL(blob);
-            link.download = fileName;
-            //link.click(); is missing: https://github.com/google/elemental2/issues/152
-            return null;
-        }).catch_(error -> {
-            console.log(error);
-            DomGlobal.window.alert(error.toString());
-            return null;
-        });
-    }
-
     private final class MapSingleClickListener implements ol.event.EventListener<MapBrowserEvent> {
         String fileBaseUrl;
         String themeIdentifier;
@@ -729,47 +661,12 @@ public class App implements EntryPoint {
             AtPixelOptions featureAtPixelOptions = new AtPixelOptions();
             map.forEachFeatureAtPixel(event.getPixel(), new FeatureAtPixelFunction() {
                 @Override
-                public boolean call(Feature feature, Layer layer) {
-                    
-                    console.log(feature.get("title").toString());
-                    console.log(feature.get("identifier").toString());
-                    console.log(fileBaseUrl);
-                    console.log(themeIdentifier);
-                    console.log(fileFormatAbbreviation);
-                    
+                public boolean call(Feature feature, Layer layer) {                    
                     String itemIdentifier = feature.get("identifier").toString();
-                    
-                    
-                    // TODO es wird ein proxy benötigt, wenn man mit fetch herunterlädt.
                     String fileName = itemIdentifier + "." + themeIdentifier + "." + fileFormatAbbreviation;
                     String fileUrl = fileBaseUrl + fileName;
-                    
-                    downloadFileJs(fileUrl, fileName);
-                    /*
-                    if (layer.get(ID_ATTR_NAME).toString().equalsIgnoreCase(SELECTED_VECTOR_LAYER_ID)) {
-                        ol.layer.Vector selectedLayer = (ol.layer.Vector) getMapLayerById(SELECTED_VECTOR_LAYER_ID);
-                        Vector selectedSource = (Vector) selectedLayer.getSource();
-                        selectedSource.removeFeature(feature);
-                        return true;
-                    }
-                    if (layer.get(ID_ATTR_NAME).toString().equalsIgnoreCase(SUBUNIT_VECTOR_LAYER_ID)) {
-                        ol.layer.Vector selectedLayer = (ol.layer.Vector) getMapLayerById(SELECTED_VECTOR_LAYER_ID);
-                        Vector selectedSource = (Vector) selectedLayer.getSource();
-
-                        Style style = new Style();
-                        Stroke stroke = new Stroke();
-                        stroke.setWidth(4);
-                        stroke.setColor(new ol.color.Color(198, 40, 40, 1.0));
-                        style.setStroke(stroke);
-                        Fill fill = new Fill();
-                        fill.setColor(new ol.color.Color(255, 255, 255, 0.6));
-                        style.setFill(fill);
-
-                        Feature f = feature.clone();
-                        f.setStyle(style);
-                        selectedSource.addFeature(f);
-                    }
-                    */
+                    DomGlobal.window.open(fileUrl, "_blank");
+                                        
                     return false;
                 }
             }, featureAtPixelOptions);
@@ -778,7 +675,6 @@ public class App implements EntryPoint {
 
     private void createVectorLayers(Feature[] features) {
         removeVectorLayer(SUBUNIT_VECTOR_LAYER_ID);
-        removeVectorLayer(SELECTED_VECTOR_LAYER_ID);
 
         {
             Style style = new Style();
@@ -807,27 +703,6 @@ public class App implements EntryPoint {
             ol.layer.Vector vectorLayer = new ol.layer.Vector(vectorLayerOptions);
             vectorLayer.setZIndex(100);
             vectorLayer.set(ID_ATTR_NAME, SUBUNIT_VECTOR_LAYER_ID);
-            map.addLayer(vectorLayer);
-        }
-
-        {
-            Style style = new Style();
-            Stroke stroke = new Stroke();
-            stroke.setWidth(4);
-            stroke.setColor(new ol.color.Color(198, 40, 40, 1.0));
-            style.setStroke(stroke);
-            Fill fill = new Fill();
-            fill.setColor(new ol.color.Color(255, 255, 255, 0.6));
-            style.setFill(fill);
-
-            VectorOptions vectorSourceOptions = OLFactory.createOptions();
-            Vector vectorSource = new Vector(vectorSourceOptions);
-
-            VectorLayerOptions vectorLayerOptions = OLFactory.createOptions();
-            vectorLayerOptions.setSource(vectorSource);
-            ol.layer.Vector vectorLayer = new ol.layer.Vector(vectorLayerOptions);
-            vectorLayer.set(ID_ATTR_NAME, SELECTED_VECTOR_LAYER_ID);
-            vectorLayer.setZIndex(1000);
             map.addLayer(vectorLayer);
         }
     }

@@ -121,8 +121,13 @@ a.badge-link:visited {
 }
 
 .modal-object {
-	max-height: calc(100% - 120px);
-	overflow-y: auto; 
+	max-height: calc(100% - 120px) !important;
+	overflow-y: auto !important; 
+}
+
+.modal-content {
+    max-height: calc(100% - 120px) !important;
+    overflow-y: auto !important; 
 }
 
 .model-header {

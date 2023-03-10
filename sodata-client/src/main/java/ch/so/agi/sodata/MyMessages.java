@@ -50,11 +50,17 @@ public interface MyMessages extends Messages {
     @DefaultMessage("Area selection")
     String subunits_title_selection();
 
-    @DefaultMessage("Selection")
-    String subunits_tab_selection();
+//    @DefaultMessage("Selection")
+//    String subunits_tab_selection();
+//
+//    @DefaultMessage("Download")
+//    String subunits_tab_download();
 
-    @DefaultMessage("Download")
-    String subunits_tab_download();
+    @DefaultMessage("Map")
+    String subunits_tab_map();
+
+    @DefaultMessage("List")
+    String subunits_tab_list();
 
     @DefaultMessage("Name")
     String subunits_download_table_name();

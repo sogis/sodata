@@ -80,6 +80,9 @@ Für das Native Image sind entweder genügend Tests notwendig, damit die benöti
 
 Zum Entwicklen und Testen wird mit Profil-spezifischen application.yml-Dateien gearbeitet.
 
+### Download der Daten
+Die Daten auf einem anderen Server können mit einem Klick auf einen Button oder auf eine Einteilung in der Karte heruntergeladen werden. Es entsprich also eigentlich einem "Window.open()". Aus diesem Grund öffnet sich kurz ein neuer Tab, der sich aber sofort wieder schliesst. Eine elegantere Variante wäre, wenn man dies mit "fetch" in der Anwendung macht. Aber das geht nicht, weil Cors ein Problem ist (-> ProxyController) und bei sehr grossen Dateien wirkt es m.E. unlogischer und intransparenter. Es entstünde auch mehr Code. Aus diesem Grund auf der "hemdsärmlichen" Variante belassen.
+
 ## Entwicklung
 
 ### Run 
