@@ -440,6 +440,7 @@ public class App implements EntryPoint {
                                     String fileUrl = cell.getRecord().getDownloadHostUrl() + "/" + cell.getRecord().getIdentifier()
                                             + "/aktuell/" + cell.getRecord().getIdentifier() + "."
                                             + fileFormat.getAbbreviation();
+                                    fileUrl = "proxy?file=" + fileUrl;
                                     badgesElement.appendChild(a().css("badge-link")
                                             .attr("href", fileUrl)
                                             .attr("target", "_blank")
@@ -579,7 +580,9 @@ public class App implements EntryPoint {
                         String itemIdentifier = cell.getRecord().get("identifier");
                         
                         String fileUrl = fileBaseUrl + itemIdentifier + "." + themeIdentifier + "."
-                                + fileFormat.getAbbreviation();                     
+                                + fileFormat.getAbbreviation();     
+                        
+                        fileUrl = "proxy?file=" + fileUrl;
                        
                         badgesElement.appendChild(a().css("badge-link")
                                 .attr("href", fileUrl)                                 
