@@ -287,7 +287,7 @@ public class App implements EntryPoint {
                 + "kann der Benutzer das gewünschte Gebiet selber wählen. Weitere Informationen zur Datenliste und alternativen Bezugsmöglichkeiten "
                 + "finden Sie <a class='default-link' href='https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-geoinformation/geoportal/geodaten-herunterladen/' target='_blank'>hier</a>."
                 + "<br><br>"
-                + "Der Aufbau des Datenangebotes wird im Frühjahr 2023 abgeschlossen. Ab dann sind alle öffentlichen Geodaten des Kantons enthalten.";
+                + "Der Aufbau des Datenangebotes wird im Herbst 2023 abgeschlossen. Ab dann sind alle öffentlichen Geodaten des Kantons enthalten.";
 
         topLevelContent.appendChild(div().css("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
 
