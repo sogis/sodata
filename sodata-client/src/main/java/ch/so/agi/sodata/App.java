@@ -521,10 +521,15 @@ public class App implements EntryPoint {
         tabsPanel.appendChild(listTab);
 
         HTMLDivElement mapDiv = div().id("map").element();
+        
+        String infoString = "Sie können Daten einzelner Gebiete mit einem Klick in die Karte herunterladen."
+                + "Im Reiter 'Liste' können Sie die Daten in einer Liste suchen und herunterladen."
+                + "<br><br>"
+                + "Weitere Informationen zu alternativen Bezugsmöglichkeiten finden Sie <a class='default-link' href='https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-geoinformation/geoportal/geodaten-herunterladen/' target='_blank'>hier</a>.";
+
         modal.getBodyElement()
                 .appendChild(div().css("modal-body-paragraph")
-                        .textContent("Sie können Daten einzelner Gebiete mit einem Klick in die Karte herunterladen. "
-                                + "Im Reiter 'Liste' können Sie die Daten in einer Liste suchen und herunterladen. "));
+                        .innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
 
         mapTab.appendChild(mapDiv);
 
