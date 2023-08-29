@@ -523,10 +523,16 @@ public class App implements EntryPoint {
         HTMLDivElement mapDiv = div().id("map").element();
         
         String infoString = "Sie können Daten einzelner Gebiete mit einem Klick in die Karte herunterladen."
-                + "Im Reiter 'Liste' können Sie die Daten in einer Liste suchen und herunterladen."
+                + " Im Reiter 'Liste' können Sie die Daten in einer Liste suchen und herunterladen."
                 + "<br><br>"
                 + "Weitere Informationen zu alternativen Bezugsmöglichkeiten finden Sie <a class='default-link' href='https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-geoinformation/geoportal/geodaten-herunterladen/' target='_blank'>hier</a>.";
 
+        if (themePublication.getIdentifier().equalsIgnoreCase("ch.so.agi.av.dm01_ch") && fileFormatAbbreviation.toLowerCase().contains("dxf")) {
+            console.log(fileFormatAbbreviation);
+            
+            infoString += " Auf <a class='default-link' href='https://geodienste.ch/downloads/av?data_format=dxf_geobau' target='_blank'>geodienste.ch</a> kann das Format DXF-Geobau grundstücksweise bezogen werden.";
+        }
+        
         modal.getBodyElement()
                 .appendChild(div().css("modal-body-paragraph")
                         .innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
