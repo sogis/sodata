@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.dominokit.domino.ui.Typography.Paragraph;
 import org.dominokit.domino.ui.badges.Badge;
 import org.dominokit.domino.ui.breadcrumbs.Breadcrumb;
 import org.dominokit.domino.ui.button.Button;
@@ -29,6 +30,8 @@ import org.dominokit.domino.ui.grid.Row;
 import org.dominokit.domino.ui.icons.Icons;
 import org.dominokit.domino.ui.infoboxes.InfoBox;
 import org.dominokit.domino.ui.modals.ModalDialog;
+import org.dominokit.domino.ui.popover.Popover;
+import org.dominokit.domino.ui.popover.PopupPosition;
 import org.dominokit.domino.ui.style.Color;
 import org.dominokit.domino.ui.style.ColorScheme;
 import org.dominokit.domino.ui.tabs.Tab;
@@ -438,26 +441,68 @@ public class App implements EntryPoint {
                                 }
 
                                 return badgesElement;
-                            } else {                               
-                                for (FileFormatDTO fileFormat : sortedFileFormats) {
+                            } else {          
+                                // In der XML-Config steht nirgends, ob man ein Cogtiff resp. überhaupt ein Raster-Thema ist.
+                                // Best effort, dass herauszufinden.
+                                if (cell.getRecord().getModel() == null || cell.getRecord().getModel().trim().length() == 0) {
+                                //if (sortedFileFormats.size() == 1 && sortedFileFormats.get(0).getAbbreviation().equalsIgnoreCase("tif")) {
+                                    console.log("ich bin ein cog tiff");
+                                                                        
+                                    HTMLElement cog = Badge.create("Cloud optimized GeoTIFF")
+                                            .setBackground(Color.GREY_LIGHTEN_2)
+                                            .style()
+                                            .addCss("badge-stream")
+                                            .setMarginRight("10px")
+                                            .setMarginTop("5px")
+                                            .setMarginBottom("5px")
+                                            .cssText("cursor: pointer;")
+                                            .get()
+                                            .element();
+                                   
+                                    // TODO: Oder nur tooltip?
+                                    
                                     String fileUrl = cell.getRecord().getDownloadHostUrl() + "/" + cell.getRecord().getIdentifier()
                                             + "/aktuell/" + cell.getRecord().getIdentifier() + "."
-                                            + fileFormat.getAbbreviation();
-                                    fileUrl = "proxy?file=" + fileUrl;
-                                    badgesElement.appendChild(a().css("badge-link")
-                                            .attr("href", fileUrl)
-                                            .attr("target", "_blank")
-                                            .add(Badge.create(formatLookUp.get(fileFormat.getAbbreviation()))
-                                                    .setBackground(Color.GREY_LIGHTEN_2)
-                                                    .style()
-                                                    .setMarginRight("10px")
-                                                    .setMarginTop("5px")
-                                                    .setMarginBottom("5px")
-                                                    .get()
-                                                    .element())
-                                            .element());
+                                            + sortedFileFormats.get(0).getAbbreviation();
+
+                                    Popover popover = Popover.create(
+                                            cog,
+                                            "Link kopiert!",
+                                            Paragraph.create(fileUrl))
+                                        .position(PopupPosition.TOP);
+
+                                    cog.addEventListener("click", new EventListener() {
+                                        @Override
+                                        public void handleEvent(Event evt) {
+                                            copyToClipboard(fileUrl);                                                        
+                                            popover.show();
+                                        }
+                                    });
+                                    badgesElement.append(cog);
+                                
+                                return badgesElement; 
+                                } else {
+                                    for (FileFormatDTO fileFormat : sortedFileFormats) {
+                                        String fileUrl = cell.getRecord().getDownloadHostUrl() + "/" + cell.getRecord().getIdentifier()
+                                                + "/aktuell/" + cell.getRecord().getIdentifier() + "."
+                                                + fileFormat.getAbbreviation();
+                                        fileUrl = "proxy?file=" + fileUrl;
+                                        badgesElement.appendChild(a().css("badge-link")
+                                                .attr("href", fileUrl)
+                                                .attr("target", "_blank")
+                                                .add(Badge.create(formatLookUp.get(fileFormat.getAbbreviation()))
+                                                        .setBackground(Color.GREY_LIGHTEN_2)
+                                                        .style()
+                                                        .setMarginRight("10px")
+                                                        .setMarginTop("5px")
+                                                        .setMarginBottom("5px")
+                                                        .get()
+                                                        .element())
+                                                .element());
+                                    }
+                                    return badgesElement; 
                                 }
-                                return badgesElement;
+                                
                             }
                         }));
 
@@ -783,4 +828,13 @@ public class App implements EntryPoint {
     private static native void updateUrlWithoutReloading(String newUrl) /*-{
         $wnd.history.pushState(newUrl, "", newUrl);
     }-*/;
+    
+    private static native void copyToClipboard(String url) /*-{
+        if ($wnd.navigator.clipboard) {
+            $wnd.navigator.clipboard.writeText(url);          
+        } else {
+            console.log("cannot use clipboard");
+        }
+    }-*/;
+
 }
