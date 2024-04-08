@@ -453,7 +453,6 @@ public class App implements EntryPoint {
                                     //HTMLElement cog = Badge.create("Cloud optimized GeoTIFF")
                                     Badge cog = Badge.create("Cloud optimized GeoTIFF")
                                             .setBackground(Color.GREY_LIGHTEN_2)
-                                            //.setTooltip(messages.badge_cogtiff_tooltip(), PopupPosition.TOP)
                                             .style()
                                             .addCss("badge-stream")
                                             .setMarginRight("10px")
@@ -462,8 +461,6 @@ public class App implements EntryPoint {
                                             .cssText("cursor: pointer;")
                                             .get();
                                             //.element();
-                                                                       
-                                    // TODO: Oder nur tooltip?
                                     
                                     String fileUrl = cell.getRecord().getDownloadHostUrl() + "/" + cell.getRecord().getIdentifier()
                                             + "/aktuell/" + cell.getRecord().getIdentifier() + "."
