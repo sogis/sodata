@@ -71,6 +71,8 @@ public interface MyMessages extends Messages {
     @DefaultMessage("Download data")
     String subunits_download_table_download();
 
+    @DefaultMessage("Copied!")
+    String badge_cogtiff_tooltip();
     
     
     

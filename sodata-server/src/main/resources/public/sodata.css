@@ -201,3 +201,24 @@ h4, .h4 {
 }
 
 
+.popover {
+    background-color: black;
+    padding: 4px !important;    
+}
+
+.popover-title {
+    font-family: Frutiger, 'Fira Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;   
+    color: white;
+    background-color: black;
+    font-weight: normal;
+    padding: 4px !important;
+    border-bottom: 0px solid #ddd !important;    
+}
+
+.popover-content {
+    padding: 0px !important;    
+}
+    
+.popover.top>.arrow:after {
+    border-top-color    : black !important;
+}

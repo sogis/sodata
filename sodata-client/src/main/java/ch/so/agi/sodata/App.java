@@ -285,10 +285,14 @@ public class App implements EntryPoint {
 
         topLevelContent.appendChild(div().css("sodata-title").textContent("Geodaten Kanton Solothurn").element());
 
+//        String infoString = "Sie können Daten einzelner Gebiete mit einem Klick in die Karte herunterladen."
+//                + " Im Reiter 'Liste' können Sie die Daten in einer Liste suchen und herunterladen."
+//                + "<br><br>"
+//                + "In <a class='default-link' href='https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-geoinformation/geoportal/geodaten-herunterladen/' target='_blank'>unserer Hilfe</a> finden Sie weitere Informationen zu alternativen Bezugsmöglichkeiten.";
+
         String infoString = "Geodaten vom Kanton Solothurn können kostenlos heruntergeladen werden. Die Vektordaten sowie die Rasterdaten werden "
                 + "in vordefinierten Formaten und Gebieten (Kanton, Gemeinde oder andere) angeboten. Bei der Gebietseinteilung Gemeinde oder andere "
-                + "kann der Benutzer das gewünschte Gebiet selber wählen. Weitere Informationen zur Datenliste und alternativen Bezugsmöglichkeiten "
-                + "finden Sie <a class='default-link' href='https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-geoinformation/geoportal/geodaten-herunterladen/' target='_blank'>hier</a>."
+                + "kann der Benutzer das gewünschte Gebiet selber wählen. In <a class='default-link' href='https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-geoinformation/geoportal/geodaten-herunterladen/' target='_blank'>unserer Hilfe</a> finden Sie weitere Informationen zu alternativen Bezugsmöglichkeiten."
                 + "<br><br>"
                 + "Der Aufbau des Datenangebotes wird im Sommer 2024 abgeschlossen. Ab dann sind alle öffentlichen Geodaten des Kantons enthalten.";
 
@@ -445,30 +449,31 @@ public class App implements EntryPoint {
                                 // In der XML-Config steht nirgends, ob man ein Cogtiff resp. überhaupt ein Raster-Thema ist.
                                 // Best effort, dass herauszufinden.
                                 if (cell.getRecord().getModel() == null || cell.getRecord().getModel().trim().length() == 0) {
-                                //if (sortedFileFormats.size() == 1 && sortedFileFormats.get(0).getAbbreviation().equalsIgnoreCase("tif")) {
-                                    console.log("ich bin ein cog tiff");
-                                                                        
-                                    HTMLElement cog = Badge.create("Cloud optimized GeoTIFF")
+                                //if (sortedFileFormats.size() == 1 && sortedFileFormats.get(0).getAbbreviation().equalsIgnoreCase("tif")) {                                                                        
+                                    //HTMLElement cog = Badge.create("Cloud optimized GeoTIFF")
+                                    Badge cog = Badge.create("Cloud optimized GeoTIFF")
                                             .setBackground(Color.GREY_LIGHTEN_2)
+                                            //.setTooltip(messages.badge_cogtiff_tooltip(), PopupPosition.TOP)
                                             .style()
                                             .addCss("badge-stream")
                                             .setMarginRight("10px")
                                             .setMarginTop("5px")
                                             .setMarginBottom("5px")
                                             .cssText("cursor: pointer;")
-                                            .get()
-                                            .element();
-                                   
+                                            .get();
+                                            //.element();
+                                                                       
                                     // TODO: Oder nur tooltip?
                                     
                                     String fileUrl = cell.getRecord().getDownloadHostUrl() + "/" + cell.getRecord().getIdentifier()
                                             + "/aktuell/" + cell.getRecord().getIdentifier() + "."
                                             + sortedFileFormats.get(0).getAbbreviation();
 
+                                    HTMLElement dummy = span().style("padding:0px !important;").element();
                                     Popover popover = Popover.create(
                                             cog,
-                                            "Link kopiert!",
-                                            Paragraph.create(fileUrl))
+                                            messages.badge_cogtiff_tooltip(),
+                                            dummy)
                                         .position(PopupPosition.TOP);
 
                                     cog.addEventListener("click", new EventListener() {
@@ -478,7 +483,7 @@ public class App implements EntryPoint {
                                             popover.show();
                                         }
                                     });
-                                    badgesElement.append(cog);
+                                    badgesElement.append(cog.element());
                                 
                                 return badgesElement; 
                                 } else {
@@ -570,11 +575,9 @@ public class App implements EntryPoint {
         String infoString = "Sie können Daten einzelner Gebiete mit einem Klick in die Karte herunterladen."
                 + " Im Reiter 'Liste' können Sie die Daten in einer Liste suchen und herunterladen."
                 + "<br><br>"
-                + "Weitere Informationen zu alternativen Bezugsmöglichkeiten finden Sie <a class='default-link' href='https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-geoinformation/geoportal/geodaten-herunterladen/' target='_blank'>hier</a>.";
+                + "In <a class='default-link' href='https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-geoinformation/geoportal/geodaten-herunterladen/' target='_blank'>unserer Hilfe</a> finden Sie weitere Informationen zu alternativen Bezugsmöglichkeiten.";
 
         if (themePublication.getIdentifier().equalsIgnoreCase("ch.so.agi.av.dm01_ch") && fileFormatAbbreviation.toLowerCase().contains("dxf")) {
-            console.log(fileFormatAbbreviation);
-            
             infoString += " Auf <a class='default-link' href='https://geodienste.ch/downloads/av?data_format=dxf_geobau' target='_blank'>geodienste.ch</a> kann das Format DXF-Geobau grundstücksweise bezogen werden.";
         }
         
@@ -652,7 +655,6 @@ public class App implements EntryPoint {
                                         .setMarginRight("10px").setMarginTop("5px")
                                         .setMarginBottom("5px").get().element())
                                 .element());
-                     
                     }
                     return badgesElement;
                 })).addPlugin(new BodyScrollPlugin<>());
