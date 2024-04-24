@@ -294,7 +294,10 @@ public class App implements EntryPoint {
                 + "in vordefinierten Formaten und Gebieten (Kanton, Gemeinde oder andere) angeboten. Bei der Gebietseinteilung Gemeinde oder andere "
                 + "kann der Benutzer das gewünschte Gebiet selber wählen. In <a class='default-link' href='https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-geoinformation/geoportal/geodaten-herunterladen/' target='_blank'>unserer Hilfe</a> finden Sie weitere Informationen zu alternativen Bezugsmöglichkeiten."
                 + "<br><br>"
-                + "Der Aufbau des Datenangebotes wird im Sommer 2024 abgeschlossen. Ab dann sind alle öffentlichen Geodaten des Kantons enthalten.";
+                + "Rasterdaten werden als <a class='default-link' href='https://www.cogeo.org/' target='_blank'>Cloud Optimized GeoTIFF</a> angeboten. Damit entfällt das mühsame Herunterladen einzelner Kacheln. Beim Klicken auf den Button wird der Link in die Zwischenablage kopiert und kann anschliessend "
+                + "in den gängigen GIS-Werkzeugen als Rasterdatenquelle eingefügt werden."
+                + "<br><br>"
+                + "Der Aufbau des Datenangebotes wird im Herbst 2024 abgeschlossen. Ab dann sind alle öffentlichen Geodaten des Kantons enthalten.";
 
         topLevelContent.appendChild(div().css("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
 
