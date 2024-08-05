@@ -9,8 +9,8 @@
   <artifactId>sodata-shared</artifactId>
   <dependencies>
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
+      <groupId>org.gwtproject</groupId>
+      <artifactId>gwt-servlet-jakarta</artifactId>
       <scope>provided</scope>
     </dependency>
   </dependencies>

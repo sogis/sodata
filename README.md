@@ -106,6 +106,14 @@ Test single class in subproject:
 ./mvnw test -Dtest=GeoJsonWriterTest -pl sodata-server
 ```
 
+Falls der Client (der Codeserver) nicht startet und es eine Fehlermeldung bezüglich eine bereits verwendeten Ports wirft, kann man den Codeserver auch abschiessen:
+
+```
+netstat -vanp tcp | grep 9876
+```
+
+Und anschliessendes `kill -9 <PID>`.
+
 ### Build
 
 #### JVM
