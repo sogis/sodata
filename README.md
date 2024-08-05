@@ -19,9 +19,8 @@ Die Anwendung kann am einfachsten mittels Env-Variablen gesteuert werden. Es ste
 
 | Name | Beschreibung | Standard |
 |-----|-----|-----|
-| `CONFIG_FILE` | Vollständiger, absoluter Pfad der Themebereitstellungs-Konfigurations-XML-Datei. | `/config/datasearch.xml` |
+| `CONFIG_FILE` | Vollständiger, absoluter Pfad der Themenbereitstellungs-Konfigurations-XML-Datei. | `/config/datasearch.xml` |
 | `ITEMS_GEOJSON_DIR` | Verzeichnis, in das die GeoJSON-Dateien der Regionen gespeichert werden. Sämtliche JSON-Dateien in diesem Verzeichnis werden öffentlich exponiert. | `#{systemProperties['java.io.tmpdir']}` (= Temp-Verzeichnis des OS) |
-| ~~`FILES_SERVER_URL`~~ | ~~Url des Servers, auf dem die Geodaten gespeichert sind.~~ | ~~`https://files.geo.so.ch`~~ |
 
 ### Java
 

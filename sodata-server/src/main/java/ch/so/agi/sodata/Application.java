@@ -1,5 +1,6 @@
 package ch.so.agi.sodata;
 
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.ForwardedHeaderFilter;
 
+import ch.so.agi.meta2file.model.ThemePublication;
 import ch.so.agi.sodata.service.ConfigService;
 
 @SpringBootApplication
