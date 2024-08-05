@@ -19,7 +19,7 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 public class DockerApplicationTests extends ApplicationTests {
     private static int exposedPort = 8080;
 
-    public static GenericContainer<?> appContainer = new GenericContainer<>(DockerImageName.parse("sogis/wgc-embedded:latest"))
+    public static GenericContainer<?> appContainer = new GenericContainer<>(DockerImageName.parse("sogis/sodata:latest"))
             .waitingFor(Wait.forHttp("/actuator/health"))
             .withExposedPorts(8080)
             .withLogConsumer(new Slf4jLogConsumer(logger));
