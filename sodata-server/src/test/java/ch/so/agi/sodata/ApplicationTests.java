@@ -1,24 +1,26 @@
 package ch.so.agi.sodata;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.test.context.ActiveProfiles;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-class ApplicationTests {
+public abstract class ApplicationTests {
+    static Logger logger = LoggerFactory.getLogger(ApplicationTests.class);
 
     @LocalServerPort
-    private int port;
+    protected String port;
     
-    @Autowired
-    private TestRestTemplate restTemplate;
+    protected TestRestTemplate restTemplate;
 
+    public ApplicationTests(TestRestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+    
     @Test
     public void contextLoads() {
     }
