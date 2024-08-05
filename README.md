@@ -1,10 +1,5 @@
 # sodata
 
-## todo
-- Testing
-  * https://stackoverflow.com/questions/39690094/spring-boot-default-profile-for-integration-tests/56442693
-- ...
-
 ## Beschreibung
 
 Das Repository verwaltet den Quellcode der Datensuche. Die Datensuche ist das Web-GUI zum Beziehen von Geodaten.
