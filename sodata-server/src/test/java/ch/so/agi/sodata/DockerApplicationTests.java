@@ -10,7 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.builder.Transferable;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -22,6 +24,8 @@ public class DockerApplicationTests extends ApplicationTests {
     public static GenericContainer<?> appContainer = new GenericContainer<>(DockerImageName.parse("sogis/sodata:latest"))
             .waitingFor(Wait.forHttp("/actuator/health"))
             .withExposedPorts(8080)
+//            .withCopyToContainer(Transferable.of("./src/test/java/resources.datasearch.xml"), "/config/datasearch.xml")
+            .withCopyFileToContainer(MountableFile.forClasspathResource("/datasearch.xml"), "/config/datasearch.xml")
             .withLogConsumer(new Slf4jLogConsumer(logger));
 
     public DockerApplicationTests(@Autowired TestRestTemplate restTemplate) {

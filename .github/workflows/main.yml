@@ -44,6 +44,12 @@ jobs:
           ./mvnw -Penv-prod,native clean package -DexcludedGroups="docker"
           ls -la sodata-server/target
 
+      - uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: reports-jar
+          path: sodata-server/target/surefire-reports/
+
       - name: List Docker images
         run: |
           docker images
@@ -52,6 +58,12 @@ jobs:
         id: dockerTest
         run: ./mvnw test -Dgroups="docker"
 
+      - uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: reports-docker
+          path: sodata-server/target/surefire-reports/
+          
       - name: Login to Docker Container Registry
         uses: docker/login-action@v2
         with:
