@@ -31,6 +31,23 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'     
+          distribution: 'graalvm' #graalvm-community
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          cache: 'maven'
+
+      - name: Test and build Jar
+        run: |
+          ./mvnw clean test -DexcludedGroups="docker"
+          ./mvnw -Penv-prod,native clean package -DexcludedGroups="docker"
+          ls -la sodata-server/target
+
+      - name: List Docker images
+        run: |
+          docker images
+
       # - uses: actions/cache@v3
       #   with:
       #     path: ~/.m2/repository
