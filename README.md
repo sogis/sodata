@@ -112,21 +112,15 @@ Und anschliessendes `kill -9 <PID>`.
 
 #### JVM
 ```
-./mvnw -Penv-prod clean package
+./mvnw -Penv-prod clean package -DexcludedGroups="docker"
 ```
-
-```
-docker build -t sogis/sodata-jvm:latest -f sodata-server/src/main/docker/Dockerfile.jvm .
-```
-
 
 #### Native
-Damit die Tests mit dem Native Image funktionieren, muss mittels Env-Variablen passend konfiguriert werden:
 
 ```
-CONFIG_FILE=$PWD/sodata-server/datasearch.xml ITEMS_GEOJSON_DIR=/tmp/ ./mvnw clean -Pnative test
-./mvnw -DskipTests -Penv-prod,native package
+./mvnw -Penv-prod,native clean package -DexcludedGroups="docker"
 ```
+Die _datasearch.xml_-Datei wird durch Testcontainers in den Container kopiert.
 
 ```
 docker build -t sogis/sodata:latest -f sodata-server/src/main/docker/Dockerfile.native .
