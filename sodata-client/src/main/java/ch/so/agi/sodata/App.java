@@ -297,7 +297,7 @@ public class App implements EntryPoint {
                 + "Rasterdaten werden als <a class='default-link' href='https://www.cogeo.org/' target='_blank'>Cloud Optimized GeoTIFF</a> angeboten. Damit entfällt das mühsame Herunterladen einzelner Kacheln. Beim Klicken auf den Button wird der Link in die Zwischenablage kopiert und kann anschliessend "
                 + "in den gängigen GIS-Werkzeugen als Rasterdatenquelle eingefügt werden."
                 + "<br><br>"
-                + "Der Aufbau des Datenangebotes wird im Herbst 2024 abgeschlossen. Ab dann sind alle öffentlichen Geodaten des Kantons enthalten.";
+                + "Der Aufbau des Datenangebotes wird im Herbst 2025 abgeschlossen. Ab dann sind alle öffentlichen Geodaten des Kantons enthalten.";
 
         topLevelContent.appendChild(div().css("info").innerHtml(SafeHtmlUtils.fromTrustedString(infoString)).element());
 
