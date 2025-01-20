@@ -491,7 +491,7 @@ public class App implements EntryPoint {
                                         String fileUrl = cell.getRecord().getDownloadHostUrl() + "/" + cell.getRecord().getIdentifier()
                                                 + "/aktuell/" + cell.getRecord().getIdentifier() + "."
                                                 + fileFormat.getAbbreviation();
-                                        fileUrl = "proxy?file=" + fileUrl;
+                                        //fileUrl = "proxy?file=" + fileUrl;
                                         badgesElement.appendChild(a().css("badge-link")
                                                 .attr("href", fileUrl)
                                                 .attr("target", "_blank")
@@ -645,7 +645,7 @@ public class App implements EntryPoint {
                         String fileUrl = fileBaseUrl + itemIdentifier + "." + themeIdentifier + "."
                                 + fileFormat.getAbbreviation();     
                         
-                        fileUrl = "proxy?file=" + fileUrl;
+                        //fileUrl = "proxy?file=" + fileUrl;
                        
                         badgesElement.appendChild(a().css("badge-link")
                                 .attr("href", fileUrl)                                 
@@ -733,7 +733,7 @@ public class App implements EntryPoint {
                     String itemIdentifier = feature.get("identifier").toString();
                     String fileName = itemIdentifier + "." + themeIdentifier + "." + fileFormatAbbreviation;
                     String fileUrl = fileBaseUrl + fileName;
-                    fileUrl = "proxy?file=" + fileUrl;
+                    //fileUrl = "proxy?file=" + fileUrl;
                     DomGlobal.window.open(fileUrl, "_blank");
                                         
                     return false;
