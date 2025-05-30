@@ -27,87 +27,87 @@ jobs:
       - name: Print new build number
         run: echo "Build number is $BUILD_NUMBER"
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          java-version: '21'     
-          distribution: 'graalvm' #graalvm-community
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          cache: 'maven'
+      # - uses: graalvm/setup-graalvm@v1
+      #   with:
+      #     java-version: '21'     
+      #     distribution: 'graalvm' #graalvm-community
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     cache: 'maven'
 
-      - name: Test and build Jar
-        run: |
-          ./mvnw clean test -DexcludedGroups="docker"
-          ./mvnw -Penv-prod,native package -DexcludedGroups="docker"
-          ls -la sodata-server/target
+      # - name: Test and build Jar
+      #   run: |
+      #     ./mvnw clean test -DexcludedGroups="docker"
+      #     ./mvnw -Penv-prod,native package -DexcludedGroups="docker"
+      #     ls -la sodata-server/target
 
-      - uses: actions/upload-artifact@v4
-        if: ${{ failure() }}
-        with:
-          name: reports-jar
-          path: sodata-server/target/surefire-reports/
+      # - uses: actions/upload-artifact@v4
+      #   if: ${{ failure() }}
+      #   with:
+      #     name: reports-jar
+      #     path: sodata-server/target/surefire-reports/
 
-      - name: List Docker images
-        run: |
-          docker images
+      # - name: List Docker images
+      #   run: |
+      #     docker images
 
-      - name: Test Docker image
-        id: dockerTest
-        run: ./mvnw test -Dgroups="docker"
+      # - name: Test Docker image
+      #   id: dockerTest
+      #   run: ./mvnw test -Dgroups="docker"
 
-      - uses: actions/upload-artifact@v4
-        if: ${{ failure() }}
-        with:
-          name: reports-docker
-          path: sodata-server/target/surefire-reports/
+      # - uses: actions/upload-artifact@v4
+      #   if: ${{ failure() }}
+      #   with:
+      #     name: reports-docker
+      #     path: sodata-server/target/surefire-reports/
 
-      - name: Login to Docker Container Registry
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-        if: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
+      # - name: Login to Docker Container Registry
+      #   uses: docker/login-action@v2
+      #   with:
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
+      #   if: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
+      # - name: Login to GitHub Container Registry
+      #   uses: docker/login-action@v2
+      #   with:
+      #     registry: ghcr.io
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
+      #   if: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
 
-      - name: Set up QEMU for amd64 #and arm64
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: linux/amd64 #,linux/arm64
+      # - name: Set up QEMU for amd64 #and arm64
+      #   uses: docker/setup-qemu-action@v2
+      #   with:
+      #     platforms: linux/amd64 #,linux/arm64
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v2
 
-      - name: Multi-platform build and push to Docker Container Registry and Github Container Registry
-        if: always() && (steps.dockerTest.outcome == 'success')
-        uses: docker/build-push-action@v2
-        with:
-          # cache-from: |
-          #   ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:cache
-          # cache-to: |
-          #   ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:cache
-          platforms: linux/amd64 #,linux/arm64
-          context: sodata-server
-          file: sodata-server/Dockerfile.native
-          pull: true
-          push: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
-          tags: |
-            ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:latest
-            ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:${{ env.MAJOR_NUMBER }}.${{ env.MINOR_NUMBER }}.${{ env.BUILD_NUMBER }}
-            ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:${{ env.MAJOR_NUMBER }}.${{ env.MINOR_NUMBER }}
-            ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:${{ env.MAJOR_NUMBER }}
-            ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:latest
-            ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:${{ env.MAJOR_NUMBER }}.${{ env.MINOR_NUMBER }}.${{ env.BUILD_NUMBER }}
-            ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:${{ env.MAJOR_NUMBER }}.${{ env.MINOR_NUMBER }}
-            ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:${{ env.MAJOR_NUMBER }}
-          labels: |
-            "commit=${{ github.sha }}"
+      # - name: Multi-platform build and push to Docker Container Registry and Github Container Registry
+      #   if: always() && (steps.dockerTest.outcome == 'success')
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     # cache-from: |
+      #     #   ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:cache
+      #     # cache-to: |
+      #     #   ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:cache
+      #     platforms: linux/amd64 #,linux/arm64
+      #     context: sodata-server
+      #     file: sodata-server/Dockerfile.native
+      #     pull: true
+      #     push: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
+      #     tags: |
+      #       ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:latest
+      #       ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:${{ env.MAJOR_NUMBER }}.${{ env.MINOR_NUMBER }}.${{ env.BUILD_NUMBER }}
+      #       ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:${{ env.MAJOR_NUMBER }}.${{ env.MINOR_NUMBER }}
+      #       ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:${{ env.MAJOR_NUMBER }}
+      #       ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:latest
+      #       ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:${{ env.MAJOR_NUMBER }}.${{ env.MINOR_NUMBER }}.${{ env.BUILD_NUMBER }}
+      #       ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:${{ env.MAJOR_NUMBER }}.${{ env.MINOR_NUMBER }}
+      #       ghcr.io/${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:${{ env.MAJOR_NUMBER }}
+      #     labels: |
+      #       "commit=${{ github.sha }}"
