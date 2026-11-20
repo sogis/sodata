@@ -28,15 +28,23 @@ jobs:
 
       - uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '21'
+          java-version: '21.0.10'
           distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           cache: 'maven'
 
+      - name: Enable Docker's containerd image store for release provenance
+        uses: docker/setup-docker-action@v5
+        with:
+          version: v28.0.4
+          set-host: true
+          daemon-config: '{"features":{"containerd-snapshotter":true}}'
+
       - name: Test and build Native Image
         run: |
           ./mvnw clean test -DexcludedGroups="docker"
-          ./mvnw -Penv-prod,native package -DexcludedGroups="docker"
+          ./mvnw -Penv-prod,native package -DexcludedGroups="docker" \
+            "-Dexec.args=build --platform linux/amd64 --provenance=mode=min -t sogis/sodata:latest -f Dockerfile.native --label commit=$GITHUB_SHA ."
 
       - uses: actions/upload-artifact@v4
         if: ${{ failure() }}

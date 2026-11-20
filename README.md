@@ -123,7 +123,7 @@ Und anschliessendes `kill -9 <PID>`.
 Die _datasearch.xml_-Datei wird durch Testcontainers in den Container kopiert.
 
 ```
-docker build -t sogis/sodata:latest -f sodata-server/src/main/docker/Dockerfile.native .
+docker build --platform linux/amd64 -t sogis/sodata:latest -f sodata-server/Dockerfile.native sodata-server
 ```
 
 In diesem Fall muss das Native Image auf Linux gebuildet werden.
